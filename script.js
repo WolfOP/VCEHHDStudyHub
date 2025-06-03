@@ -209,13 +209,267 @@ function Unit3Component() {
         <hr class="my-6 border-slate-700">
 
         <h3>3. Indicators Used to Measure and Understand Health Status</h3>
-        <p><em>Content to be added...</em></p>
-        <hr class="my-6 border-slate-700">
+<p>Health status refers to an individual's or a population's overall level of health and wellbeing, taking into account various aspects such as life expectancy, amount of disability, and levels of disease risk factors. Health indicators are standard statistics used to measure and compare health status, identify trends, and evaluate interventions.</p>
+
+<h4>Key Health Status Indicators:</h4>
+<ul>
+    <li>
+        <strong>Incidence:</strong>
+        <p>The number or rate of new cases of a particular condition (e.g., disease or injury) in a population during a specific period (usually a year).</p>
+    </li>
+    <li>
+        <strong>Prevalence:</strong>
+        <p>The total number or proportion of cases of a particular condition present in a population at a given time, or over a given period.</p>
+    </li>
+    <li>
+        <strong>Morbidity:</strong>
+        <p>Refers to ill health in an individual and the levels of ill health in a population or group. It's often measured by incidence, prevalence, and hospitalisation rates.</p>
+    </li>
+    <li>
+        <strong>Mortality:</strong>
+        <p>Refers to death, particularly at a population level. The mortality rate is the number of deaths (usually per 100,000 people) in a population from a specific cause or all causes over a period.</p>
+        <ul>
+            <li><strong>Maternal Mortality Rate:</strong> The number of deaths of women who are pregnant or in the first 42 days after giving birth or termination of pregnancy, per 100,000 live births.</li>
+            <li><strong>Infant Mortality Rate:</strong> The rate of deaths of infants between birth and their first birthday, usually expressed per 1,000 live births.</li>
+            <li><strong>Under-Five Mortality Rate (U5MR):</strong> The rate of deaths of children under five years of age, usually expressed per 1,000 live births.</li>
+        </ul>
+    </li>
+    <li>
+        <strong>Life Expectancy:</strong>
+        <p>An indication of how long a person can expect to live if current death rates do not change. It's the number of years of life, on average, remaining to an individual at a particular age.</p>
+    </li>
+    <li>
+        <strong>Health-Adjusted Life Expectancy (HALE):</strong>
+        <p>An estimate of the average number of years that a person can expect to live in full health, by taking into account years lived with disability due to illness or injury. It is life expectancy minus the number of years spent in unhealthy states.</p>
+    </li>
+    <li>
+        <strong>Burden of Disease (BoD):</strong>
+        <p>A measure of the impact of diseases and injuries. Specifically, it measures the gap between current health status and an ideal situation where everyone lives to an old age free of disease and disability. It is measured in a unit called Disability-Adjusted Life Years (DALYs).</p>
+        <ul>
+            <li><strong>Disability-Adjusted Life Years (DALYs):</strong> One DALY represents one year of healthy life lost due to premature death (Years of Life Lost - YLL) and time lived with illness, disease, or injury (Years Lived with Disability - YLD). The formula is: DALY = YLL + YLD.</li>
+            <li><strong>Years of Life Lost (YLL):</strong> The fatal component of DALYs. It measures how many years of expected life are lost due to premature death from a particular condition or cause.</li>
+            <li><strong>Years Lived with Disability (YLD):</strong> The non-fatal component of DALYs. It measures how many healthy years of life are lost due to living with the negative impacts (e.g., illness, injury, disability) of a disease or health condition.</li>
+        </ul>
+    </li>
+    <li>
+        <strong>Self-Assessed Health Status:</strong>
+        <p>A measure based on an individual's own perception of their health and wellbeing. It's often collected from population surveys where people are asked to rate their health as excellent, very good, good, fair, or poor.</p>
+    </li>
+</ul>
+<p>Understanding and interpreting data related to these indicators is a key skill in VCE HHD.</p>
+<hr class="my-6 border-slate-700">
         <h3>4. Factors Contributing to Variations in Health Status</h3>
-        <p><em>Content to be added...</em></p>
-        <hr class="my-6 border-slate-700">
+<p>Variations in health status exist between different population groups in Australia. These differences are often due to the complex interplay of biological, sociocultural, and environmental factors. It's important to analyse how these factors can influence health outcomes and contribute to these variations.</p>
+
+<h4>a) Biological Factors</h4>
+<p>These factors relate to the structure and functioning of the body and its cells, tissues, and systems. They can influence health both positively and negatively.</p>
+<ul>
+    <li><strong>Genetics (including sex and age):</strong>
+        <ul>
+            <li>Inherited conditions (e.g., cystic fibrosis, haemophilia) can impact health from birth.</li>
+            <li>Genetic predisposition can increase the risk of developing certain diseases (e.g., some cancers, cardiovascular disease, type 2 diabetes).</li>
+            <li>Sex can influence the likelihood of certain conditions (e.g., females are more prone to osteoporosis, males to certain types of hernias).</li>
+            <li>Ageing leads to natural physiological changes that can increase susceptibility to illness and injury.</li>
+        </ul>
+    </li>
+    <li><strong>Body Weight (BMI):</strong>
+        <ul>
+            <li>Being overweight or obese (high BMI) is a major risk factor for many conditions, including cardiovascular disease, type 2 diabetes, some cancers, and arthritis.</li>
+            <li>Being underweight can also lead to health problems like malnutrition and osteoporosis.</li>
+        </ul>
+    </li>
+    <li><strong>Blood Pressure:</strong>
+        <ul>
+            <li>Hypertension (high blood pressure) is a significant risk factor for heart attack, stroke, and kidney disease. It often has no symptoms.</li>
+        </ul>
+    </li>
+    <li><strong>Blood Cholesterol:</strong>
+        <ul>
+            <li>High levels of LDL ('bad') cholesterol can lead to atherosclerosis (hardening and narrowing of arteries), increasing the risk of heart disease and stroke.</li>
+        </ul>
+    </li>
+    <li><strong>Glucose Regulation:</strong>
+        <ul>
+            <li>Impaired glucose regulation or diabetes (where the body cannot effectively process glucose) can lead to numerous health complications affecting the eyes, kidneys, nerves, and cardiovascular system.</li>
+        </ul>
+    </li>
+    <li><strong>Birth Weight:</strong>
+        <ul>
+            <li>Low birth weight (less than 2.5kg) is associated with a higher risk of developing health problems later in life, including cardiovascular disease and diabetes, and can also indicate poorer health outcomes in infancy.</li>
+        </ul>
+    </li>
+</ul>
+
+<h4>b) Sociocultural Factors</h4>
+<p>These factors relate to the social and cultural conditions in which people are born, grow, live, work, and age. They significantly impact health behaviours, access to resources, and overall health status.</p>
+<ul>
+    <li><strong>Socioeconomic Status (SES):</strong> Comprises education, occupation, and income.
+        <ul>
+            <li><strong>Income:</strong> Affects access to resources like nutritious food, adequate housing, healthcare, and recreation. Low income can lead to stress and limit healthy choices.</li>
+            <li><strong>Occupation:</strong> Can influence income, stress levels, physical activity levels, and exposure to workplace hazards. Unemployment is linked to poorer health outcomes.</li>
+            <li><strong>Education:</strong> Higher levels of education are often linked to better health literacy, healthier behaviours, higher income potential, and better understanding of health messages.</li>
+        </ul>
+    </li>
+    <li><strong>Social Connections and Social Exclusion/Isolation:</strong>
+        <ul>
+            <li>Strong social networks (family, friends, community groups) provide support, reduce stress, and promote mental wellbeing.</li>
+            <li>Social exclusion or isolation can lead to loneliness, depression, and reduced access to support and resources.</li>
+        </ul>
+    </li>
+    <li><strong>Food Security:</strong>
+        <ul>
+            <li>The state in which all persons obtain nutritionally adequate, culturally appropriate, safe food regularly through local non-emergency sources. Lack of food security (food insecurity) can lead to malnutrition and related health problems. This is a sociocultural discussion when it relates to affordability, access due to social factors, etc.</li>
+        </ul>
+    </li>
+    <li><strong>Early Life Experiences:</strong>
+        <ul>
+            <li>Experiences during gestation, infancy, and childhood (e.g., maternal health, nutrition, exposure to stress or trauma, quality of parenting) can have long-lasting effects on health and development.</li>
+        </ul>
+    </li>
+    <li><strong>Access to Healthcare (as a sociocultural factor):</strong>
+        <ul>
+            <li>Cultural barriers, language difficulties, discrimination, or lack of knowledge about available services can prevent people from accessing healthcare, even if it's geographically available.</li>
+        </ul>
+    </li>
+    <li><strong>Cultural Norms and Traditions:</strong>
+        <ul>
+            <li>Cultural beliefs, practices, and attitudes can influence dietary habits, health-seeking behaviours, and views on illness (e.g., gender roles, attitudes towards smoking or alcohol).</li>
+        </ul>
+    </li>
+    <li><strong>Discrimination (including racism):</strong>
+        <ul>
+            <li>Experiencing discrimination can lead to stress, anxiety, depression, and reduced access to opportunities and resources, negatively impacting health.</li>
+        </ul>
+    </li>
+    <li><strong>Commercial Factors:</strong>
+        <ul>
+            <li>The marketing and promotion of products like tobacco, alcohol, processed foods, and sugary drinks can heavily influence consumption patterns and contribute to unhealthy behaviours.</li>
+        </ul>
+    </li>
+</ul>
+
+<h4>c) Environmental Factors</h4>
+<p>These factors relate to the physical surroundings in which people live, work, and play. They can directly impact physical health and also influence behaviours.</p>
+<ul>
+    <li><strong>Housing:</strong>
+        <ul>
+            <li>Poor quality housing (e.g., overcrowding, dampness, lack of ventilation, presence of hazards like lead or asbestos) can increase the risk of respiratory diseases, injuries, and mental health problems. Homelessness has severe health impacts.</li>
+        </ul>
+    </li>
+    <li><strong>Work Environment:</strong>
+        <ul>
+            <li>Exposure to hazards (e.g., chemicals, noise, machinery), physical demands, stress levels, and safety practices in the workplace can affect health.</li>
+        </ul>
+    </li>
+    <li><strong>Urban Design and Infrastructure:</strong>
+        <ul>
+            <li>Availability of public transport, green spaces (parks, recreational areas), walking and cycling paths, and proximity to shops and services can influence physical activity levels, access to healthy food, and social interaction.</li>
+        </ul>
+    </li>
+    <li><strong>Geographical Location (Access to Resources/Transport):</strong>
+        <ul>
+            <li>People living in rural and remote areas often have poorer access to healthcare services, healthy food options, educational opportunities, and employment compared to those in major cities. This can contribute to poorer health outcomes. Distance to services is an environmental factor.</li>
+        </ul>
+    </li>
+    <li><strong>Climate and Climate Change:</strong>
+        <ul>
+            <li>Extreme weather events (heatwaves, floods, bushfires) can directly impact health and safety. Climate change can also affect food security, water quality, and the spread of vector-borne diseases.</li>
+        </ul>
+    </li>
+    <li><strong>Air and Water Quality:</strong>
+        <ul>
+            <li>Exposure to air pollution (e.g., from traffic or industry) can cause respiratory problems and cardiovascular disease. Access to clean, safe drinking water is essential for health.</li>
+        </ul>
+    </li>
+</ul>
+<hr class="my-6 border-slate-700">
         <h3>5. Contribution of Specific Factors to Australia's Health Status</h3>
-        <p><em>Content to be added...</em></p>
+<p>Several specific, largely modifiable, lifestyle factors and behaviours significantly contribute to Australia's burden of disease and impact overall health status. Understanding these is crucial for developing effective health promotion strategies.</p>
+
+<h4>a) Smoking and Vaping</h4>
+<ul>
+    <li><strong>Smoking (Tobacco):</strong> A leading preventable cause of death and disease in Australia.
+        <ul>
+            <li>Increases the risk of numerous conditions including various cancers (lung, mouth, throat, stomach, bladder), cardiovascular disease (heart attack, stroke), respiratory diseases (emphysema, chronic bronchitis), and negative pregnancy outcomes.</li>
+            <li>Contributes significantly to YLL and YLD.</li>
+            <li>Chemicals in tobacco smoke damage nearly every organ in the body.</li>
+        </ul>
+    </li>
+    <li><strong>Vaping (E-cigarettes):</strong> While often marketed as a safer alternative, vaping also poses health risks.
+        <ul>
+            <li>E-cigarette liquids can contain nicotine (highly addictive) and other harmful chemicals and toxins.</li>
+            <li>Potential risks include lung damage, nicotine addiction, and exposure to carcinogens.</li>
+            <li>There is concern about uptake by young people and the potential for vaping to be a gateway to tobacco smoking.</li>
+            <li>Long-term health effects are still being researched.</li>
+        </ul>
+    </li>
+</ul>
+
+<h4>b) Alcohol</h4>
+<ul>
+    <li>Excessive alcohol consumption is a major risk factor for ill health and injury.</li>
+    <li><strong>Short-term effects:</strong> Can include injuries from accidents or violence, alcohol poisoning, risky behaviours.</li>
+    <li><strong>Long-term effects:</strong> Can lead to liver disease (cirrhosis), various cancers (mouth, throat, oesophagus, liver, breast), cardiovascular disease, mental health conditions, and alcohol dependence.</li>
+    <li>Contributes to burden of disease through both YLL (e.g., from alcohol-related accidents or chronic disease) and YLD (e.g., from alcohol dependence or liver disease).</li>
+</ul>
+
+<h4>c) Overweight and Obesity (High Body Mass Index - BMI)</h4>
+<ul>
+    <li>Defined as abnormal or excessive fat accumulation that presents a risk to health. BMI is a common measure (though it has limitations).</li>
+    <li>A major risk factor for many chronic diseases, including:
+        <ul>
+            <li>Type 2 diabetes</li>
+            <li>Cardiovascular disease (high blood pressure, high cholesterol, heart disease, stroke)</li>
+            <li>Some types of cancer (e.g., colorectal, kidney, breast post-menopause)</li>
+            <li>Musculoskeletal conditions (e.g., osteoarthritis)</li>
+            <li>Sleep apnoea</li>
+        </ul>
+    </li>
+    <li>Contributes significantly to the burden of disease in Australia.</li>
+    <li>Often results from an energy imbalance (consuming more kilojoules than expended).</li>
+</ul>
+
+<h4>d) Nutritional Imbalance (Dietary Risks)</h4>
+<p>An unhealthy diet, characterized by imbalances in nutrient intake, is a significant contributor to poor health and chronic disease.</p>
+<ul>
+    <li><strong>Under-consumption of Fruits and Vegetables:</strong>
+        <ul>
+            <li>Fruits and vegetables are rich in vitamins, minerals, antioxidants, and fibre.</li>
+            <li>Low intake is linked to an increased risk of cardiovascular disease, some cancers (e.g., colorectal), and type 2 diabetes. Antioxidants help protect against cell damage.</li>
+        </ul>
+    </li>
+    <li><strong>Under-consumption of Dairy Foods:</strong>
+        <ul>
+            <li>Dairy foods are a key source of calcium, important for bone health and density.</li>
+            <li>Low intake, particularly during growth years and later in life, increases the risk of osteoporosis and fractures.</li>
+        </ul>
+    </li>
+    <li><strong>High Intake of Fat (particularly saturated and trans fats):</strong>
+        <ul>
+            <li>Can lead to high blood cholesterol, increasing the risk of cardiovascular disease.</li>
+            <li>Contributes to excess kilojoule intake and weight gain/obesity.</li>
+        </ul>
+    </li>
+    <li><strong>High Intake of Salt (Sodium):</strong>
+        <ul>
+            <li>Linked to high blood pressure (hypertension), a major risk factor for cardiovascular disease and stroke.</li>
+            <li>Much of the salt intake comes from processed foods.</li>
+        </ul>
+    </li>
+    <li><strong>High Intake of Sugar (especially added sugars):</strong>
+        <ul>
+            <li>Contributes to excess kilojoule intake, leading to weight gain and obesity.</li>
+            <li>Increases the risk of type 2 diabetes and dental caries (tooth decay).</li>
+            <li>Often found in sugary drinks and processed foods with low nutritional value.</li>
+        </ul>
+    </li>
+    <li><strong>Low Intake of Fibre:</strong>
+        <ul>
+            <li>Fibre is important for digestive health, helps regulate blood glucose levels, and can reduce cholesterol.</li>
+            <li>Low fibre intake is linked to an increased risk of colorectal cancer, cardiovascular disease, type 2 diabetes, and constipation. It contributes significantly to DALYs for some diseases.</li>
+        </ul>
+    </li>
+</ul>
     `;
 
     // Content for Unit 3, Area of Study 2

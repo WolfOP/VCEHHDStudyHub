@@ -1,0 +1,19 @@
+{
+  "name": "vcehhdstudyhub",
+  "version": "1.0.0",
+  "description": "study site for vce health unit 3 and 4",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WolfOP/VCEHHDStudyHub.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WolfOP/VCEHHDStudyHub/issues"
+  },
+  "homepage": "https://github.com/WolfOP/VCEHHDStudyHub#readme"
+}

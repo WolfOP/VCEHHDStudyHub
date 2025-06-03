@@ -1,0 +1,176 @@
+# VCE HHD Study Website - Low-Fidelity Wireframes
+
+These wireframes outline the basic structure and layout for key page templates of the HHD Study Website. They focus on information hierarchy and element placement, not detailed visual design.
+
+---
+
+## 1. Homepage (`/#home`)
+
+**Purpose:** Welcome users, briefly introduce the site, and provide clear calls to action.
+
+```
++--------------------------------------------------------------+
+| Header                                                      |
+| [HHD Hub Logo]   [Home | Unit 3 | Unit 4 | Assess | Gloss]  |
++--------------------------------------------------------------+
+|                                                              |
+|                [Hero Image/Graphic Placeholder]              |
+|                                                              |
+|                Welcome to HHD Study Hub!                     |
+|                Brief site introduction...                    |
+|                                                              |
+|                [Button: Explore Unit 3]                      |
+|                [Button: View Assessment Prep (Optional)]     |
+|                                                              |
++--------------------------------------------------------------+
+| Main Content Area ("Glossy Bubble")                          |
+|  +--------------------------------------------------------+  |
+|  |  Key Features / What We Offer                         |  |
+|  |  [Icon] Study Notes   [Icon] Practice Qs   [Icon] Gloss|  |
+|  +--------------------------------------------------------+  |
++--------------------------------------------------------------+
+| Footer                                                      |
+|   © Year HHD Hub. Disclaimer...                             |
++--------------------------------------------------------------+
+```
+
+**Key Elements:**
+- **Header:** Consistent across all pages. Logo and primary navigation.
+- **Hero Section:** Engaging visual (placeholder), main heading, and introductory paragraph.
+- **Call to Action (CTA):** Prominent button(s) directing users to key content (e.g., Unit 3).
+- **Main Content Area:** "Glossy bubble" style, optional section highlighting key features or quick links.
+- **Footer:** Copyright and disclaimer.
+
+---
+
+## 2. Unit Page (e.g., `/#unit3`)
+
+**Purpose:** Display detailed content for a specific Unit, broken down by Area of Study (AOS) and Key Knowledge points. This will be a long-scrolling page.
+
+```
++--------------------------------------------------------------+
+| Header                                                      |
+| [HHD Hub Logo]   [Home | Unit 3 | Unit 4 | Assess | Gloss]  |
++--------------------------------------------------------------+
+| Main Content Area ("Glossy Bubble")                          |
+|  +--------------------------------------------------------+  |
+|  |  Unit X: [Unit Title]                                 |  |
+|  |  Brief overview of the Unit...                        |  |
+|  |                                                      |  |
+|  |  Area of Study 1: [AOS1 Title]                       |  |
+|  |  Introduction to AOS1...                             |  |
+|  |                                                      |  |
+|  |  Key Knowledge Point 1.1                             |  |
+|  |  Detailed content for KK 1.1...                      |  |
+|  |  [Placeholder for diagrams/tables/images]             |  |
+|  |  [Placeholder for interactive element (optional)]     |  |
+|  |                                                      |  |
+|  |  ... (repeat for all KK points in AOS1) ...           |  |
+|  |                                                      |  |
+|  |  Area of Study 2: [AOS2 Title]                       |  |
+|  |  Introduction to AOS2...                             |  |
+|  |                                                      |  |
+|  |  Key Knowledge Point 2.1                             |  |
+|  |  Detailed content for KK 2.1...                      |  |
+|  |  ... (repeat for all KK points in AOS2) ...           |  |
+|  +--------------------------------------------------------+  |
++--------------------------------------------------------------+
+| Footer                                                      |
+|   © Year HHD Hub. Disclaimer...                             |
++--------------------------------------------------------------+
+```
+
+**Key Elements:**
+- **Header & Footer:** Consistent.
+- **Main Content Area ("Glossy Bubble")**
+    - Unit Title & Overview
+    - AOS Sections: Each Area of Study with its own title and introduction
+    - Key Knowledge Sub-sections: Each with heading, detailed text, placeholders for visuals/interactive elements
+    - Horizontal Rule (`<hr>`) to separate major sub-topics
+
+---
+
+## 3. Assessment Prep Page (`/#assessment-prep`)
+
+**Purpose:** Provide guidance and resources for SACs and exams.
+
+```
++--------------------------------------------------------------+
+| Header                                                      |
+| [HHD Hub Logo]   [Home | Unit 3 | Unit 4 | Assess | Gloss]  |
++--------------------------------------------------------------+
+| Main Content Area ("Glossy Bubble")                          |
+|  +--------------------------------------------------------+  |
+|  |  Assessment Preparation                              |  |
+|  |  Overview of assessment in VCE HHD...                |  |
+|  |                                                      |  |
+|  |  School-Assessed Coursework (SACs)                   |  |
+|  |  Explanation of SACs, task types...                  |  |
+|  |  [Link/Section: Unit 3 SAC Prep]                     |  |
+|  |  [Link/Section: Unit 4 SAC Prep]                     |  |
+|  |                                                      |  |
+|  |  End-of-Year Examination                             |  |
+|  |  Exam structure, tips, command words...              |  |
+|  |                                                      |  |
+|  |  Study Strategies & Tips                             |  |
+|  |  General advice for studying HHD...                  |  |
+|  |                                                      |  |
+|  |  [Placeholder: Practice Questions Section/Link]       |  |
+|  +--------------------------------------------------------+  |
++--------------------------------------------------------------+
+| Footer                                                      |
+|   © Year HHD Hub. Disclaimer...                             |
++--------------------------------------------------------------+
+```
+
+**Key Elements:**
+- **Header & Footer:** Consistent.
+- **Main Content Area ("Glossy Bubble")**
+    - Main heading and introduction
+    - Sections for SACs, Exam Prep, Study Strategies
+    - Placeholders for links to more detailed pages or practice questions
+
+---
+
+## 4. Glossary Page (`/#glossary`)
+
+**Purpose:** Provide definitions for key HHD terms.
+
+```
++--------------------------------------------------------------+
+| Header                                                      |
+| [HHD Hub Logo]   [Home | Unit 3 | Unit 4 | Assess | Gloss]  |
++--------------------------------------------------------------+
+| Main Content Area ("Glossy Bubble")                          |
+|  +--------------------------------------------------------+  |
+|  |  Glossary                                            |  |
+|  |  Introduction to the glossary...                     |  |
+|  |  [Search Bar Placeholder (Optional)]                 |  |
+|  |  [A-Z Filter Placeholder (Optional)]                 |  |
+|  |                                                      |  |
+|  |  A                                                  |  |
+|  |    Term 1: Definition...                            |  |
+|  |    Term 2: Definition...                            |  |
+|  |                                                      |  |
+|  |  B                                                  |  |
+|  |    Term 3: Definition...                            |  |
+|  |    ... (Alphabetical listing of terms) ...           |  |
+|  |                                                      |  |
+|  |  Alternative layout: Grid/Card style for terms       |  |
+|  |    [Term Card] [Term Card] [Term Card]              |  |
+|  |    [Term Card] [Term Card] [Term Card]              |  |
+|  +--------------------------------------------------------+  |
++--------------------------------------------------------------+
+| Footer                                                      |
+|   © Year HHD Hub. Disclaimer...                             |
++--------------------------------------------------------------+
+```
+
+**Key Elements:**
+- **Header & Footer:** Consistent.
+- **Main Content Area ("Glossy Bubble")**
+    - Main heading
+    - Optional search or filter functionality
+    - Terms listed alphabetically or in a grid/card layout
+
+---

@@ -1,11 +1,14 @@
+/* Import Inter font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 body {
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
-
-/* Import Inter font from Google Fonts */
-@import url('[https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap)');
 
 /* Custom scrollbar for a more modern feel (optional) */
 ::-webkit-scrollbar {
@@ -23,20 +26,24 @@ body {
     background: #475569; /* slate-600 */
 }
 
-/* Style for the active navigation link */
+/* Style for the active navigation link (desktop and mobile) */
 .nav-link.active {
-    color: #a78bfa; /* purple-400 */
-    font-weight: 600; /* semibold */
-    /* A subtle background or border can also work for active state */
+    color: #a78bfa !important; /* purple-400 */
+    font-weight: 600 !important; /* semibold */
+}
+ul:not(.flex-col) > li > .nav-link.active {
     background-color: rgba(167, 139, 250, 0.1); /* purple-400 with low opacity */
     border-bottom: 2px solid #a78bfa; /* purple-400 */
+}
+#mobile-menu .nav-link.active {
+    background-color: #334155; /* slate-700, a bit darker for contrast in mobile menu */
 }
 
 /* Styling for content sections that will be loaded dynamically */
 /* This creates the "glossy bubble" effect for each page/section */
 .content-section {
     background-color: #1e293b; /* slate-800, distinct from body bg-slate-900 */
-    padding: 2rem; /* p-8 */
+    padding: 1.5rem; /* p-6, slightly less for mobile */
     border-radius: 0.75rem; /* rounded-xl for a softer bubble */
     border: 1px solid #334155; /* slate-700, subtle border */
     /* Enhanced shadow for more depth */
@@ -44,28 +51,77 @@ body {
     animation: fadeIn 0.5s ease-out;
     margin-bottom: 2rem; /* Add some space below each section if multiple were on a page */
 }
+@media (min-width: 768px) {
+    .content-section {
+        padding: 2rem; /* p-8 for medium screens and up */
+    }
+}
 
 .content-section h1 {
-    font-size: 2.25rem; /* text-4xl */
+    font-size: 1.875rem; /* text-3xl for mobile */
     font-weight: 700; /* bold */
     color: #c084fc; /* purple-400 */
     margin-bottom: 1.5rem; /* mb-6 */
     border-bottom: 2px solid #475569; /* slate-600 */
     padding-bottom: 0.75rem; /* pb-3 */
 }
+@media (min-width: 768px) {
+    .content-section h1 {
+        font-size: 2.25rem; /* text-4xl for medium screens and up */
+    }
+}
 
 .content-section h2 {
-    font-size: 1.875rem; /* text-3xl */
+    font-size: 1.5rem; /* text-2xl for mobile */
     font-weight: 600; /* semibold */
     color: #e2e8f0; /* slate-200 */
     margin-top: 2rem; /* mt-8 */
     margin-bottom: 1rem; /* mb-4 */
+}
+@media (min-width: 768px) {
+    .content-section h2 {
+        font-size: 1.875rem; /* text-3xl for medium screens and up */
+    }
+}
+
+/* Added h3 styling for Key Knowledge points */
+.content-section h3 {
+    font-size: 1.25rem; /* text-xl for mobile */
+    font-weight: 600; /* semibold */
+    color: #a78bfa; /* purple-400 */
+    margin-top: 1.75rem; /* mt-7 */
+    margin-bottom: 0.75rem; /* mb-3 */
+}
+@media (min-width: 768px) {
+    .content-section h3 {
+        font-size: 1.5rem; /* text-2xl for medium screens and up */
+    }
+}
+
+/* Added h4 styling for sub-points like dimensions */
+.content-section h4 {
+    font-size: 1.125rem; /* text-lg for mobile */
+    font-weight: 600; /* semibold */
+    color: #cbd5e1; /* slate-300 */
+    margin-top: 1.25rem; /* mt-5 */
+    margin-bottom: 0.5rem; /* mb-2 */
+}
+@media (min-width: 768px) {
+    .content-section h4 {
+        font-size: 1.25rem; /* text-xl for medium screens and up */
+    }
 }
 
 .content-section p {
     line-height: 1.75; /* leading-relaxed */
     margin-bottom: 1rem; /* mb-4 */
     color: #cbd5e1; /* slate-300 */
+    font-size: 0.95rem; /* Slightly smaller for mobile */
+}
+@media (min-width: 768px) {
+    .content-section p {
+        font-size: 1rem; /* Base size for medium screens and up */
+    }
 }
 
 .content-section ul {
@@ -79,7 +135,7 @@ body {
     margin-bottom: 0.5rem; /* mb-2 */
 }
 
-.content-section a:not(.button-style) { /* Avoid styling buttons like text links */
+.content-section a:not(.button-style) {
     color: #818cf8; /* indigo-400 */
     text-decoration: underline;
     transition: color 0.3s ease;
@@ -94,7 +150,7 @@ body {
     display: inline-block;
     background-color: #7c3aed; /* purple-600 */
     color: white;
-    font-semibold: 600;
+    font-weight: 600;
     padding: 0.75rem 1.5rem; /* py-3 px-6 */
     border-radius: 0.5rem; /* rounded-lg */
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
@@ -106,7 +162,6 @@ body {
     box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); /* shadow-lg */
     text-decoration: none; /* Remove underline on hover for buttons */
 }
-
 
 /* Simple fade-in animation for content loading */
 @keyframes fadeIn {
@@ -123,9 +178,14 @@ body {
 #app-content {
     flex-grow: 1;
 }
-
-body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+#scrollToTopBtn {
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+#scrollToTopBtn.hidden { /* Ensure it's truly hidden and not just opacity 0 */
+    visibility: hidden;
+    opacity: 0;
+}
+#scrollToTopBtn:not(.hidden) {
+    visibility: visible;
+    opacity: 1;
 }

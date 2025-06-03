@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VCE HHD Study Hub</title>
+    <meta name="description" content="A comprehensive study resource for VCE Health and Human Development students, covering Unit 3 and Unit 4, including key knowledge, assessment preparation, and a glossary of terms.">
+    <meta name="keywords" content="VCE, HHD, Health and Human Development, Unit 3, Unit 4, Study Guide, Australia Health, Global Health, SAC Prep, Exam Prep">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="https://placehold.co/32x32/7c3aed/ffffff?text=HHD" type="image/png">
@@ -13,7 +15,16 @@
     <header class="bg-slate-800 shadow-lg sticky top-0 z-50">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <a href="#home" class="text-2xl font-bold text-purple-400 hover:text-purple-300 transition-colors">HHD Hub</a>
-            <ul class="flex space-x-4 md:space-x-6">
+            
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-slate-200 hover:text-purple-300 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <ul class="hidden md:flex space-x-4 md:space-x-6">
                 <li><a href="#home" class="nav-link hover:text-purple-300 transition-colors px-3 py-2 rounded-md">Home</a></li>
                 <li><a href="#unit3" class="nav-link hover:text-purple-300 transition-colors px-3 py-2 rounded-md">Unit 3</a></li>
                 <li><a href="#unit4" class="nav-link hover:text-purple-300 transition-colors px-3 py-2 rounded-md">Unit 4</a></li>
@@ -21,6 +32,15 @@
                 <li><a href="#glossary" class="nav-link hover:text-purple-300 transition-colors px-3 py-2 rounded-md">Glossary</a></li>
             </ul>
         </nav>
+        <div id="mobile-menu" class="md:hidden hidden bg-slate-800">
+            <ul class="flex flex-col items-center py-2">
+                <li><a href="#home" class="nav-link mobile-nav-link block hover:text-purple-300 transition-colors px-3 py-3 text-center w-full">Home</a></li>
+                <li><a href="#unit3" class="nav-link mobile-nav-link block hover:text-purple-300 transition-colors px-3 py-3 text-center w-full">Unit 3</a></li>
+                <li><a href="#unit4" class="nav-link mobile-nav-link block hover:text-purple-300 transition-colors px-3 py-3 text-center w-full">Unit 4</a></li>
+                <li><a href="#assessment-prep" class="nav-link mobile-nav-link block hover:text-purple-300 transition-colors px-3 py-3 text-center w-full">Assessment Prep</a></li>
+                <li><a href="#glossary" class="nav-link mobile-nav-link block hover:text-purple-300 transition-colors px-3 py-3 text-center w-full">Glossary</a></li>
+            </ul>
+        </div>
     </header>
 
     <main id="app-content" class="container mx-auto px-6 py-8 min-h-[calc(100vh-160px)]">
@@ -31,7 +51,11 @@
         <p>&copy; <span id="currentYear"></span> VCE HHD Study Hub. All rights reserved.</p>
         <p class="text-sm mt-1">Unofficial study support. Always refer to official VCAA materials.</p>
     </footer>
-
+<button id="scrollToTopBtn" class="hidden fixed bottom-5 right-5 bg-purple-600 hover:bg-purple-700 text-white font-bold p-3 rounded-full shadow-lg transition-opacity duration-300 focus:outline-none z-40" title="Go to top">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+        </svg>
+    </button>
     <script src="script.js"></script>
 </body>
 </html>

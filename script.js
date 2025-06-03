@@ -1,139 +1,85 @@
 document.addEventListener('DOMContentLoaded', () => {
     const appContent = document.getElementById('app-content');
     const navLinks = document.querySelectorAll('.nav-link');
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileNavLinks = document.querySelectorAll('#mobile-menu .nav-link');
     const currentYearSpan = document.getElementById('currentYear');
-
-    // Set current year in footer
+    // Get the meta description tag
+    const metaDescriptionTag = document.querySelector('meta[name="description"]');
+    const defaultDescription = "A comprehensive study resource for VCE Health and Human Development students, covering Unit 3 and Unit 4, including key knowledge, assessment preparation, and a glossary of terms.";
+const scrollToTopBtn = document.getElementById('scrollToTopBtn'); // Get the scroll to top button
     if (currentYearSpan) {
         currentYearSpan.textContent = new Date().getFullYear();
     }
 
-    // --- Component Functions ---
-    // Each function returns an HTML string for a "page" or "view"
-    // These are wrapped in a .content-section div for styling
-
-    function HomeComponent() {
-        return `
-            <section class="content-section text-center">
-                <h1 class="text-5xl font-bold mb-6">Welcome to the HHD Study Hub!</h1>
-                <p class="text-xl mb-8">Your central resource for VCE Health and Human Development.</p>
-                <img src="https://placehold.co/800x400/1e293b/e2e8f0?text=HHD+Concept+Image" alt="HHD Concept Image" class="mx-auto rounded-lg shadow-lg mb-8" onerror="this.src='https://placehold.co/800x400/1e293b/e2e8f0?text=Image+Not+Available'; this.alt='Image Not Available'">
-                <p class="mb-4">This website is designed to help you navigate the complexities of the VCE HHD curriculum, starting with Unit 3 and expanding to Unit 4.</p>
-                <p>Explore key knowledge, practice skills, and prepare for your assessments with our curated content.</p>
-                <div class="mt-10">
-                    <a href="#unit3" class="button-style">
-                        Explore Unit 3
-                    </a>
-                </div>
-            </section>
-        `;
+    if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            if (mobileMenu.classList.contains('hidden')) {
+                mobileMenuButton.innerHTML = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>`;
+            } else {
+                mobileMenuButton.innerHTML = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+            }
+        });
     }
 
-    function Unit3Component() {
-        return `
-            <section class="content-section">
-                <h1>Unit 3: Australia's Health in a Globalised World</h1>
-                <p>This unit explores health and wellbeing, disease, and illness as multidimensional, dynamic, and subject to different interpretations and contexts. It examines health and wellbeing as a global concept and highlights its importance as an individual and a collective resource.</p>
-                
-                <h2>Area of Study 1: Understanding Health and Wellbeing</h2>
-                <p>Focuses on understanding health and wellbeing, disease, and illness as complex, dynamic, and subjective concepts. Students reflect on the universality of public health goals and the increasing influence of global conditions on Australians. They develop their understanding of indicators used to measure and evaluate health status and the factors contributing to variations between population groups.</p>
-                <ul>
-                    <li>Concepts of health and wellbeing (physical, social, emotional, mental, spiritual)</li>
-                    <li>Benefits of optimal health and wellbeing as a resource</li>
-                    <li>Indicators used to measure health status (Incidence, prevalence, DALYs, etc.)</li>
-                    <li>Factors contributing to variations in health status (Biological, Sociocultural, Environmental)</li>
-                    <li>Contribution of specific factors: smoking, alcohol, obesity, nutrition</li>
-                </ul>
+    mobileNavLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.add('hidden');
+                mobileMenuButton.innerHTML = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>`;
+            }
+        });
+    });
+// --- Scroll to Top Button Logic ---
+    if (scrollToTopBtn) {
+        // Show button when page is scrolled down
+        window.onscroll = function() {
+            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                scrollToTopBtn.classList.remove('hidden');
+            } else {
+                scrollToTopBtn.classList.add('hidden');
+            }
+        };
 
-                <h2>Area of Study 2: Promoting Health in Australia</h2>
-                <p>Examines different approaches to public health over time, focusing on changes and strategies that have improved health outcomes. It covers the progression of public health in Australia since 1900, global influences like the Ottawa Charter, and the Australian health system's role.</p>
-                <ul>
-                    <li>Reasons for improvements in Australia's health status since 1900</li>
-                    <li>'Old' public health, Biomedical approach, Social model of health, Ottawa Charter</li>
-                    <li>Role of health promotion</li>
-                    <li>Programs for Aboriginal and Torres Strait Islander Peoples' health</li>
-                    <li>Initiatives for healthy eating and challenges</li>
-                    <li>Australia's health system (Medicare, PHI, PBS, NDIS)</li>
-                </ul>
-                <p class="mt-6"><em>More detailed content and interactive elements for each Key Knowledge point will be added here.</em></p>
-            </section>
-        `;
+        // Scroll to top when button is clicked
+        scrollToTopBtn.addEventListener('click', () => {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        });
     }
-
-    function Unit4Component() {
-        return `
-            <section class="content-section">
-                <h1>Unit 4: Health and Human Development in a Global Context</h1>
-                <p>This unit examines health and human development in a global context. Students use data to investigate health status and human development in different countries. They explore factors that contribute to inequalities in health and human development outcomes between and within countries, including Australia.</p>
-                <h2>Area of Study 1: Global Health and Human Development</h2>
-                <p>Focuses on concepts of human development, global trends, and factors affecting health and human development globally.</p>
-                 <h2>Area of Study 2: Health and the Sustainable Development Goals</h2>
-                <p>Focuses on the United Nations' Sustainable Development Goals (SDGs), the work of the World Health Organization (WHO), and Australia's role in promoting global health and sustainable development.</p>
-                <p class="mt-6"><em>Detailed content for Unit 4 will be added in a future phase. This is a placeholder.</em></p>
-            </section>
-        `;
-    }
-
-    function AssessmentPrepComponent() {
-        return `
-            <section class="content-section">
-                <h1>Assessment Preparation</h1>
-                <p>This section will provide resources and guidance to help you prepare for your School-Assessed Coursework (SACs) and the end-of-year examination.</p>
-                <h2>Key Areas:</h2>
-                <ul>
-                    <li>Understanding SAC task types (e.g., written reports, data analysis, extended responses)</li>
-                    <li>Exam structure and question styles</li>
-                    <li>Tips for interpreting command words</li>
-                    <li>Strategies for effective study and revision</li>
-                    <li>Practice questions and sample responses (to be added)</li>
-                </ul>
-                <p class="mt-6"><em>Detailed guides and practice materials are coming soon!</em></p>
-            </section>
-        `;
-    }
-
-    function GlossaryComponent() {
-        return `
-            <section class="content-section">
-                <h1>Glossary of Key Terms</h1>
-                <p>A comprehensive list of important VCE HHD terminology will be available here. Understanding these terms is crucial for success.</p>
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-                    <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                        <h3 class="font-semibold text-lg text-purple-300">Health and Wellbeing</h3>
-                        <p class="text-sm text-slate-300 mt-1">A state of complete physical, social, emotional, mental, and spiritual existence, characterised by an equilibrium in which the individual feels happy, healthy, capable, and engaged.</p>
-                    </div>
-                    <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                        <h3 class="font-semibold text-lg text-purple-300">DALY (Disability-Adjusted Life Year)</h3>
-                        <p class="text-sm text-slate-300 mt-1">A measure of burden of disease. One DALY equals one year of healthy life lost due to premature death and time lived with illness, disease or injury.</p>
-                    </div>
-                    <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                        <h3 class="font-semibold text-lg text-purple-300">Biomedical Model of Health</h3>
-                        <p class="text-sm text-slate-300 mt-1">Focuses on the physical or biological aspects of disease and illness. It is a medical model of care practised by doctors and health professionals and is associated with the diagnosis, cure and treatment of disease.</p>
-                    </div>
-                    </div>
-                <p class="mt-6"><em>An interactive and searchable glossary is planned.</em></p>
-            </section>
-        `;
-    }
-
-    function NotFoundComponent() {
-        return `
-            <section class="content-section text-center">
-                <h1>404 - Page Not Found</h1>
-                <p>Oops! The page you're looking for doesn't seem to exist.</p>
-                <a href="#home" class="button-style mt-6">Go to Homepage</a>
-            </section>
-        `;
-    }
-
     // --- Router Logic ---
     const routes = {
-        'home': { title: 'Home | HHD Hub', component: HomeComponent },
-        'unit3': { title: 'Unit 3 | HHD Hub', component: Unit3Component },
-        'unit4': { title: 'Unit 4 | HHD Hub', component: Unit4Component },
-        'assessment-prep': { title: 'Assessment Prep | HHD Hub', component: AssessmentPrepComponent },
-        'glossary': { title: 'Glossary | HHD Hub', component: GlossaryComponent },
-        '404': { title: 'Page Not Found | HHD Hub', component: NotFoundComponent }
+        'home': { 
+            title: 'VCE HHD Study Hub | Home', 
+            description: 'Welcome to the HHD Study Hub, your central resource for VCE Health and Human Development. Explore Units 3 & 4, assessment prep, and key terms.',
+            component: HomeComponent 
+        },
+        'unit3': { 
+            title: 'Unit 3: Australia\'s Health | VCE HHD Hub', 
+            description: 'Explore VCE HHD Unit 3: Australia\'s Health in a Globalised World. Covers health concepts, status indicators, influencing factors, and health promotion in Australia.',
+            component: Unit3Component 
+        },
+        'unit4': { 
+            title: 'Unit 4: Global Health & Development | VCE HHD Hub', 
+            description: 'VCE HHD Unit 4 placeholder: Health and Human Development in a Global Context. Content coming soon.',
+            component: Unit4Component 
+        },
+        'assessment-prep': { 
+            title: 'Assessment Prep | VCE HHD Hub', 
+            description: 'Prepare for VCE HHD SACs and exams. Understand assessment structure, task types, command words, and study strategies.',
+            component: AssessmentPrepComponent 
+        },
+        'glossary': { 
+            title: 'VCE HHD Glossary | Key Terms & Definitions', 
+            description: 'A comprehensive glossary of key terms and definitions for VCE Health and Human Development Units 3 and 4.',
+            component: GlossaryComponent 
+        },
+        '404': { 
+            title: 'Page Not Found | VCE HHD Hub', 
+            description: 'The page you were looking for could not be found on the VCE HHD Study Hub.',
+            component: NotFoundComponent 
+        }
     };
 
     function navigateTo(hash) {
@@ -141,14 +87,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const route = routes[routeName] || routes['404'];
 
         if (appContent) {
-            // Render the component's HTML into the app-content div
             appContent.innerHTML = route.component();
-            document.title = route.title;
+        }
+        
+        // Update title
+        document.title = route.title;
+
+        // Update meta description
+        if (metaDescriptionTag) {
+            metaDescriptionTag.setAttribute('content', route.description || defaultDescription);
         }
 
-        // Update active class on nav links
         navLinks.forEach(link => {
-            // Handle base case for home link if hash is empty or just '#'
             const linkHref = link.getAttribute('href');
             if (linkHref === `#${routeName}` || (routeName === 'home' && (linkHref === '#home' || linkHref === '#'))) {
                 link.classList.add('active');
@@ -156,13 +106,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 link.classList.remove('active');
             }
         });
-         // Special case for initial load if hash is empty or just "#", ensure "Home" is active
         if (window.location.hash === '' || window.location.hash === '#') {
             document.querySelector('a.nav-link[href="#home"]')?.classList.add('active');
         }
 
-
-        // Scroll to top of page on navigation
         window.scrollTo(0, 0);
     }
 
@@ -170,6 +117,740 @@ document.addEventListener('DOMContentLoaded', () => {
         navigateTo(window.location.hash);
     });
 
-    // Initial page load
     navigateTo(window.location.hash || '#home');
 });
+
+// --- Component Functions ---
+function HomeComponent() {
+    return `
+        <section class="content-section text-center">
+            <h1 class="text-5xl font-bold mb-6">Welcome to the HHD Study Hub!</h1>
+            <p class="text-xl mb-8">Your central resource for VCE Health and Human Development.</p>
+            <img src="https://placehold.co/800x400/1e293b/e2e8f0?text=HHD+Concept+Image" alt="HHD Concept Image" class="mx-auto rounded-lg shadow-lg mb-8" onerror="this.src='https://placehold.co/800x400/1e293b/e2e8f0?text=Image+Not+Available'; this.alt='Image Not Available'">
+            <p class="mb-4">This website is designed to help you navigate the complexities of the VCE HHD curriculum, starting with Unit 3 and expanding to Unit 4.</p>
+            <p>Explore key knowledge, practice skills, and prepare for your assessments with our curated content.</p>
+            <div class="mt-10">
+                <a href="#unit3" class="button-style">
+                    Explore Unit 3
+                </a>
+            </div>
+        </section>
+    `;
+}
+
+function Unit3Component() {
+    // Content for Unit 3, Area of Study 1
+    const aos1Content = `
+        <h2>Area of Study 1: Understanding Health and Wellbeing</h2>
+        <p class="italic text-slate-400">This area of study focuses on understanding health and wellbeing, disease, and illness as complex, dynamic, and subjective concepts. Students reflect on the universality of public health goals and the increasing influence of global conditions on Australians. They develop their understanding of indicators used to measure and evaluate health status and the factors contributing to variations between population groups.</p>
+
+        <h3>1. Concepts of Health and Wellbeing, Illness, and their Dynamic and Subjective Nature</h3>
+        <p><strong>Health and Wellbeing:</strong> For the VCE HHD study, 'health and wellbeing' is defined as the overall state of a person's physical, social, emotional, mental, and spiritual existence, characterised by an equilibrium in which the individual feels happy, healthy, capable, and engaged. Wellbeing is considered an implicit element of health.</p>
+        <p>The World Health Organization (WHO) defined health in 1946 as "a state of complete physical, mental and social well-being and not merely the absence of disease or infirmity." This definition acknowledges the holistic nature of health.</p>
+        
+        <h4>The Five Dimensions of Health and Wellbeing:</h4>
+        <p>These dimensions are interrelated; a change in one dimension typically affects others.</p>
+        <ul>
+            <li><strong>Physical Health and Wellbeing:</strong> Relates to the functioning of the body and its systems, including the physical capacity to perform daily activities or tasks. It's supported by factors like regular physical activity, a balanced diet, adequate rest/sleep, maintaining an ideal body weight, and the absence of illness, disease, or injury. Characteristics include adequate energy levels, ability to complete physical tasks, appropriate fitness, and freedom from illness.</li>
+            <li><strong>Social Health and Wellbeing:</strong> Concerns the ability to form meaningful and satisfying relationships with others and to manage or adapt appropriately to different social situations. It involves having supportive networks (family, friends), effective communication, and a sense of connection to the community.</li>
+            <li><strong>Emotional Health and Wellbeing:</strong> Relates to the ability to express feelings in a positive way, manage emotional actions and reactions appropriately, and display resilience. It involves recognizing, understanding, and effectively managing emotions.</li>
+            <li><strong>Mental Health and Wellbeing:</strong> Relates to the current state of the mind or brain and the ability to think and process information. It includes having positive self-esteem, confidence, optimism, and low levels of stress and anxiety. It's about the wellness of the mind and the capacity to make decisions and use logic.</li>
+            <li><strong>Spiritual Health and Wellbeing:</strong> Relates to ideas, beliefs, values, and ethics that arise in the minds and conscience of human beings. It includes concepts of hope, peace, a guiding sense of meaning or value, and reflection on one's place in the world. It can be highly individualized and may relate to organized religion, morals, a sense of purpose, connection, or belonging.</li>
+        </ul>
+
+        <p><strong>Illness:</strong> A subjective concept related to a person's personal experience of a disease or unhealthy condition. Disease, on the other hand, refers to a physical or mental disturbance involving symptoms, dysfunction or tissue damage.</p>
+
+        <h4>Dynamic and Subjective Nature:</h4>
+        <ul>
+            <li><strong>Dynamic:</strong> Health and wellbeing are constantly changing. Changes can occur rapidly due to various factors like illness, stress, or positive life events. An individual's level of health and wellbeing can fluctuate along a continuum.</li>
+            <li><strong>Subjective:</strong> Health and wellbeing are influenced by personal opinions, beliefs, feelings, and experiences. How a person perceives their health can differ significantly from another person with the same condition or even from their own perception at a different time.</li>
+        </ul>
+        <hr class="my-6 border-slate-700">
+        
+        <h3>2. Benefits of Optimal Health and Wellbeing as a Resource</h3>
+        <p>Optimal health and wellbeing is not just an end goal; it's a vital resource that empowers individuals and benefits communities and the world at large. It's the foundation upon which people can build fulfilling lives and contribute meaningfully to society.</p>
+
+        <h4>Individual Benefits:</h4>
+        <p>Optimal health and wellbeing allows individuals to:</p>
+        <ul>
+            <li>Perform daily activities effectively (e.g., go to school, work, care for oneself and others).</li>
+            <li>Work productively and earn an income, which allows them to afford resources like food, shelter, healthcare, and education.</li>
+            <li>Engage in social activities, exercise, and pursue hobbies and interests.</li>
+            <li>Maintain healthy body weight and fitness levels.</li>
+            <li>Sleep well, leading to better concentration and mood.</li>
+            <li>Gain an education and develop skills.</li>
+            <li>Experience increased life expectancy and a greater sense of self-fulfilment and self-esteem.</li>
+            <li>Cope with the stresses of daily life and demonstrate resilience.</li>
+        </ul>
+        <p>For example, being free from chronic disease allows an individual to maintain employment, support their family, and actively participate in their community.</p>
+
+        <h4>National Benefits:</h4>
+        <p>A healthy population is a significant asset to a nation, leading to:</p>
+        <ul>
+            <li><strong>Increased Productivity:</strong> Healthy individuals are more likely to be employed and productive, contributing to economic growth.</li>
+            <li><strong>Higher Average Incomes & Tax Revenue:</strong> A productive workforce earns more, leading to increased taxation revenue for the government. This revenue can be reinvested in essential services like infrastructure (roads, public transport), social services (public housing, welfare), education, healthcare, and law and order.</li>
+            <li><strong>Reduced Healthcare Costs:</strong> A healthier population places less strain on the healthcare system, reducing expenditure on treating preventable diseases.</li>
+            <li><strong>Increased Social Participation:</strong> Healthy individuals are more likely to engage in civic duties, volunteer, and participate in community life, strengthening social cohesion.</li>
+            <li><strong>Longer Working Lives:</strong> Improved health can lead to people working for longer, contributing to the economy and reducing reliance on social security.</li>
+            <li><strong>Improved National Security & Reduced Social Segregation.</strong></li>
+        </ul>
+        <p>For instance, a reduction in smoking rates leads to fewer cases of lung cancer, meaning more people are well enough to work, contributing more to tax revenue and reducing healthcare burdens.</p>
+
+        <h4>Global Benefits:</h4>
+        <p>Optimal health and wellbeing on a global scale contributes to:</p>
+        <ul>
+            <li><strong>Reduced Risk of Disease Transmission:</strong> Healthier populations are less susceptible to communicable diseases, reducing the risk of pandemics and cross-border infections (e.g., measles, COVID-19).</li>
+            <li><strong>Promotion of Global Economic Development:</strong> Healthy populations are more productive, fostering economic growth and stability in and between countries.</li>
+            <li><strong>Increased Capacity to Address Global Challenges:</strong> When people are healthy, they are better equipped to collaborate on solving global issues like climate change, poverty, and conflict.</li>
+            <li><strong>Promotion of Peace and Stability:</strong> Healthier populations can lead to more stable societies with less conflict over resources.</li>
+            <li><strong>Increased Social Interactions and Tourism:</strong> Healthy individuals are more likely to travel and engage in cultural exchange.</li>
+        </ul>
+        <p>For example, global efforts to eradicate diseases like polio not only save lives but also free up resources and enable affected populations to become more economically productive, benefiting the global community.</p>
+        <hr class="my-6 border-slate-700">
+
+        <h3>3. Indicators Used to Measure and Understand Health Status</h3>
+        <p><em>Content to be added...</em></p>
+        <hr class="my-6 border-slate-700">
+        <h3>4. Factors Contributing to Variations in Health Status</h3>
+        <p><em>Content to be added...</em></p>
+        <hr class="my-6 border-slate-700">
+        <h3>5. Contribution of Specific Factors to Australia's Health Status</h3>
+        <p><em>Content to be added...</em></p>
+    `;
+
+    // Content for Unit 3, Area of Study 2
+    const aos2Content = `
+        <h2>Area of Study 2: Promoting Health in Australia</h2>
+        <p class="italic text-slate-400">This area of study examines different approaches to public health over time, focusing on changes and successful strategies that have improved health outcomes. It covers the progression of public health in Australia since 1900, including influences like the Ottawa Charter for Health Promotion and the shift towards focusing on population groups.</p>
+
+        <h3>1. Reasons for Improvements in Australia's Health Status Since 1900</h3>
+        <p>Australia's health status has significantly improved since 1900. Life expectancy has increased, and mortality rates, particularly for infants and young children, have declined dramatically. This progress is due to a combination of evolving public health approaches and advancements in medical care.</p>
+        
+        <h4>Overview of Health Status Shift:</h4>
+        <p>In the early 1900s, infectious and parasitic diseases (like tuberculosis, polio, and smallpox) were the leading causes of death and illness. Over time, due to public health interventions and improved living conditions, these have largely been controlled. Today, chronic, lifestyle-related diseases (such as cardiovascular disease, cancers, and type 2 diabetes) are the main causes of ill health and mortality.</p>
+
+        <h4>Key Approaches Contributing to Improvements:</h4>
+        
+        <h4>a) 'Old' Public Health</h4>
+        <p>This refers to government actions that focused on improving the physical environment and living conditions to prevent the spread of infectious diseases. Key initiatives included:</p>
+        <ul>
+            <li>Improved water and sanitation (e.g., providing clean water supplies, sewage disposal systems).</li>
+            <li>Better housing conditions to reduce overcrowding and improve hygiene.</li>
+            <li>Improved food and nutrition standards.</li>
+            <li>Quarantine laws to prevent the spread of diseases from overseas.</li>
+            <li>Basic public hygiene education.</li>
+        </ul>
+        <p>These measures led to substantial reductions in deaths from infectious diseases like cholera, typhoid, and diphtheria.</p>
+
+        <h4>b) The Biomedical Approach to Health</h4>
+        <p>This approach focuses on the physical or biological aspects of disease and illness. It is a medical model of care practiced by doctors and health professionals and is primarily associated with the diagnosis, cure, and treatment of disease once symptoms are present. Key characteristics include:</p>
+        <ul>
+            <li>Focus on individuals rather than whole populations.</li>
+            <li>Emphasis on disease, illness, and disability.</li>
+            <li>Relies on medical professionals (doctors, specialists) and technology (X-rays, blood tests, scans).</li>
+            <li>Involves interventions like medication, surgery, and other medical treatments.</li>
+        </ul>
+        <p><strong>Improvements in Medical Technology:</strong> Discoveries like vaccines (for polio, measles, tetanus), antibiotics (like penicillin to treat bacterial infections), and advancements in surgery, diagnostic tools (e.g., MRI, CT scans), and pharmaceuticals have been crucial in treating diseases and extending life expectancy.</p>
+        <p><strong>Strengths:</strong> Effective in treating common illnesses, extends life expectancy, improves quality of life for many.</p>
+        <p><strong>Limitations:</strong> Can be costly due to reliance on technology and professionals, doesn't always promote equity (not all can access), focuses on treatment rather than prevention, and may not address underlying causes of ill health related to social or environmental factors.</p>
+
+        <h4>c) The Social Model of Health (and the New Public Health)</h4>
+        <p>Emerged in the late 20th century, recognizing that improvements in health and wellbeing cannot be achieved by focusing solely on treating individuals. It addresses the broader determinants of health (social, cultural, environmental, and economic factors) that influence health outcomes. Key aspects include:</p>
+        <ul>
+            <li>Focuses on policies, education, and health promotion activities.</li>
+            <li>Aims to prevent illness and promote health for the whole population.</li>
+            <li>Addresses the wider reasons for ill health, such as poverty, lack of education, and unemployment.</li>
+            <li>Emphasizes community participation and empowerment.</li>
+            <li>Advocates for equity in health outcomes.</li>
+        </ul>
+        <p>This approach led to the development of the "new public health," which incorporates health promotion strategies.</p>
+        <p><strong>Strengths:</strong> Promotes good health and wellbeing and assists in preventing diseases, relatively inexpensive (as it can reach large numbers), focuses on vulnerable population groups, promotes overall wellbeing by addressing broader determinants.</p>
+        <p><strong>Limitations:</strong> Not all conditions can be prevented (e.g., genetic conditions), doesn't address health concerns of individuals (not a treatment model), health promotion messages may be ignored by individuals.</p>
+        
+        <h4>d) The Ottawa Charter for Health Promotion</h4>
+        <p>Developed by the WHO in 1986, the Ottawa Charter provides a framework for health promotion. It builds upon the social model of health and outlines key action areas to achieve "Health For All." (This will be detailed further in a subsequent Key Knowledge point).</p>
+
+        <h4>Relationship between Biomedical and Social Models of Health:</h4>
+        <p>Both the biomedical and social models are essential and often work together to achieve improvements in health status. The biomedical model is crucial for treating existing illnesses and conditions, while the social model addresses the underlying determinants that cause ill health and aims to prevent illness from occurring. An integrated approach is often most effective.</p>
+        <p>For example, to reduce cardiovascular disease (CVD):</p>
+        <ul>
+            <li><strong>Biomedical approach:</strong> Provides medication to lower blood pressure, surgery to repair heart damage.</li>
+            <li><strong>Social model approach:</strong> Health promotion campaigns to encourage healthy eating and physical activity, policies to reduce salt in processed foods, creating safe environments for exercise.</li>
+        </ul>
+        <hr class="my-6 border-slate-700">
+
+        <h3>2. The Role of Health Promotion in Improving Population Health</h3>
+        <p><strong>Health Promotion:</strong> According to the WHO, health promotion is the process of enabling people to increase control over, and to improve, their health. It goes beyond focusing on individual behaviour towards a wide range of social and environmental interventions.</p>
+        <p>The Ottawa Charter for Health Promotion is a foundational framework for guiding health promotion efforts. It outlines five key action areas (strategies) to achieve health for all. These action areas are often remembered by the mnemonic "<strong>B</strong>ad <strong>C</strong>ats <strong>S</strong>mell <strong>D</strong>ead <strong>R</strong>ats."</p>
+
+        <h4>The Five Action Areas of the Ottawa Charter:</h4>
+
+        <h4>a) Build Healthy Public Policy (Bad)</h4>
+        <p>This action area relates to the decisions made by governments and organisations regarding laws and policies that make it more difficult for people to undertake unhealthy behaviours and easier to make healthy choices. It extends beyond the health sector and includes legislation, fiscal measures, taxation, and organisational change.</p>
+        <ul>
+            <li><strong>Examples:</strong>
+                <ul>
+                    <li>Laws requiring seatbelts in cars or helmets on bikes.</li>
+                    <li>Banning smoking in public places.</li>
+                    <li>Imposing taxes on tobacco and alcohol.</li>
+                    <li>Workplace policies promoting occupational health and safety.</li>
+                    <li>Removing the goods and services tax (GST) on unprocessed foods (like fresh fruit and vegetables).</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h4>b) Create Supportive Environments (Cats)</h4>
+        <p>This action area aims to promote health and wellbeing by creating physical and social environments that are safe, stimulating, satisfying, and enjoyable. It recognizes the links between people and their environment and helps people to support each other in their communities to live healthy lives.</p>
+        <ul>
+            <li><strong>Examples:</strong>
+                <ul>
+                    <li>Establishing Quitline services (social support) for smokers wanting to quit.</li>
+                    <li>Providing shaded areas in school playgrounds and public parks (physical environment).</li>
+                    <li>Ensuring safe workplaces and healthy working conditions.</li>
+                    <li>Building cycling paths and walking tracks.</li>
+                    <li>Support groups for conditions like cancer or mental illness.</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h4>c) Strengthen Community Action (Smell)</h4>
+        <p>This action area focuses on building links between individuals and the community, and centres around the community working together to achieve a common goal. It requires communities to be involved in setting priorities, making decisions, planning strategies, and implementing them to improve health outcomes.</p>
+        <ul>
+            <li><strong>Examples:</strong>
+                <ul>
+                    <li>Community-run immunisation programs.</li>
+                    <li>Local councils working with community groups to develop recreational facilities.</li>
+                    <li>Road safety initiatives involving schools, police, and local community members (e.g., driver reviver stations run by volunteers).</li>
+                    <li>Aboriginal Community Controlled Health Organisations (ACCHOs) developing and delivering culturally appropriate health services.</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h4>d) Develop Personal Skills (Dead)</h4>
+        <p>This action area is about supporting personal and social development through providing information, education for health, and enhancing life skills. This increases options available to people to exercise more control over their own health and their environments, and to make choices conducive to health.</p>
+        <ul>
+            <li><strong>Examples:</strong>
+                <ul>
+                    <li>Health education programs in schools (e.g., on nutrition, drug use, sexual health).</li>
+                    <li>Providing information on healthy eating, physical activity, and quitting smoking through brochures, websites, and campaigns.</li>
+                    <li>Teaching practical skills like cooking healthy meals or performing self-examinations.</li>
+                    <li>Online courses or workshops on managing stress or mental health.</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h4>e) Reorient Health Services (Rats)</h4>
+        <p>This action area aims to shift the health system and its components towards a focus on health promotion, rather than solely on curative services. It involves health professionals, community groups, and individuals working together to achieve a healthcare system that promotes health. It requires a change in attitude and organisation of health services.</p>
+        <ul>
+            <li><strong>Examples:</strong>
+                <ul>
+                    <li>Doctors discussing diet and physical activity with patients, not just prescribing medication.</li>
+                    <li>Hospitals offering preventative health checks and health education programs.</li>
+                    <li>Funding health promotion initiatives within healthcare settings.</li>
+                    <li>Training health professionals to address the broader determinants of health.</li>
+                    <li>Pharmacists providing advice on quitting smoking or managing minor ailments.</li>
+                </ul>
+            </li>
+        </ul>
+        <hr class="my-6 border-slate-700">
+
+        <h3>3. Programs to Improve Aboriginal and Torres Strait Islander Peoples' Health</h3>
+        <p>Addressing the health inequities experienced by Aboriginal and Torres Strait Islander peoples is a significant focus in Australia. Effective programs aim to be culturally appropriate, involve community control and participation, and promote social justice.</p>
+
+        <h4>Promoting Social Justice:</h4>
+        <p>Social justice in this context means ensuring that all people have equal rights and opportunities, regardless of their background. Programs should aim to:</p>
+        <ul>
+            <li><strong>Address Equity:</strong> Provide targeted support and resources to overcome specific disadvantages and ensure fair access to health services and outcomes.</li>
+            <li><strong>Uphold Human Rights:</strong> Recognize health as a human right and ensure services are respectful and non-discriminatory.</li>
+            <li><strong>Enable Participation:</strong> Involve Aboriginal and Torres Strait Islander peoples in the design, delivery, and evaluation of health programs that affect them. Community control is a key aspect of this.</li>
+        </ul>
+
+        <h4>Connection to Ottawa Charter Action Areas:</h4>
+        <p>Many successful programs reflect the action areas of the Ottawa Charter:</p>
+        <ul>
+            <li><strong>Strengthen Community Action:</strong> Aboriginal Community Controlled Health Organisations (ACCHOs) are prime examples, where the local community controls the health service.</li>
+            <li><strong>Develop Personal Skills:</strong> Programs often include health education and skill development tailored to the community (e.g., nutrition, managing chronic conditions).</li>
+            <li><strong>Create Supportive Environments:</strong> Ensuring services are culturally safe and welcoming, and addressing social determinants like housing and employment.</li>
+            <li><strong>Reorient Health Services:</strong> Shifting from a purely clinical focus to holistic and preventative care that incorporates cultural understanding.</li>
+            <li><strong>Build Healthy Public Policy:</strong> Advocating for policies that address systemic issues and support Indigenous self-determination in health.</li>
+        </ul>
+
+        <h4>Examples of Programs and Initiatives:</h4>
+        <ul>
+            <li><strong>National Aboriginal Community Controlled Health Organisation (NACCHO):</strong> The national peak body representing local ACCHSs. ACCHSs provide holistic, comprehensive, and culturally appropriate primary healthcare services initiated and operated by the local Aboriginal community.</li>
+            <li><strong>'Care for Kids' Ears' initiative:</strong> Addresses the high rates of otitis media (ear infections) in Indigenous children. It provides culturally appropriate information resources for health professionals, communities, and schools, including apps and kiosks in Indigenous languages. This initiative helps develop personal skills and creates supportive environments.</li>
+            <li><strong>'Move it Mob Style' program:</strong> A dance-based fitness program for television and online platforms, showcasing Aboriginal and Torres Strait Islander music and dance, led by Indigenous people. It promotes physical activity in a culturally engaging way (Develop Personal Skills, Create Supportive Environments).</li>
+            <li><strong>'Aboriginal Road to Good Health' program:</strong> A Type 2 Diabetes prevention program that educates Indigenous people about healthy eating and lifestyles, reflecting the Develop Personal Skills action area.</li>
+        </ul>
+
+        <h4>Evaluating Initiatives:</h4>
+        <p>When evaluating programs, consider factors such as:</p>
+        <ul>
+            <li>Cultural appropriateness and safety.</li>
+            <li>Level of community control and stakeholder involvement.</li>
+            <li>Whether they address specific health needs identified by the community.</li>
+            <li>Adequacy and sustainability of funding.</li>
+            <li>Whether they target significant health issues and have measurable outcomes.</li>
+            <li>How effectively they promote social justice and reflect Ottawa Charter principles.</li>
+        </ul>
+        <hr class="my-6 border-slate-700">
+
+        <h3>4. Initiatives to Promote Healthy Eating in Australia & Challenges</h3>
+        <p>Promoting healthy eating is a key public health goal in Australia to address issues like overweight, obesity, and diet-related chronic diseases. Various initiatives provide guidance and support, but there are also significant challenges in changing dietary behaviours.</p>
+
+        <h4>Key Initiatives to Promote Healthy Eating:</h4>
+        <ul>
+            <li>
+                <strong>The Australian Dietary Guidelines (ADGs):</strong>
+                <p>Developed by the National Health and Medical Research Council (NHMRC), the ADGs provide evidence-based advice on the types and amounts of foods that Australians should eat for health and wellbeing. They aim to promote health, reduce the risk of diet-related conditions (like high cholesterol, high blood pressure, obesity) and chronic diseases (like type 2 diabetes, cardiovascular disease, some cancers).</p>
+                <p>There are five main guidelines:</p>
+                <ol class="list-decimal ml-6">
+                    <li>To achieve and maintain a healthy weight, be physically active and choose amounts of nutritious food and drinks to meet your energy needs.</li>
+                    <li>Enjoy a wide variety of nutritious foods from these five groups every day: plenty of vegetables (including different types and colours), and legumes/beans; fruit; grain (cereal) foods, mostly wholegrain and/or high cereal fibre varieties; lean meats and poultry, fish, eggs, tofu, nuts and seeds, and legumes/beans; milk, yoghurt, cheese and/or their alternatives, mostly reduced fat. And drink plenty of water.</li>
+                    <li>Limit intake of foods containing saturated fat, added salt, added sugars and alcohol.</li>
+                    <li>Encourage, support and promote breastfeeding.</li>
+                    <li>Care for your food; prepare and store it safely.</li>
+                </ol>
+            </li>
+            <li>
+                <strong>The Australian Guide to Healthy Eating (AGHE):</strong>
+                <p>A practical, visual food selection guide that reflects the Australian Dietary Guidelines. It presents a plate (circle graph) showing the proportions of the five food groups that should be consumed daily for good health. It aims to help Australians choose a healthy diet by providing a simple visual representation of these proportions.</p>
+                <p>It also advises limiting discretionary foods (those high in saturated fat, added salt, and added sugars).</p>
+            </li>
+            <li>
+                <strong>The Healthy Eating Pyramid:</strong>
+                <p>Developed by Nutrition Australia, this is another visual guide that layers foods according to the proportion in which they should be consumed. It encourages Australians to enjoy a variety of foods from the five core food groups every day.</p>
+                <p>The pyramid is based on the ADGs and shows plant-based foods (vegetables, fruits, grains) as the foundation layers, followed by dairy and alternatives, then lean meats/poultry/fish/eggs/nuts/seeds/legumes. Healthy fats are included in small amounts, and it reminds people to limit salt and added sugar, and drink water.</p>
+            </li>
+            <li>
+                <strong>Nutrition Australia:</strong>
+                <p>A non-government, non-profit, community-based organisation that aims to promote optimal health and wellbeing for all Australians by encouraging food variety and physical activity. They provide services such as:</p>
+                <ul>
+                    <li>The Healthy Eating Advisory Service (supporting organisations like schools and hospitals to provide healthy food choices).</li>
+                    <li>National Nutrition Week (an annual event to raise awareness).</li>
+                    <li>Development and dissemination of educational resources.</li>
+                    <li>Webinars and workshops for health professionals and the public.</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h4>Challenges in Bringing About Nutritional Change:</h4>
+        <p>Despite these initiatives, achieving widespread nutritional improvements is difficult due to several factors:</p>
+        <ul>
+            <li>
+                <strong>Sociocultural Factors:</strong>
+                <ul>
+                    <li><strong>Food marketing and media:</strong> Extensive marketing of energy-dense, nutrient-poor foods, especially to children and young people, can heavily influence food choices (e.g., junk food advertising linked to increased energy consumption).</li>
+                    <li><strong>Time constraints and convenience:</strong> Busy lifestyles can lead to reliance on convenient, processed foods that may be less healthy.</li>
+                    <li><strong>Education and knowledge:</strong> Lack of nutritional knowledge or skills in preparing healthy meals can be a barrier. Health literacy levels play a role.</li>
+                    <li><strong>Cultural influences and traditions:</strong> Family eating patterns and cultural food norms can sometimes conflict with dietary guidelines.</li>
+                    <li><strong>Social norms and peer influence:</strong> Eating habits can be influenced by friends and social settings.</li>
+                    <li><strong>Income/Socioeconomic status:</strong> Healthy foods like fresh fruits and vegetables can be perceived as more expensive than processed alternatives, particularly for low-income families.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Environmental Factors:</strong>
+                <ul>
+                    <li><strong>Accessibility of healthy foods:</strong> Availability of fresh, healthy food options can vary, especially in remote or low socioeconomic areas ("food deserts").</li>
+                    <li><strong>Food security:</strong> Not all individuals or families have consistent access to adequate, safe, and nutritious food.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Commercial (Personal/Individual) Factors:</strong>
+                <ul>
+                    <li><strong>Personal preference and taste:</strong> Individuals may prefer the taste of unhealthy foods high in fat, salt, and sugar.</li>
+                    <li><strong>Habit:</strong> Established eating habits can be difficult to change.</li>
+                    <li><strong>Willpower and motivation:</strong> Making sustained dietary changes requires effort and commitment.</li>
+                </ul>
+            </li>
+        </ul>
+        <hr class="my-6 border-slate-700">
+
+        <h3>5. Australia's Health System</h3>
+        <p>Australia's health system is a complex network of public and private services and providers. It aims to promote, restore, or maintain health for all Australians. Key components include Medicare, private health insurance, the Pharmaceutical Benefits Scheme (PBS), and the National Disability Insurance Scheme (NDIS). We will examine these in terms of their role in promoting health via <strong>F</strong>unding, <strong>S</strong>ustainability, <strong>A</strong>ccess, and <strong>E</strong>quity (FSAE).</p>
+
+        <h4>a) Medicare</h4>
+        <p>Medicare is Australia's universal health insurance scheme. It aims to provide all Australians (and some overseas visitors) with access to affordable and high-quality healthcare.</p>
+        <ul>
+            <li><strong>Funding:</strong>
+                <ul>
+                    <li><strong>Medicare Levy:</strong> An additional 2% tax placed on the taxable income of most taxpayers.</li>
+                    <li><strong>Medicare Levy Surcharge (MLS):</strong> An additional levy (1-1.5%) on higher-income earners who do not have an appropriate level of private hospital insurance. This aims to encourage high-income earners to take out private cover, reducing demand on the public system.</li>
+                    <li><strong>General Taxation:</strong> The revenue collected from the levy and surcharge does not cover the full cost of Medicare, so a significant portion is funded from general income tax revenue.</li>
+                </ul>
+            </li>
+            <li><strong>Sustainability:</strong>
+                <ul>
+                    <li>Aims to be sustainable by controlling costs (e.g., schedule fees for services, not covering all services).</li>
+                    <li>The MLS encourages use of the private system, potentially reducing strain on public resources.</li>
+                    <li>Focus on preventative health measures (though primarily a treatment system) can reduce long-term costs.</li>
+                </ul>
+            </li>
+            <li><strong>Access:</strong>
+                <ul>
+                    <li>Provides access to essential medical services, including free or subsidised treatment by doctors (GPs, specialists), optometrists, and in public hospitals (as a public patient).</li>
+                    <li>Aims to remove cost as a barrier to accessing healthcare for many services.</li>
+                    <li>Available to all Australian citizens and permanent residents.</li>
+                </ul>
+            </li>
+            <li><strong>Equity:</strong>
+                <ul>
+                    <li>Aims to provide healthcare access to all, regardless of age, income, location, or cultural background.</li>
+                    <li>The Medicare Safety Net provides additional financial relief for those with high out-of-pocket medical costs for out-of-hospital services.</li>
+                    <li>Bulk billing (where the doctor accepts the Medicare benefit as full payment) improves affordability for low-income earners.</li>
+                </ul>
+            </li>
+            <li><strong>Services Covered:</strong> GP consultations, specialist consultations (partial), tests and examinations (e.g., X-rays, blood tests), most surgical procedures performed by doctors, eye tests by optometrists, public patient hospital care.</li>
+            <li><strong>Services NOT Covered (typically):</strong> Most dental examinations and treatment, ambulance services, home nursing, physiotherapy, chiropractic services, cosmetic surgery, hearing aids, glasses/contact lenses (unless medically necessary in hospital).</li>
+        </ul>
+
+        <h4>b) Private Health Insurance (PHI)</h4>
+        <p>PHI is an optional additional health insurance that individuals can choose to purchase to cover health services not fully covered by Medicare, or to access private hospital care. It gives individuals more choice regarding their healthcare.</p>
+        <ul>
+            <li><strong>Funding:</strong> Funded by individuals through premiums paid to private health insurance companies. The government also provides a private health insurance rebate (income-tested) to make premiums more affordable.</li>
+            <li><strong>Sustainability:</strong>
+                <ul>
+                    <li>Reduces the burden on the public health system by encouraging individuals to use private hospitals and services.</li>
+                    <li>Government incentives (rebate, MLS, Lifetime Health Cover loading) aim to encourage uptake and keep the system viable.</li>
+                </ul>
+            </li>
+            <li><strong>Access:</strong>
+                <ul>
+                    <li>Provides access to private hospital care, choice of doctor in hospital, and potentially shorter waiting times for elective surgeries.</li>
+                    <li>Can cover services like dental, physiotherapy, and optical (ancillary/extras cover).</li>
+                </ul>
+            </li>
+            <li><strong>Equity:</strong>
+                <ul>
+                    <li>Can improve choice for those who can afford it.</li>
+                    <li>However, it can also create inequities, as access to these additional benefits is largely dependent on the ability to pay premiums. The government rebate aims to improve affordability for some.</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h4>c) Pharmaceutical Benefits Scheme (PBS)</h4>
+        <p>The PBS is an Australian Government program that subsidises the cost of a wide range of essential prescription medicines, making them more affordable for all Australians.</p>
+        <ul>
+            <li><strong>Funding:</strong> Primarily funded by the Australian Government through general taxation, with patients paying a co-payment for most subsidised medicines.</li>
+            <li><strong>Sustainability:</strong>
+                <ul>
+                    <li>The Pharmaceutical Benefits Advisory Committee (PBAC) assesses medicines for clinical effectiveness and cost-effectiveness before they are listed on the PBS. This helps ensure value for money.</li>
+                    <li>Regular price reviews and negotiations with pharmaceutical companies.</li>
+                    <li>Patient co-payments contribute to funding.</li>
+                </ul>
+            </li>
+            <li><strong>Access:</strong>
+                <ul>
+                    <li>Provides timely and affordable access to necessary and life-saving medicines for all Australians.</li>
+                    <li>Without the PBS, many essential medicines would be unaffordable for a large portion of the population.</li>
+                </ul>
+            </li>
+            <li><strong>Equity:</strong>
+                <ul>
+                    <li>Aims to ensure all Australians have access to essential medicines regardless of their ability to pay.</li>
+                    <li>Concessional co-payments are available for eligible individuals (e.g., pensioners, low-income earners), further improving affordability.</li>
+                    <li>The PBS Safety Net protects individuals and families from high overall costs for PBS medicines in a calendar year.</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h4>d) National Disability Insurance Scheme (NDIS)</h4>
+        <p>The NDIS is a national scheme that provides support to Australians under 65 years of age who have a permanent and significant disability. It aims to help people with disability achieve their goals, including independence, community involvement, education, employment, and health and wellbeing.</p>
+        <ul>
+            <li><strong>Funding:</strong> Funded by the Australian Government and state and territory governments. The Medicare levy was increased by 0.5% (to 2%) to help fund the NDIS.</li>
+            <li><strong>Sustainability:</strong>
+                <ul>
+                    <li>Aims to provide long-term support, which can reduce reliance on other more costly services over time (e.g., acute healthcare, welfare).</li>
+                    <li>Focuses on early intervention and capacity building.</li>
+                    <li>Managed by the National Disability Insurance Agency (NDIA) which oversees individualised funding plans.</li>
+                </ul>
+            </li>
+            <li><strong>Access:</strong>
+                <ul>
+                    <li>Provides access to reasonable and necessary supports based on individual needs and goals. This can include assistive technology, personal care, therapy services, help with household tasks, and support to participate in the community or find employment.</li>
+                    <li>Eligibility is based on age, residency, and disability criteria.</li>
+                </ul>
+            </li>
+            <li><strong>Equity:</strong>
+                <ul>
+                    <li>Aims to ensure people with permanent and significant disabilities receive the support they need to lead an ordinary life and participate as equal citizens.</li>
+                    <li>Provides individualised plans tailored to specific needs, promoting fairness.</li>
+                    <li>Moves away from a block-funded, crisis-driven system to one that gives individuals more choice and control.</li>
+                </ul>
+            </li>
+        </ul>
+
+    `;
+    // Removed the final <hr> here as it's the end of aos2Content
+
+    return `
+        <section class="content-section">
+            <h1>Unit 3: Australia's Health in a Globalised World</h1>
+            <p>This unit explores health and wellbeing, disease, and illness as multidimensional, dynamic, and subject to different interpretations and contexts. It examines health and wellbeing as a global concept and highlights its importance as an individual and a collective resource.</p>
+            
+            ${aos1Content}
+            
+            ${aos2Content}
+        </section>
+    `;
+}
+
+function Unit4Component() {
+    return `
+        <section class="content-section">
+            <h1>Unit 4: Health and Human Development in a Global Context</h1>
+            <p>This unit examines health and human development in a global context. Students use data to investigate health status and human development in different countries. They explore factors that contribute to inequalities in health and human development outcomes between and within countries, including Australia.</p>
+            <h2>Area of Study 1: Global Health and Human Development</h2>
+            <p>Focuses on concepts of human development, global trends, and factors affecting health and human development globally.</p>
+             <h2>Area of Study 2: Health and the Sustainable Development Goals</h2>
+            <p>Focuses on the United Nations' Sustainable Development Goals (SDGs), the work of the World Health Organization (WHO), and Australia's role in promoting global health and sustainable development.</p>
+            <p class="mt-6"><em>Detailed content for Unit 4 will be added in a future phase. This is a placeholder.</em></p>
+        </section>
+    `;
+}
+
+function AssessmentPrepComponent() {
+    // Updated AssessmentPrepComponent content
+    return `
+        <section class="content-section">
+            <h1>Assessment Preparation</h1>
+            <p>Understanding how you'll be assessed is key to success in VCE Health and Human Development. This section provides an overview of the assessment structure for Unit 3 and general tips for preparing for SACs and the end-of-year examination.</p>
+
+            <h2>VCE HHD Assessment Overview</h2>
+            <p>Your final study score for VCE Health and Human Development is determined by a combination of School-Assessed Coursework (SACs) and an external end-of-year examination.</p>
+            <ul>
+                <li><strong>Unit 3 School-Assessed Coursework (SACs):</strong> Contributes 25% to your final study score.</li>
+                <li><strong>Unit 4 School-Assessed Coursework (SACs):</strong> Contributes 25% to your final study score.</li>
+                <li><strong>End-of-Year Examination (covers Units 3 & 4):</strong> Contributes 50% to your final study score.</li>
+            </ul>
+            <p>To receive a study score, students must achieve an 'S' (Satisfactory) for both Units 3 and 4.</p>
+
+            <h2>Unit 3 School-Assessed Coursework (SACs)</h2>
+            <p>For Unit 3, "Australia's health in a globalised world," your performance on two outcomes will be assessed through SACs. Each outcome is typically allocated 50 marks, contributing to a total of 100 marks for the Unit 3 SACs.</p>
+            <ul>
+                <li><strong>Outcome 1 (Understanding health and wellbeing):</strong> On completion, students should be able to explain the complex, dynamic, and global nature of health and wellbeing, interpret and apply Australia's health status data, and analyse variations in health status.</li>
+                <li><strong>Outcome 2 (Promoting health in Australia):</strong> On completion, students should be able to explain changes to public health approaches, analyse improvements in population health over time, and evaluate health promotion strategies and initiatives.</li>
+            </ul>
+            <p>SAC tasks are school-based and must be part of your regular teaching program, completed mainly in class within a limited timeframe. Work submitted must be your own.</p>
+
+            <h4>Suitable SAC Tasks for Unit 3:</h4>
+            <p>Your school will select tasks from the following list. Each task type can generally only be selected once across Outcome 1 and Outcome 2 in Unit 3.</p>
+            <ul>
+                <li>A written report (e.g., media analysis, research investigation, blog post, case study analysis).</li>
+                <li>An extended response question analysing various stimuli (text, data, visuals).</li>
+                <li>An oral presentation (e.g., debate, podcast).</li>
+                <li>A visual presentation (e.g., concept map, annotated poster, digital presentation).</li>
+                <li>Structured questions (including data analysis or case study analysis).</li>
+            </ul>
+            <p><em>(Specific details about your school's SAC tasks will be provided by your teacher.)</em></p>
+
+            <h2>General Exam Preparation (Units 3 & 4)</h2>
+            <p>The end-of-year examination is 2 hours long and assesses all Key Knowledge and Key Skills from both Unit 3 and Unit 4.</p>
+            <h4>Key Tips for Preparation:</h4>
+            <ul>
+                <li><strong>Understand Command Words:</strong> Know what's expected for terms like 'explain', 'analyse', 'evaluate', 'discuss', 'identify', 'describe'.</li>
+                <li><strong>Master Key Knowledge:</strong> Thoroughly review all content from the Study Design.</li>
+                <li><strong>Practice Key Skills:</strong> Regularly practice applying your knowledge to different scenarios, data, and question types.</li>
+                <li><strong>Data Analysis:</strong> Develop strong skills in interpreting tables, graphs, and other data related to health status.</li>
+                <li><strong>Extended Responses:</strong> Practice structuring well-reasoned arguments, using evidence, and linking back to the question.</li>
+                <li><strong>Past Papers:</strong> Work through VCAA past examination papers (keeping in mind any Study Design changes).</li>
+                <li><strong>Time Management:</strong> Practice answering questions under timed conditions.</li>
+            </ul>
+            <p class="mt-6"><em>More detailed strategies, practice questions, and specific Unit 3 SAC guidance will be added here.</em></p>
+        </section>
+    `;
+}
+
+function GlossaryComponent() {
+    // Updated GlossaryComponent content
+    return `
+        <section class="content-section">
+            <h1>Glossary of Key Terms</h1>
+            <p>A comprehensive list of important VCE HHD terminology. Understanding these terms is crucial for success.</p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Access (to healthcare)</h3>
+                    <p class="text-sm text-slate-300 mt-1">The ability of people to obtain healthcare at the right place and right time, irrespective of income, cultural background or physical location.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Australian Dietary Guidelines (ADGs)</h3>
+                    <p class="text-sm text-slate-300 mt-1">Provide evidence-based advice on the types and amounts of foods that Australians should eat for health and wellbeing.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Australian Guide to Healthy Eating (AGHE)</h3>
+                    <p class="text-sm text-slate-300 mt-1">A visual food selection guide reflecting the ADGs, showing proportions of the five food groups for daily consumption.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Biomedical Approach to Health</h3>
+                    <p class="text-sm text-slate-300 mt-1">Focuses on the physical or biological aspects of disease and illness. It is a medical model of care practised by doctors and health professionals and is associated with the diagnosis, cure and treatment of disease.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Biological Factors</h3>
+                    <p class="text-sm text-slate-300 mt-1">Factors relating to the body that impact on health and wellbeing, such as genetics, body weight, blood pressure, blood cholesterol, glucose regulation, and birth weight.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Burden of Disease (BoD)</h3>
+                    <p class="text-sm text-slate-300 mt-1">A measure of the impact of diseases and injuries; it measures the gap between current health status and an ideal situation where everyone lives to an old age free of disease and disability.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">DALY (Disability-Adjusted Life Year)</h3>
+                    <p class="text-sm text-slate-300 mt-1">A measure of burden of disease. One DALY equals one year of healthy life lost due to premature death and time lived with illness, disease or injury (DALY = YLL + YLD).</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Dimensions of Health and Wellbeing</h3>
+                    <p class="text-sm text-slate-300 mt-1">The physical, social, emotional, mental, and spiritual aspects that make up an individual's overall health and wellbeing.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Disease</h3>
+                    <p class="text-sm text-slate-300 mt-1">A physical or mental disturbance involving symptoms, dysfunction or tissue damage.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Dynamic Nature (of H&W)</h3>
+                    <p class="text-sm text-slate-300 mt-1">Refers to health and wellbeing constantly changing. Changes can occur rapidly and fluctuate along a continuum.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Emotional Health and Wellbeing</h3>
+                    <p class="text-sm text-slate-300 mt-1">The ability to express feelings in a positive way, manage emotional actions and reactions appropriately, and display resilience.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Environmental Factors</h3>
+                    <p class="text-sm text-slate-300 mt-1">The physical surroundings in which we live, work and play, such as housing, work environment, urban design, air and water quality, and climate.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Equity (in health)</h3>
+                    <p class="text-sm text-slate-300 mt-1">Relates to fairness and social justice, meaning all people achieve the same health outcomes. It requires targeting disadvantaged groups with resources to ensure they have the opportunity to achieve optimal health.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Health and Wellbeing</h3>
+                    <p class="text-sm text-slate-300 mt-1">The overall state of a person's physical, social, emotional, mental, and spiritual existence, characterised by an equilibrium in which the individual feels happy, healthy, capable, and engaged.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Health-Adjusted Life Expectancy (HALE)</h3>
+                    <p class="text-sm text-slate-300 mt-1">The average number of years a person can expect to live in full health, free from serious illness, injury, or disability.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Health Promotion</h3>
+                    <p class="text-sm text-slate-300 mt-1">The process of enabling people to increase control over, and to improve, their health.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Health Status</h3>
+                    <p class="text-sm text-slate-300 mt-1">An individual's or a population's overall health, taking into account various aspects such as life expectancy, amount of disability and levels of disease risk factors.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Healthy Eating Pyramid</h3>
+                    <p class="text-sm text-slate-300 mt-1">A visual guide by Nutrition Australia layering foods according to the proportion they should be consumed, based on the ADGs.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Illness</h3>
+                    <p class="text-sm text-slate-300 mt-1">A subjective concept related to personal experience of a disease or unhealthy condition.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Incidence</h3>
+                    <p class="text-sm text-slate-300 mt-1">The number or rate of new cases of a particular condition during a specific period.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Life Expectancy</h3>
+                    <p class="text-sm text-slate-300 mt-1">An indication of how long a person can expect to live; the number of years of life remaining to a person at a particular age if death rates do not change.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Medicare</h3>
+                    <p class="text-sm text-slate-300 mt-1">Australia's universal health insurance scheme, providing access to affordable healthcare.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Mental Health and Wellbeing</h3>
+                    <p class="text-sm text-slate-300 mt-1">Relates to the state of a person's mind or brain and the ability to think and process information, form opinions, make decisions, and use logic.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Morbidity</h3>
+                    <p class="text-sm text-slate-300 mt-1">Refers to ill health in an individual and the levels of ill health in a population or group.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Mortality</h3>
+                    <p class="text-sm text-slate-300 mt-1">Refers to death, particularly at a population level (includes maternal, infant, under-five mortality).</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">National Disability Insurance Scheme (NDIS)</h3>
+                    <p class="text-sm text-slate-300 mt-1">Provides support to Australians under 65 with a permanent and significant disability.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">'Old' Public Health</h3>
+                    <p class="text-sm text-slate-300 mt-1">Government actions from the early 20th century focused on improving the physical environment (e.g., sanitation, water, housing) to prevent infectious diseases.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Optimal Health as a Resource</h3>
+                    <p class="text-sm text-slate-300 mt-1">The concept that good health and wellbeing is not just an outcome but a vital asset that enables individuals, nations, and the global community to achieve their potential and address challenges.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Ottawa Charter for Health Promotion</h3>
+                    <p class="text-sm text-slate-300 mt-1">A framework for health promotion developed by the WHO, outlining five action areas: Build Healthy Public Policy, Create Supportive Environments, Strengthen Community Action, Develop Personal Skills, Reorient Health Services.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Pharmaceutical Benefits Scheme (PBS)</h3>
+                    <p class="text-sm text-slate-300 mt-1">An Australian Government program that subsidises the cost of essential prescription medicines.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Physical Health and Wellbeing</h3>
+                    <p class="text-sm text-slate-300 mt-1">Relates to the functioning of the body and its systems, including the physical capacity to perform daily activities.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Prevalence</h3>
+                    <p class="text-sm text-slate-300 mt-1">The number or proportion of cases of a particular disease or condition present in a population at a given time.</p>
+                 <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Prerequisites for Health (WHO)</h3>
+                    <p class="text-sm text-slate-300 mt-1">Fundamental conditions and resources required for health gains (peace, shelter, education, food, income, stable ecosystem, sustainable resources, social justice, equity).</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Private Health Insurance (PHI)</h3>
+                    <p class="text-sm text-slate-300 mt-1">Optional insurance for healthcare costs not covered by Medicare or for private hospital care.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Social Health and Wellbeing</h3>
+                    <p class="text-sm text-slate-300 mt-1">The ability to form meaningful and satisfying relationships with others and the ability to manage or adapt appropriately to different social situations.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Social Justice (in health)</h3>
+                    <p class="text-sm text-slate-300 mt-1">Means that all people have equal rights and opportunities, regardless of personal traits. It includes equity in health and addressing unfair social conditions.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Social Model of Health</h3>
+                    <p class="text-sm text-slate-300 mt-1">A conceptual framework that addresses the broader determinants of health (social, cultural, environmental, economic) and aims to create social and physical environments that promote health.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Sociocultural Factors</h3>
+                    <p class="text-sm text-slate-300 mt-1">Aspects of society and the social environment that impact on health and wellbeing, such as socioeconomic status, social connections, family, peers, culture, education, and income.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Spiritual Health and Wellbeing</h3>
+                    <p class="text-sm text-slate-300 mt-1">Relates to ideas, beliefs, values, and ethics. It includes concepts of hope, peace, a guiding sense of meaning or value, and reflection on one's place in the world.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Subjective Nature (of H&W)</h3>
+                    <p class="text-sm text-slate-300 mt-1">Refers to health and wellbeing being influenced by personal opinions, beliefs, feelings, and experiences. Perceptions can vary greatly between individuals.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Sustainability (of health system)</h3>
+                    <p class="text-sm text-slate-300 mt-1">Meeting the health needs of the present without compromising the ability of future generations to meet their own health needs; relates to funding, resources, and workforce.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Years Lived with Disability (YLD)</h3>
+                    <p class="text-sm text-slate-300 mt-1">The non-fatal component of DALYs; a measure of how many healthy years of life are lost due to illness, injury or disability.</p>
+                </div>
+                <div class="bg-slate-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <h3 class="font-semibold text-lg text-purple-300">Years of Life Lost (YLL)</h3>
+                    <p class="text-sm text-slate-300 mt-1">The fatal component of DALYs; a measure of how many years of expected life are lost due to premature death.</p>
+                </div>
+                </div>
+            <p class="mt-6"><em>An interactive and searchable glossary is planned. More terms will be added as needed.</em></p>
+        </section>
+    `;
+}
+
+function NotFoundComponent() {
+    return `
+        <section class="content-section text-center">
+            <h1>404 - Page Not Found</h1>
+            <p>Oops! The page you're looking for doesn't seem to exist.</p>
+            <a href="#home" class="button-style mt-6">Go to Homepage</a>
+        </section>
+    `;
+}

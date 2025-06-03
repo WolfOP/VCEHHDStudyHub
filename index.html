@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VCE HHD Study Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="https://placehold.co/32x32/7c3aed/ffffff?text=HHD" type="image/png">
+</head>
+<body class="bg-slate-900 text-slate-200 font-sans antialiased">
+
+    <header class="bg-slate-800 shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#home" class="text-2xl font-bold text-purple-400 hover:text-purple-300 transition-colors">HHD Hub</a>
+            <ul class="flex space-x-4 md:space-x-6">
+                <li><a href="#home" class="nav-link hover:text-purple-300 transition-colors px-3 py-2 rounded-md">Home</a></li>
+                <li><a href="#unit3" class="nav-link hover:text-purple-300 transition-colors px-3 py-2 rounded-md">Unit 3</a></li>
+                <li><a href="#unit4" class="nav-link hover:text-purple-300 transition-colors px-3 py-2 rounded-md">Unit 4</a></li>
+                <li><a href="#assessment-prep" class="nav-link hover:text-purple-300 transition-colors px-3 py-2 rounded-md">Assessment Prep</a></li>
+                <li><a href="#glossary" class="nav-link hover:text-purple-300 transition-colors px-3 py-2 rounded-md">Glossary</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main id="app-content" class="container mx-auto px-6 py-8 min-h-[calc(100vh-160px)]">
+        <p class="text-center py-10">Loading content...</p>
+    </main>
+
+    <footer class="bg-slate-800 text-slate-400 text-center p-6 shadow-top">
+        <p>&copy; <span id="currentYear"></span> VCE HHD Study Hub. All rights reserved.</p>
+        <p class="text-sm mt-1">Unofficial study support. Always refer to official VCAA materials.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

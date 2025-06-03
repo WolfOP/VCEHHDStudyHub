@@ -1,0 +1,131 @@
+body {
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Import Inter font from Google Fonts */
+@import url('[https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap)');
+
+/* Custom scrollbar for a more modern feel (optional) */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #0f172a; /* slate-900 */
+}
+::-webkit-scrollbar-thumb {
+    background: #334155; /* slate-700 */
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #475569; /* slate-600 */
+}
+
+/* Style for the active navigation link */
+.nav-link.active {
+    color: #a78bfa; /* purple-400 */
+    font-weight: 600; /* semibold */
+    /* A subtle background or border can also work for active state */
+    background-color: rgba(167, 139, 250, 0.1); /* purple-400 with low opacity */
+    border-bottom: 2px solid #a78bfa; /* purple-400 */
+}
+
+/* Styling for content sections that will be loaded dynamically */
+/* This creates the "glossy bubble" effect for each page/section */
+.content-section {
+    background-color: #1e293b; /* slate-800, distinct from body bg-slate-900 */
+    padding: 2rem; /* p-8 */
+    border-radius: 0.75rem; /* rounded-xl for a softer bubble */
+    border: 1px solid #334155; /* slate-700, subtle border */
+    /* Enhanced shadow for more depth */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1); /* shadow-2xl like */
+    animation: fadeIn 0.5s ease-out;
+    margin-bottom: 2rem; /* Add some space below each section if multiple were on a page */
+}
+
+.content-section h1 {
+    font-size: 2.25rem; /* text-4xl */
+    font-weight: 700; /* bold */
+    color: #c084fc; /* purple-400 */
+    margin-bottom: 1.5rem; /* mb-6 */
+    border-bottom: 2px solid #475569; /* slate-600 */
+    padding-bottom: 0.75rem; /* pb-3 */
+}
+
+.content-section h2 {
+    font-size: 1.875rem; /* text-3xl */
+    font-weight: 600; /* semibold */
+    color: #e2e8f0; /* slate-200 */
+    margin-top: 2rem; /* mt-8 */
+    margin-bottom: 1rem; /* mb-4 */
+}
+
+.content-section p {
+    line-height: 1.75; /* leading-relaxed */
+    margin-bottom: 1rem; /* mb-4 */
+    color: #cbd5e1; /* slate-300 */
+}
+
+.content-section ul {
+    list-style-type: disc;
+    margin-left: 1.5rem; /* ml-6 */
+    margin-bottom: 1rem; /* mb-4 */
+    color: #cbd5e1; /* slate-300 */
+}
+
+.content-section li {
+    margin-bottom: 0.5rem; /* mb-2 */
+}
+
+.content-section a:not(.button-style) { /* Avoid styling buttons like text links */
+    color: #818cf8; /* indigo-400 */
+    text-decoration: underline;
+    transition: color 0.3s ease;
+}
+
+.content-section a:not(.button-style):hover {
+    color: #a78bfa; /* purple-400 */
+}
+
+/* Style for prominent buttons within content sections */
+.button-style {
+    display: inline-block;
+    background-color: #7c3aed; /* purple-600 */
+    color: white;
+    font-semibold: 600;
+    padding: 0.75rem 1.5rem; /* py-3 px-6 */
+    border-radius: 0.5rem; /* rounded-lg */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); /* shadow-md */
+}
+
+.button-style:hover {
+    background-color: #6d28d9; /* purple-700 */
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); /* shadow-lg */
+    text-decoration: none; /* Remove underline on hover for buttons */
+}
+
+
+/* Simple fade-in animation for content loading */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Shadow for the top of the footer to give depth */
+.shadow-top {
+  box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1), 0 -2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Ensure main content area takes up available space */
+#app-content {
+    flex-grow: 1;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}

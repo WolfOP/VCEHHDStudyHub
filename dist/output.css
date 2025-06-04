@@ -3,6 +3,9 @@
 .pointer-events-none {
   pointer-events: none;
 }
+.collapse {
+  visibility: collapse;
+}
 .visible {
   visibility: visible;
 }
@@ -44,6 +47,9 @@
 }
 .block {
   display: block;
+}
+.contents {
+  display: contents;
 }
 .flex {
   display: flex;

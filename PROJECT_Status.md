@@ -9,20 +9,21 @@ Phase 1: Foundation & Design (4-6 Weeks)
 [X] Unit 4 Placeholder Added: Navigation and basic component.
 [X] "Glossy Bubble" Sections Implemented: Styling for content sections.
 Phase 2: Unit 3 Core Content Development (8-12 Weeks)
-[ ] Develop Base Templates: (Largely covered by current SPA structure, may need minor refinements as content is added).
+[X ] Develop Base Templates: (Largely covered by current SPA structure, may need minor refinements as content is added).
 Content Population (Unit 3 - AOS 1 & AOS 2):
 Area of Study 1: Understanding Health and Wellbeing
 [X] 1. Concepts of Health and Wellbeing, Illness, and their Dynamic and Subjective Nature: Detailed content added.
 [X ] 2. Benefits of Optimal Health and Wellbeing as a Resource: Next up
-[ ] 3. Indicators Used to Measure and Understand Health Status:
-[ ] 4. Factors Contributing to Variations in Health Status:
-[ ] 5. Contribution of Specific Factors to Australia's Health Status:
+[ X] 3. Indicators Used to Measure and Understand Health Status:
+[ X] 4. Factors Contributing to Variations in Health Status:
+[ X] 5. Contribution of Specific Factors to Australia's Health Status:
 Area of Study 2: Promoting Health in Australia
 [ X] Detailed content for all Key Knowledge points.
 [X ] Glossary Development (Unit 3 Terms): Expand with more terms.
 [X ] Basic Assessment Prep Section (Unit 3 Focus): Add initial content on SACs/exam structure.
 [X ] Implement Responsive Design: (Ongoing, ensure all new content displays well).
 [X ] Basic SEO: (Ongoing, add titles, meta descriptions as pages solidify).
+[X] Start development of unit 3 aos2 sac preperations.
 Phase 3: Interactivity & Refinement (Unit 3) (4-6 Weeks)
 Develop Initial Interactive Elements (Unit 3):
 [ ] Self-check quizzes for key Unit 3 concepts.

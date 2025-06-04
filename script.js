@@ -125,7 +125,942 @@ const scrollToTopBtn = document.getElementById('scrollToTopBtn'); // Get the scr
     navigateTo(window.location.hash || '#home');
 });
 
+const sampleSacMaterials = [
+    {
+        id: 'sample1',
+        title: 'Sample 1: Youth Mental Health',
+        question: "Analyse the impact of social media on the mental wellbeing of adolescents. Use Source A and your own knowledge.",
+        stimulus: `<p><strong>Source A: The Digital Tightrope (Excerpt from a 2023 report)</strong></p>
+                   <p>Adolescence is a period of significant brain development, making young people particularly susceptible to environmental influences, including the pervasive presence of social media. Platforms designed for constant engagement can foster comparison and anxiety, potentially impacting self-esteem. Furthermore, exposure to cyberbullying is a recognized risk factor for poor mental health outcomes.</p>
+                   <p>However, social media can also provide avenues for connection and support, especially for marginalized youth. It allows for the formation of communities based on shared interests and experiences, which can be protective. The key challenge lies in promoting mindful usage and digital literacy.</p>`
+    },
+    {
+        id: 'sample2',
+        title: 'Sample 2: Healthy Eating Initiatives',
+        question: "Evaluate the effectiveness of ONE government initiative and ONE non-government initiative aimed at promoting healthy eating in Australian youth. Use evidence to support your answer.",
+        stimulus: `<p><strong>Exhibit 1: 'Go for 2&5' Campaign (Government Initiative)</strong></p>
+                   <p>The 'Go for 2&5' campaign encourages Australians to consume two serves of fruit and five serves of vegetables daily. It utilizes television commercials, online resources, and school programs. While awareness of the campaign is high, recent national health surveys indicate only a marginal increase in fruit and vegetable consumption among young people over the past five years.</p>
+                   <p><strong>Exhibit 2: Stephanie Alexander Kitchen Garden Program (Non-Government Initiative)</strong></p>
+                   <p>This program aims to introduce pleasurable food education in primary schools. Students grow, harvest, prepare, and share fresh, seasonal food. Independent evaluations have shown participants are more willing to try new foods and have improved knowledge of healthy eating. However, the program's reach is limited by school funding and resources.</p>`
+    },
+    {
+        id: 'sample3',
+        title: 'Sample 3: Physical Activity Barriers',
+        question: "Discuss the sociocultural factors that act as barriers to young people participating in regular physical activity in Australia. Refer to the provided data.",
+        stimulus: `<p><strong>Figure 1: Physical Activity Levels in Australian Youth (13-17 years) by Socioeconomic Status (SES) Quintile (AIHW, 2022)</strong></p>
+                   <p>[Imagine a simplified representation or description of a bar graph here showing lower participation in lower SES quintiles. For HTML, we'll use a text description:]</p>
+                   <p><em>Data indicates that young people in the lowest SES quintile (Q1) have a 45% participation rate in recommended daily physical activity, compared to 75% in the highest SES quintile (Q5). Participation rates for Q2, Q3, and Q4 are 55%, 60%, and 68% respectively.</em></p>
+                   <p><strong>Quote from a youth focus group:</strong> "It's hard to play sports around here if your parents can't afford the fees or the gear. Plus, the good ovals are always booked out by clubs."</p>`
+    }
+];
+
+// --- Annotation Component ---
+let annotationSpanCounter = 0; // Counter for unique annotation span IDs
+
+function InteractiveAnnotationComponent() {
+    // Using setTimeout to ensure DOM is ready for event listeners
+    setTimeout(() => {
+        const stimulusArea = document.getElementById('stimulus-content-area');
+        const highlightButton = document.getElementById('highlight-btn');
+        const underlineButton = document.getElementById('underline-btn');
+        const commentButton = document.getElementById('comment-btn');
+        let currentTooltip = null; // To manage the single tooltip
+
+        // Deconstruction data store and input elements
+        const deconstructionDataStore = {};
+        const deconCommandWordsInput = document.getElementById('decon-command-words');
+        const deconKeyConceptsInput = document.getElementById('decon-key-concepts');
+        const deconContentAreasInput = document.getElementById('decon-content-areas');
+        const deconConstraintsInput = document.getElementById('decon-constraints');
+
+        // This component will now be managed more directly by Unit3SAC2PrepComponent for loading/saving
+        // So, we'll make its core setup callable.
+
+        const stimulusContentElement = stimulusArea.querySelector('div'); // Assuming stimulus text is in a direct child div
+
+        const canvas = document.getElementById('annotation-canvas');
+        const stimulusWrapper = document.getElementById('stimulus-wrapper');
+        const toggleDrawingButton = document.getElementById('toggle-drawing-btn');
+        const drawConnectorButton = document.getElementById('draw-connector-btn');
+        const clearDrawingButton = document.getElementById('clear-drawing-btn');
+
+        let ctx = null;
+        let drawingModeActive = false;
+        let connectorModeActive = false;
+        let isDrawing = false;
+        let lastX, lastY;
+        let connectorPoints = [];
+
+        if (!stimulusArea || !canvas || !stimulusWrapper) {
+            console.error("Required elements for annotation/drawing component not found.");
+            return;
+        }
+
+        const applyAnnotation = (styleClass) => {
+            const selection = window.getSelection();
+            if (!selection.rangeCount || selection.isCollapsed) return;
+
+            const range = selection.getRangeAt(0);
+            if (!stimulusArea.contains(range.commonAncestorContainer)) {
+                 alert("Please select text within the stimulus content area only.");
+                 return;
+            }
+
+            const span = document.createElement('span');
+            span.id = `annotation-${annotationSpanCounter++}`;
+            span.className = styleClass;
+
+            // Basic handling: if selection has mixed styling, this might simplify it.
+            // More complex scenarios (nested spans, partial overlaps) require more advanced logic.
+            try {
+                range.surroundContents(span);
+            } catch (e) {
+                // Fallback for complex selections that can't be simply surrounded
+                // This is a basic fallback and might not cover all edge cases perfectly.
+                // For instance, if selection spans across block elements.
+                span.appendChild(range.extractContents());
+                range.insertNode(span);
+                console.warn("Complex selection, used extract/insert fallback for annotation.", e);
+            }
+            selection.removeAllRanges();
+        };
+
+        const addCommentToSelection = () => {
+            const selection = window.getSelection();
+            if (!selection.rangeCount || selection.isCollapsed) {
+                alert("Please select text to comment on.");
+                return;
+            }
+
+            const range = selection.getRangeAt(0);
+            if (!stimulusArea.contains(range.commonAncestorContainer)) {
+                 alert("Please select text within the stimulus content area only.");
+                 return;
+            }
+
+            const commentText = prompt("Enter your comment:");
+            if (commentText) {
+                const span = document.createElement('span');
+                span.id = `annotation-${annotationSpanCounter++}`;
+                span.className = 'commented-text';
+                span.dataset.comment = commentText;
+
+                try {
+                    range.surroundContents(span);
+                } catch (e) {
+                    span.appendChild(range.extractContents());
+                    range.insertNode(span);
+                    console.warn("Complex selection, used extract/insert fallback for comment.", e);
+                }
+
+                selection.removeAllRanges();
+                addCommentEventListeners(span);
+            }
+        };
+
+        const showTooltip = (event) => {
+            if (currentTooltip) currentTooltip.remove(); // Remove existing tooltip
+
+            const targetSpan = event.target.closest('.commented-text');
+            if (!targetSpan || !targetSpan.dataset.comment) return;
+
+            const comment = targetSpan.dataset.comment;
+            const tooltip = document.createElement('div');
+            tooltip.className = 'annotation-tooltip';
+            tooltip.textContent = comment;
+            document.body.appendChild(tooltip);
+            currentTooltip = tooltip;
+
+            // Position tooltip near the mouse/element
+            const rect = targetSpan.getBoundingClientRect();
+            tooltip.style.left = `${rect.left + window.scrollX}px`;
+            tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`; // 5px below the element
+        };
+
+        const hideTooltip = () => {
+            if (currentTooltip) {
+                currentTooltip.remove();
+                currentTooltip = null;
+            }
+        };
+
+        const addCommentEventListeners = (element) => {
+            element.addEventListener('mouseenter', showTooltip);
+            element.addEventListener('mouseleave', hideTooltip);
+            // Could add click listener for mobile if hover is problematic
+        };
+
+        if (highlightButton) {
+            highlightButton.addEventListener('click', () => applyAnnotation('highlighted-text'));
+        }
+        if (underlineButton) {
+            underlineButton.addEventListener('click', () => applyAnnotation('underlined-text'));
+        }
+        if (commentButton) {
+            commentButton.addEventListener('click', addCommentToSelection);
+        }
+
+        // Add event listeners to existing commented text (if any were part of initial HTML, though not in this basic setup)
+        stimulusArea.querySelectorAll('.commented-text').forEach(addCommentEventListeners);
+
+        // Event listeners for deconstruction inputs
+        const setupDeconstructionEventListeners = () => {
+            if (deconCommandWordsInput) {
+                deconCommandWordsInput.addEventListener('input', (e) => {
+                    deconstructionDataStore.commandWords = e.target.value;
+                    // console.log('Deconstruction Data:', deconstructionDataStore); // For debugging
+                });
+            }
+            if (deconKeyConceptsInput) {
+                deconKeyConceptsInput.addEventListener('input', (e) => {
+                    deconstructionDataStore.keyConcepts = e.target.value;
+                    // console.log('Deconstruction Data:', deconstructionDataStore); // For debugging
+                });
+            }
+            if (deconContentAreasInput) {
+                deconContentAreasInput.addEventListener('input', (e) => {
+                    deconstructionDataStore.contentAreas = e.target.value;
+                    // console.log('Deconstruction Data:', deconstructionDataStore); // For debugging
+                });
+            }
+            if (deconConstraintsInput) {
+                deconConstraintsInput.addEventListener('input', (e) => {
+                    deconstructionDataStore.constraints = e.target.value;
+                    // console.log('Deconstruction Data:', deconstructionDataStore); // For debugging
+                });
+            }
+        };
+        setupDeconstructionEventListeners(); // This will be called after content is set.
+
+        // Expose a function to re-attach comment listeners if stimulus is loaded from localStorage
+        // This is a bit of a workaround for the current structure.
+        // A more robust component would have a dedicated method for loading content and re-binding.
+        if (typeof window.reAttachAnnotationCommentListeners !== 'function') {
+            window.reAttachAnnotationCommentListeners = () => {
+                const newStimulusArea = document.getElementById('stimulus-content-area');
+                if (newStimulusArea) {
+                    newStimulusArea.querySelectorAll('.commented-text').forEach(addCommentEventListeners);
+                }
+            };
+        }
+
+        const initializeCanvas = () => {
+            if (canvas && stimulusArea && stimulusArea.parentElement === stimulusWrapper) { // Ensure it's the right canvas
+                // Set canvas dimensions based on the scrollable content area
+                // We need to ensure the stimulus content is loaded *before* this for accurate scrollHeight
+                const contentDiv = stimulusArea.querySelector('div > div') || stimulusArea.querySelector('div'); // try to find the actual content wrapper
+                if (contentDiv) {
+                    canvas.width = contentDiv.scrollWidth;
+                    canvas.height = contentDiv.scrollHeight;
+                } else {
+                    canvas.width = stimulusArea.scrollWidth;
+                    canvas.height = stimulusArea.scrollHeight;
+                }
+
+                ctx = canvas.getContext('2d');
+                if (ctx) {
+                    ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)';
+                    ctx.lineWidth = 2;
+                    ctx.lineJoin = 'round';
+                    ctx.lineCap = 'round';
+                } else {
+                    console.error("Failed to get 2D context from canvas.");
+                }
+            } else {
+                console.error("Canvas or stimulusArea not found for initialization");
+            }
+        };
+
+        const activateDrawingMode = (activate) => {
+            drawingModeActive = activate;
+            if (canvas) {
+                canvas.style.pointerEvents = activate ? 'auto' : 'none';
+                // Ensure stimulusArea allows text interaction when drawing is off
+                stimulusArea.style.userSelect = activate ? 'none' : 'auto';
+            }
+            if (toggleDrawingButton) {
+                toggleDrawingButton.classList.toggle('bg-green-600', activate);
+                toggleDrawingButton.classList.toggle('bg-red-500', !activate); // Default color if not active
+                toggleDrawingButton.textContent = activate ? "Drawing ON" : "Toggle Drawing";
+            }
+            if (activate) {
+                activateConnectorMode(false);
+            }
+        };
+
+        const activateConnectorMode = (activate) => {
+            connectorModeActive = activate;
+            connectorPoints = [];
+            if (canvas) {
+                canvas.style.pointerEvents = activate ? 'auto' : 'none';
+                stimulusArea.style.userSelect = activate ? 'none' : 'auto';
+            }
+            if (drawConnectorButton) {
+                drawConnectorButton.classList.toggle('bg-green-600', activate);
+                drawConnectorButton.classList.toggle('bg-blue-500', !activate); // Default color if not active
+                const connectBtnText = document.getElementById('connect-nodes-btn-text');
+                if (connectBtnText) connectBtnText.textContent = activate ? "Connecting (Select 2 Nodes)" : "Connect Nodes";
+                if (mappingToolMessage) mappingToolMessage.textContent = activate ? "Click the first node to connect." : "";
+
+
+            }
+            if (activate) {
+                activateDrawingMode(false);
+                if (selectedNodeForConnection) { // Clear previous first selection if any
+                    document.getElementById(selectedNodeForConnection)?.classList.remove('ring-2', 'ring-green-500');
+                    selectedNodeForConnection = null;
+                }
+            } else {
+                 if (mappingToolMessage) mappingToolMessage.textContent = ""; // Clear message when deactivating
+            }
+        };
+
+        const draw = (e) => {
+            if (!isDrawing || !drawingModeActive || !ctx) return;
+            const rect = canvas.getBoundingClientRect();
+            // Adjust for canvas position relative to stimulusArea's scroll position
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            [lastX, lastY] = [x, y];
+        };
+
+        const handleCanvasClick = (e) => {
+            if (!connectorModeActive || !ctx) return;
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            connectorPoints.push({ x, y });
+
+            ctx.fillStyle = 'rgba(59, 130, 246, 0.9)'; // Brighter blue for points
+            ctx.beginPath();
+            ctx.arc(x, y, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            if (connectorPoints.length === 2) {
+                ctx.beginPath();
+                ctx.moveTo(connectorPoints[0].x, connectorPoints[0].y);
+                ctx.lineTo(connectorPoints[1].x, connectorPoints[1].y);
+                ctx.strokeStyle = 'rgba(59, 130, 246, 0.9)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)'; // Reset to default drawing color
+                connectorPoints = [];
+                // activateConnectorMode(false); // Optionally turn off after one connector
+            }
+        };
+
+        const clearCanvas = () => {
+            if (ctx && canvas) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        };
+
+        if (toggleDrawingButton) {
+            toggleDrawingButton.addEventListener('click', () => activateDrawingMode(!drawingModeActive));
+        }
+        if (drawConnectorButton) {
+            drawConnectorButton.addEventListener('click', () => activateConnectorMode(!connectorModeActive));
+        }
+        if (clearDrawingButton) {
+            clearDrawingButton.addEventListener('click', clearCanvas);
+        }
+
+        if (canvas) {
+            canvas.addEventListener('mousedown', (e) => {
+                if (drawingModeActive && ctx) {
+                    isDrawing = true;
+                    const rect = canvas.getBoundingClientRect();
+                    [lastX, lastY] = [e.clientX - rect.left, e.clientY - rect.top];
+                    ctx.beginPath();
+                    ctx.moveTo(lastX, lastY);
+                } else if (connectorModeActive) { // Allow click for connector even if not drawing mode
+                    handleCanvasClick(e);
+                }
+            });
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', () => {
+                if(drawingModeActive) isDrawing = false;
+            });
+            canvas.addEventListener('mouseout', () => {
+                if(drawingModeActive) isDrawing = false;
+            });
+            // Removed canvas.addEventListener('click', handleCanvasClick); as mousedown now handles it for connector
+        }
+
+        requestAnimationFrame(initializeCanvas);
+
+        const resizeObserver = new ResizeObserver(entries => {
+            for (let entry of entries) {
+                if (entry.target === stimulusArea) {
+                    if(canvas && stimulusArea) {
+                         const oldWidth = canvas.width;
+                         const oldHeight = canvas.height;
+                         if (oldWidth !== stimulusArea.scrollWidth || oldHeight !== stimulusArea.scrollHeight) {
+                            console.log("Stimulus area resized. Canvas dimensions updated. Drawings will be cleared.");
+                            // Store drawing paths if persistence on resize is needed (complex)
+                            clearCanvas(); // Clear before resize to avoid distortion if redrawing paths
+                            initializeCanvas();
+                         }
+                    }
+                }
+            }
+        });
+        if(stimulusArea) resizeObserver.observe(stimulusArea);
+
+    }, 0); // setTimeout with 0ms to run after current call stack, ensuring DOM elements are available.
+
+    return `
+        <div id="annotation-interface" class="p-4 bg-slate-800 rounded-lg shadow-md my-4">
+            <h2 class="text-2xl font-semibold text-purple-300 mb-4">Interactive Annotation Tool</h2>
+
+            <div id="annotation-toolbar" class="mb-4 p-2 bg-slate-700 rounded flex flex-wrap gap-2">
+                <button id="highlight-btn" class="px-3 py-1 bg-yellow-500 text-black rounded hover:bg-yellow-400 text-sm">Highlight</button>
+                <button id="underline-btn" class="px-3 py-1 bg-purple-500 text-white rounded hover:bg-purple-400 text-sm">Underline</button>
+                <button id="comment-btn" class="px-3 py-1 bg-violet-500 text-white rounded hover:bg-violet-400 text-sm">Comment</button>
+                <button id="toggle-drawing-btn" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-400 text-sm">Toggle Drawing</button>
+                <button id="draw-connector-btn" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-400 text-sm">Draw Connector</button>
+                <button id="clear-drawing-btn" class="px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 text-sm">Clear Drawings</button>
+                {/* Clear specific annotation data button will be in Unit3SAC2PrepComponent near the dropdown */}
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div id="sac-question-display" class="p-3 bg-slate-700 rounded">
+                    <h4 class="text-lg font-medium text-purple-200 mb-2">Sample SAC Question:</h4>
+                    <p class="text-slate-300 text-sm">Analyse the factors that influence the health and wellbeing of young people in Australia, using information from the provided sources and your own knowledge.</p>
+                </div>
+
+                <div id="sac-question-deconstruction-area" class="p-3 bg-slate-700 rounded">
+                    <h4 class="text-lg font-medium text-purple-200 mb-2">Deconstruct the Question:</h4>
+                    <div class="space-y-3">
+                        <div>
+                            <label for="decon-command-words" class="block text-xs font-medium text-slate-300 mb-1">Command Word(s):</label>
+                            <input type="text" id="decon-command-words" name="decon-command-words" class="deconstruction-input w-full p-2 text-xs bg-slate-600 border border-slate-500 rounded focus:border-purple-500 focus:ring-purple-500 placeholder-slate-400 text-slate-200" placeholder="e.g., Analyse, Explain, Discuss...">
+                        </div>
+                        <div>
+                            <label for="decon-key-concepts" class="block text-xs font-medium text-slate-300 mb-1">Key Concepts:</label>
+                            <textarea id="decon-key-concepts" name="decon-key-concepts" rows="2" class="deconstruction-input w-full p-2 text-xs bg-slate-600 border border-slate-500 rounded focus:border-purple-500 focus:ring-purple-500 placeholder-slate-400 text-slate-200" placeholder="e.g., Health and wellbeing, Young people, Factors..."></textarea>
+                        </div>
+                        <div>
+                            <label for="decon-content-areas" class="block text-xs font-medium text-slate-300 mb-1">Required Content Areas (from Study Design):</label>
+                            <textarea id="decon-content-areas" name="decon-content-areas" rows="2" class="deconstruction-input w-full p-2 text-xs bg-slate-600 border border-slate-500 rounded focus:border-purple-500 focus:ring-purple-500 placeholder-slate-400 text-slate-200" placeholder="e.g., Factors influencing h&w, Australia's health status..."></textarea>
+                        </div>
+                        <div>
+                            <label for="decon-constraints" class="block text-xs font-medium text-slate-300 mb-1">Constraints/Specifics:</label>
+                            <textarea id="decon-constraints" name="decon-constraints" rows="2" class="deconstruction-input w-full p-2 text-xs bg-slate-600 border border-slate-500 rounded focus:border-purple-500 focus:ring-purple-500 placeholder-slate-400 text-slate-200" placeholder="e.g., Use provided sources, Own knowledge, Young people in Australia..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="stimulus-wrapper" class="relative border border-slate-600 rounded">
+                <canvas id="annotation-canvas" class="absolute top-0 left-0 pointer-events-none z-10"></canvas>
+                <div id="stimulus-content-area" class="p-3 bg-slate-700 rounded h-64 overflow-y-auto text-slate-300 text-sm relative z-0">
+                    {/* <!-- Ensure this div is focusable for scrolling if needed, or manage scroll on wrapper --> */}
+                    <h4 class="text-lg font-medium text-purple-200 mb-2">Stimulus Material:</h4>
+                    <p><strong>Source 1: Youth Mental Health Report Snippet (2023)</strong></p>
+                <p>Recent studies indicate a growing concern regarding the mental health of young Australians. Approximately one in seven young people aged 12-17 years experience a mental disorder each year. The impact of social media, academic pressure, and societal expectations are frequently cited as significant contributors. <strong class="font-bold">Early intervention and accessible support services are crucial</strong>, yet many young individuals face barriers such as stigma, lack of awareness about available help, or long waiting lists for services.</p>
+                <p>Furthermore, the transition from adolescence to adulthood presents unique challenges. Young people navigating changes in education, employment, and personal relationships may experience heightened stress and anxiety. <em class="italic">Community-based programs that foster resilience and coping skills have shown promising results</em> in mitigating some of these negative impacts.</p>
+                <p><strong>Source 2: Physical Activity Guidelines Extract</strong></p>
+                <p>National guidelines recommend that young people aged 13–17 years should accumulate at least 60 minutes of moderate to vigorous intensity physical activity every day. Regular physical activity is linked to improved physical health, better mental wellbeing, and enhanced cognitive function. However, current data suggests that <strong class="font-bold">only a small percentage of Australian youth are meeting these guidelines</strong>. Factors such as increased screen time, reliance on passive transport, and limited access to safe recreational spaces in some communities contribute to this trend. Encouraging participation in a variety of enjoyable physical activities is key.</p>
+            </div>
+            <div id="comment-display-area" class="mt-4">
+                <!-- Comments might be displayed here or via tooltips -->
+            </div>
+        </div>
+    `;
+}
+
 // --- Component Functions ---
+
+function InteractiveMappingComponent() {
+    setTimeout(() => {
+        const mappingContainer = document.getElementById('mapping-tool-container');
+        const nodesContainer = document.getElementById('mapping-nodes-container');
+        const canvas = document.getElementById('mapping-canvas');
+        const addNodeButton = document.getElementById('add-node-btn');
+        const connectNodesButton = document.getElementById('connect-nodes-btn');
+        // const clearConnectionsButton = document.getElementById('clear-connections-btn'); // Future
+
+        if (!mappingContainer || !nodesContainer || !canvas || !addNodeButton || !connectNodesButton) {
+            console.error("Mapping component elements not found.");
+            return;
+        }
+
+        const ctx = canvas.getContext('2d');
+        let nodes = [];
+        let connections = [];
+        let nodeIdCounter = 0;
+        let selectedNodeForConnection = null;
+        let connectingModeActive = false;
+
+        const resizeCanvas = () => {
+            canvas.width = mappingContainer.offsetWidth;
+            canvas.height = mappingContainer.offsetHeight;
+            drawConnections(); // Redraw connections when canvas resizes
+        };
+
+        const drawConnections = () => {
+            if (!ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = '#a78bfa'; // purple-400
+            ctx.lineWidth = 2;
+            ctx.lineCap = "round";
+
+            connections.forEach(conn => {
+                const fromNode = nodes.find(n => n.id === conn.from);
+                const toNode = nodes.find(n => n.id === conn.to);
+
+                if (fromNode && toNode) {
+                    const fromElem = document.getElementById(fromNode.id);
+                    const toElem = document.getElementById(toNode.id);
+
+                    if(fromElem && toElem){
+                        // Calculate center points more accurately based on actual element dimensions
+                        const fromX = fromNode.x + fromElem.offsetWidth / 2;
+                        const fromY = fromNode.y + fromElem.offsetHeight / 2;
+                        const toX = toNode.x + toElem.offsetWidth / 2;
+                        const toY = toNode.y + toElem.offsetHeight / 2;
+
+                        ctx.beginPath();
+                        ctx.moveTo(fromX, fromY);
+                        ctx.lineTo(toX, toY);
+                        ctx.stroke();
+
+                        // Simple arrowhead
+                        const angle = Math.atan2(toY - fromY, toX - fromX);
+                        const headlen = 10; // length of head in pixels
+                        ctx.beginPath();
+                        ctx.moveTo(toX, toY);
+                        ctx.lineTo(toX - headlen * Math.cos(angle - Math.PI / 6), toY - headlen * Math.sin(angle - Math.PI / 6));
+                        ctx.lineTo(toX - headlen * Math.cos(angle + Math.PI / 6), toY - headlen * Math.sin(angle + Math.PI / 6));
+                        ctx.closePath();
+                        ctx.fillStyle = '#a78bfa';
+                        ctx.fill();
+                    }
+                }
+            });
+        };
+
+        const createNode = (x = 50, y = 50, content = 'New Node') => {
+            nodeIdCounter++;
+            const nodeId = `map-node-${nodeIdCounter}`;
+            const nodeElement = document.createElement('div');
+            nodeElement.id = nodeId;
+            nodeElement.className = 'p-3 bg-slate-700 border border-purple-500 rounded shadow-lg absolute cursor-move min-w-[120px] min-h-[60px] text-xs text-slate-200 flex flex-col justify-center items-center';
+            nodeElement.style.left = `${x}px`;
+            nodeElement.style.top = `${y}px`;
+
+            const textElement = document.createElement('div');
+            textElement.contentEditable = "true";
+            textElement.className = "w-full h-full outline-none focus:ring-1 focus:ring-purple-400 p-1";
+            textElement.textContent = content;
+
+            nodeElement.appendChild(textElement);
+            nodesContainer.appendChild(nodeElement);
+
+            const newNodeData = { id: nodeId, x, y, content };
+            nodes.push(newNodeData);
+
+            let isDragging = false;
+            let dragOffsetX, dragOffsetY;
+
+            nodeElement.addEventListener('mousedown', (e) => {
+                // Prevent dragging when clicking on contentEditable area for editing
+                if (e.target === textElement && !connectingModeActive) { // Allow selection if connecting
+                    // e.stopPropagation(); // Stop mousedown from initiating drag immediately
+                    return;
+                }
+
+                if (connectingModeActive) {
+                    e.stopPropagation(); // Prevent drag while in connect mode
+                    if (selectedNodeForConnection === null) {
+                        selectedNodeForConnection = nodeId;
+                        nodeElement.classList.add('ring-2', 'ring-green-500'); // Visual cue
+                    } else if (selectedNodeForConnection !== nodeId) {
+                        connections.push({ from: selectedNodeForConnection, to: nodeId });
+                        document.getElementById(selectedNodeForConnection)?.classList.remove('ring-2', 'ring-green-500');
+                        selectedNodeForConnection = null;
+                        // connectingModeActive = false; // Optionally turn off after one connection
+                        // connectNodesButton.classList.remove('bg-green-600');
+                        // connectNodesButton.classList.add('hover:bg-blue-400');
+                        drawConnections();
+                    }
+                    return;
+                }
+
+                isDragging = true;
+                // Calculate offset from top-left of node to mouse click
+                dragOffsetX = e.clientX - nodeElement.getBoundingClientRect().left;
+                dragOffsetY = e.clientY - nodeElement.getBoundingClientRect().top;
+                nodeElement.classList.add('shadow-xl', 'border-purple-300');
+                e.preventDefault(); // Prevent text selection during drag
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                let newX = e.clientX - mappingContainer.getBoundingClientRect().left - dragOffsetX;
+                let newY = e.clientY - mappingContainer.getBoundingClientRect().top - dragOffsetY;
+
+                // Boundary checks
+                newX = Math.max(0, Math.min(newX, mappingContainer.offsetWidth - nodeElement.offsetWidth));
+                newY = Math.max(0, Math.min(newY, mappingContainer.offsetHeight - nodeElement.offsetHeight));
+
+                nodeElement.style.left = `${newX}px`;
+                nodeElement.style.top = `${newY}px`;
+                newNodeData.x = newX;
+                newNodeData.y = newY;
+                drawConnections();
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    nodeElement.classList.remove('shadow-xl', 'border-purple-300');
+                }
+            });
+
+            textElement.addEventListener('blur', () => {
+                newNodeData.content = textElement.textContent;
+            });
+             textElement.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) { // Enter to finish editing, Shift+Enter for newline
+                    e.preventDefault();
+                    textElement.blur();
+                }
+            });
+        };
+
+        addNodeButton.addEventListener('click', () => createNode());
+
+        connectNodesButton.addEventListener('click', () => {
+            connectingModeActive = !connectingModeActive;
+            connectNodesButton.classList.toggle('bg-green-600', connectingModeActive);
+            connectNodesButton.classList.toggle('hover:bg-blue-400', !connectingModeActive);
+            if (!connectingModeActive && selectedNodeForConnection) { // Clear selection if mode is turned off
+                document.getElementById(selectedNodeForConnection)?.classList.remove('ring-2', 'ring-green-500');
+                selectedNodeForConnection = null;
+            }
+        });
+
+        // Initialize
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas); // Adjust canvas on window resize
+
+        // Create a couple of initial nodes for demonstration
+        createNode(50, 50, "Central Idea");
+        createNode(250, 150, "Related Concept");
+
+        // --- TEEL Planner Logic ---
+        const teelParagraphsContainer = document.getElementById('teel-paragraphs-container');
+        const addTeelParagraphButton = document.getElementById('add-teel-paragraph-btn');
+        const removeTeelParagraphButton = document.getElementById('remove-teel-paragraph-btn');
+        const mappingToolMessage = document.getElementById('mapping-tool-message');
+        const clearMappingDataButton = document.getElementById('clear-mapping-data-btn');
+
+        let teelPlanData = [];
+
+        const MAPPING_STORAGE_KEY = 'mappingToolData_v1';
+
+        const showMappingMessage = (message, duration = 3000) => {
+            if(mappingToolMessage) {
+                mappingToolMessage.textContent = message;
+                if (duration > 0) { // Allow indefinite messages if duration is 0 or less
+                    setTimeout(() => {
+                        if(mappingToolMessage && mappingToolMessage.textContent === message) mappingToolMessage.textContent = '';
+                    }, duration);
+                }
+            }
+        };
+
+        const saveMappingData = () => {
+            const dataToSave = {
+                nodes: nodes,
+                connections: connections,
+                teelPlan: teelPlanData,
+                nodeIdCounter: nodeIdCounter
+            };
+            try {
+                localStorage.setItem(MAPPING_STORAGE_KEY, JSON.stringify(dataToSave));
+                // showMappingMessage("Progress saved!", 1500); // Can be too noisy, enable for debugging
+            } catch (error) {
+                console.error("Error saving mapping data to local storage:", error);
+                showMappingMessage("Error saving data. Storage might be full.", 5000);
+            }
+        };
+
+        const loadMappingData = () => {
+            const savedData = localStorage.getItem(MAPPING_STORAGE_KEY);
+            if (savedData) {
+                try {
+                    const data = JSON.parse(savedData);
+                    nodes = data.nodes || []; // Assign loaded nodes directly
+
+                    // Recreate DOM elements for nodes
+                    nodesContainer.innerHTML = ''; // Clear any existing DOM nodes first
+                    nodes.forEach(nodeData => {
+                        // Call a modified createNode or directly create and setup node elements here
+                        // For now, assuming createNode can handle being called with full data
+                        // This needs createNode to be refactored to not auto-push to 'nodes' if loading
+                        recreateNodeElement(nodeData);
+                    });
+
+                    connections = data.connections || [];
+                    teelPlanData = data.teelPlan || [];
+                    nodeIdCounter = data.nodeIdCounter || 0;
+
+                    drawConnections();
+                    renderTeelParagraphs(); // This will populate TEEL and attach its listeners
+                    showMappingMessage("Saved data loaded.", 2000);
+                    return true;
+                } catch (e) {
+                    console.error("Error parsing saved mapping data:", e);
+                    localStorage.removeItem(MAPPING_STORAGE_KEY);
+                    return false;
+                }
+            }
+            return false;
+        };
+
+        const clearAllMappingData = () => {
+            if (confirm("Are you sure you want to clear all your saved mapping and TEEL plan data? This cannot be undone.")) {
+                localStorage.removeItem(MAPPING_STORAGE_KEY);
+                nodes = [];
+                connections = [];
+                teelPlanData = [];
+                nodeIdCounter = 0;
+                nodesContainer.innerHTML = '';
+                drawConnections();
+                renderTeelParagraphs();
+                // Add back default nodes after clearing
+                originalCreateNode(50, 50, "Central Idea");
+                originalCreateNode(250, 150, "Related Concept");
+                showMappingMessage("All mapping data cleared.", 2000);
+            }
+        };
+
+        if(clearMappingDataButton) {
+            clearMappingDataButton.addEventListener('click', clearAllMappingData);
+        }
+
+        const renderTeelParagraphs = () => {
+            if (!teelParagraphsContainer) return;
+            teelParagraphsContainer.innerHTML = ''; // Clear existing paragraphs
+
+            if (teelPlanData.length === 0) {
+                teelParagraphsContainer.innerHTML = '<p class="text-slate-400 text-sm italic">No TEEL paragraphs added yet. Click "Add Paragraph" to start planning.</p>';
+            }
+
+            teelPlanData.forEach((paraData, index) => {
+                const paraNumber = index + 1;
+                const paraBlock = document.createElement('div');
+                paraBlock.className = 'teel-paragraph-block mb-4 p-3 border border-slate-600 rounded-lg bg-slate-700/50';
+                paraBlock.innerHTML = `
+                    <h4 class="text-lg font-semibold text-purple-200 mb-2 flex justify-between items-center">
+                        <span>Paragraph <span class="paragraph-number">${paraNumber}</span></span>
+                    </h4>
+                    <div class="space-y-2">
+                        <div><label class="block text-xs font-medium text-slate-300">Topic Sentence:</label><textarea data-index="${index}" data-field="topicSentence" class="teel-input w-full p-1 text-xs bg-slate-600 border border-slate-500 rounded focus:border-purple-400 focus:ring-purple-400 text-slate-200" rows="2">${paraData.topicSentence}</textarea></div>
+                        <div><label class="block text-xs font-medium text-slate-300">Evidence:</label><textarea data-index="${index}" data-field="evidence" class="teel-input w-full p-1 text-xs bg-slate-600 border border-slate-500 rounded focus:border-purple-400 focus:ring-purple-400 text-slate-200" rows="3">${paraData.evidence}</textarea></div>
+                        <div><label class="block text-xs font-medium text-slate-300">Explanation:</label><textarea data-index="${index}" data-field="explanation" class="teel-input w-full p-1 text-xs bg-slate-600 border border-slate-500 rounded focus:border-purple-400 focus:ring-purple-400 text-slate-200" rows="4">${paraData.explanation}</textarea></div>
+                        <div><label class="block text-xs font-medium text-slate-300">Link:</label><textarea data-index="${index}" data-field="link" class="teel-input w-full p-1 text-xs bg-slate-600 border border-slate-500 rounded focus:border-purple-400 focus:ring-purple-400 text-slate-200" rows="2">${paraData.link}</textarea></div>
+                    </div>
+                `;
+                teelParagraphsContainer.appendChild(paraBlock);
+            });
+
+            // Add event listeners to all textareas
+            teelParagraphsContainer.querySelectorAll('.teel-input').forEach(textarea => {
+                textarea.addEventListener('input', (e) => {
+                    const index = parseInt(e.target.dataset.index);
+                    const field = e.target.dataset.field;
+                    if (teelPlanData[index]) {
+                        teelPlanData[index][field] = e.target.value;
+                        saveMappingData(); // Save on change
+                    }
+                });
+            });
+        };
+
+        // Renamed original createNode to make a new one that saves
+        const internalCreateNodeSetup = (x = 50, y = 50, content = 'New Node', existingId = null) => {
+            const nodeId = existingId || `map-node-${++nodeIdCounter}`;
+            if(!existingId) { // only increment if it's a truly new node not from load
+                 // Ensure nodeIdCounter is always ahead of any loaded IDs
+                const numericId = parseInt(nodeId.split('-')[2]);
+                if (numericId > nodeIdCounter) nodeIdCounter = numericId;
+            }
+
+
+            const nodeElement = document.createElement('div');
+            nodeElement.id = nodeId;
+            nodeElement.className = 'p-3 bg-slate-700 border border-purple-500 rounded shadow-lg absolute cursor-move min-w-[120px] min-h-[60px] text-xs text-slate-200 flex flex-col justify-center items-center';
+            nodeElement.style.left = `${x}px`;
+            nodeElement.style.top = `${y}px`;
+
+            const textElement = document.createElement('div');
+            textElement.contentEditable = "true";
+            textElement.className = "w-full h-full outline-none focus:ring-1 focus:ring-purple-400 p-1";
+            textElement.textContent = content;
+
+            nodeElement.appendChild(textElement);
+            nodesContainer.appendChild(nodeElement);
+
+            const newNodeData = { id: nodeId, x, y, content };
+
+            // If loading, nodes array is already populated. Only add if it's a new node.
+            const existingNodeIndex = nodes.findIndex(n => n.id === nodeId);
+            if (existingNodeIndex === -1) {
+                 nodes.push(newNodeData);
+            } else {
+                // If recreating (e.g. from load), ensure the data in 'nodes' array is the one we use
+                // and update it if necessary, though it should match nodeData from load.
+                nodes[existingNodeIndex] = newNodeData;
+            }
+
+            attachNodeEventListeners(nodeElement, newNodeData, textElement);
+            return newNodeData;
+        };
+
+        recreateNodeElement = (nodeData) => { // Used by loadMappingData
+            internalCreateNodeSetup(nodeData.x, nodeData.y, nodeData.content, nodeData.id);
+        };
+
+        const attachNodeEventListeners = (nodeElement, nodeData, textElement) => {
+            let isDragging = false;
+            let dragOffsetX, dragOffsetY;
+
+            nodeElement.addEventListener('mousedown', (e) => {
+                if (e.target === textElement && !connectingModeActive) return;
+                if (connectingModeActive) {
+                    e.stopPropagation();
+                    if (selectedNodeForConnection === null) {
+                        selectedNodeForConnection = nodeData.id;
+                        nodeElement.classList.add('ring-2', 'ring-green-500');
+                        showMappingMessage("Node 1 selected. Click another node to connect.", 0);
+                    } else if (selectedNodeForConnection !== nodeData.id) {
+                         const connExists = connections.some(c => (c.from === selectedNodeForConnection && c.to === nodeData.id) || (c.from === nodeData.id && c.to === selectedNodeForConnection));
+                        if (!connExists) {
+                            connections.push({ from: selectedNodeForConnection, to: nodeData.id });
+                            saveMappingData();
+                        } else {
+                            showMappingMessage("Connection already exists.", 2000);
+                        }
+                        document.getElementById(selectedNodeForConnection)?.classList.remove('ring-2', 'ring-green-500');
+                        selectedNodeForConnection = null;
+                        // Deactivate connector mode after a successful connection
+                        activateConnectorMode(false);
+                        drawConnections();
+                    }
+                    return;
+                }
+                isDragging = true;
+                dragOffsetX = e.clientX - nodeElement.getBoundingClientRect().left;
+                dragOffsetY = e.clientY - nodeElement.getBoundingClientRect().top;
+                nodeElement.classList.add('shadow-xl', 'border-purple-300', 'z-20');
+                e.preventDefault();
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                let newX = e.clientX - mappingContainer.getBoundingClientRect().left - dragOffsetX;
+                let newY = e.clientY - mappingContainer.getBoundingClientRect().top - dragOffsetY;
+                newX = Math.max(0, Math.min(newX, mappingContainer.offsetWidth - nodeElement.offsetWidth));
+                newY = Math.max(0, Math.min(newY, mappingContainer.offsetHeight - nodeElement.offsetHeight));
+                nodeElement.style.left = `${newX}px`;
+                nodeElement.style.top = `${newY}px`;
+                nodeData.x = newX;
+                nodeData.y = newY;
+                drawConnections();
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    nodeElement.classList.remove('shadow-xl', 'border-purple-300', 'z-20');
+                    saveMappingData();
+                }
+            });
+
+            textElement.addEventListener('blur', () => {
+                nodeData.content = textElement.textContent; // nodeData is a direct reference to an object in 'nodes'
+                saveMappingData();
+            });
+            textElement.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    textElement.blur(); // Which will trigger save
+                }
+            });
+        };
+
+        createNode = (x = 50, y = 50, content = 'New Node') => {
+            internalCreateNodeSetup(x,y,content);
+            saveMappingData();
+        }
+
+
+        if (addTeelParagraphButton) {
+            addTeelParagraphButton.addEventListener('click', () => {
+                teelPlanData.push({ topicSentence: '', evidence: '', explanation: '', link: '' });
+                renderTeelParagraphs();
+                saveMappingData();
+            });
+        }
+
+        if (removeTeelParagraphButton) {
+            removeTeelParagraphButton.addEventListener('click', () => {
+                if (teelPlanData.length > 0) {
+                    teelPlanData.pop();
+                    renderTeelParagraphs();
+                    saveMappingData();
+                }
+            });
+        }
+
+        // Initial Load or Setup
+        if (!loadMappingData()) {
+            renderTeelParagraphs();
+            createNode(50, 50, "Central Idea");
+            createNode(250, 150, "Related Concept");
+            // saveMappingData(); // Save this default state if desired
+        }
+
+
+    }, 0);
+
+    return `
+        <div id="mapping-tool-wrapper" class="p-4 bg-slate-800 rounded-lg shadow-md my-4">
+            <h2 class="text-2xl font-semibold text-purple-300 mb-4">Interactive Relationship Mapping & Planning Tool</h2>
+            <div id="mapping-toolbar" class="mb-2 flex space-x-2">
+                <button id="add-node-btn" class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-400 text-sm">Add Node</button>
+                <button id="connect-nodes-btn" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-400 text-sm">Connect Nodes</button>
+                {/* <button id="clear-connections-btn" class="px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-400 text-sm">Clear Connections</button> */}
+            </div>
+            <div id="mapping-tool-container" class="relative w-full h-[500px] border border-slate-600 rounded-lg bg-slate-800/50 overflow-hidden mb-6">
+                <canvas id="mapping-canvas" class="absolute top-0 left-0 w-full h-full z-0"></canvas>
+                <div id="mapping-nodes-container" class="absolute top-0 left-0 w-full h-full z-10">
+                    {/* Nodes will be appended here */}
+                </div>
+            </div>
+
+            <div id="teel-planner-section" class="p-4 bg-slate-800/70 rounded-lg shadow-inner mt-6 border border-slate-700">
+                <h3 class="text-xl font-semibold text-purple-300 mb-3">TEEL Paragraph Planner</h3>
+                <div id="teel-toolbar" class="mb-3 flex space-x-2">
+                    <button id="add-teel-paragraph-btn" class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-400 text-sm">Add Paragraph</button>
+                    <button id="remove-teel-paragraph-btn" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-400 text-sm">Remove Last Paragraph</button>
+                </div>
+                <div id="teel-paragraphs-container" class="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+                    {/* TEEL paragraph blocks will be rendered here */}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
 function HomeComponent() {
     return `
         <section class="content-section text-center">
@@ -144,11 +1079,255 @@ function HomeComponent() {
 }
 
 function Unit3SAC2PrepComponent() {
+    // Using setTimeout to ensure this runs after the main DOM of Unit3SAC2PrepComponent is potentially rendered by the router.
+    setTimeout(() => {
+        const selectElement = document.getElementById('sample-material-select');
+        const annotationContainer = document.getElementById('annotation-component-container');
+        const mappingContainer = document.getElementById('mapping-component-container');
+        const clearSampleAnnotationsButton = document.getElementById('clear-sample-annotations-btn'); // Added button
+
+        if (!selectElement || !annotationContainer || !mappingContainer || !clearSampleAnnotationsButton) {
+            console.error("Required elements for Unit3SAC2PrepComponent not fully found.");
+            return;
+        }
+
+        const ANNOTATION_STORAGE_KEY_PREFIX = 'annotationData_';
+
+        // Populate dropdown only if it's empty
+        if (selectElement.options.length === 0) {
+            sampleSacMaterials.forEach(sample => {
+                const option = document.createElement('option');
+                option.value = sample.id;
+                option.textContent = sample.title;
+                selectElement.appendChild(option);
+            });
+        }
+
+        const saveCurrentAnnotationData = () => {
+            const currentSampleId = selectElement.value;
+            if (!currentSampleId) return;
+
+            const deconstructionData = {};
+            const deconInputs = { // Assuming these IDs are within the rendered InteractiveAnnotationComponent
+                commandWords: document.getElementById('decon-command-words'),
+                keyConcepts: document.getElementById('decon-key-concepts'),
+                contentAreas: document.getElementById('decon-content-areas'),
+                constraints: document.getElementById('decon-constraints')
+            };
+            for (const key in deconInputs) {
+                if (deconInputs[key]) deconstructionData[key] = deconInputs[key].value;
+            }
+
+            const stimulusContentArea = document.getElementById('stimulus-content-area');
+            // Find the actual div holding the stimulus paragraphs, not the scroll container itself.
+            // This assumes a structure like: <div id="stimulus-content-area"><h4>...</h4><div> paragraphs... </div></div>
+            const stimulusHTMLHolder = stimulusContentArea ? stimulusContentArea.querySelector('div') : null;
+            const stimulusHTML = stimulusHTMLHolder ? stimulusHTMLHolder.innerHTML : "";
+
+            const dataToSave = {
+                deconstruction: deconstructionData,
+                stimulusHTMLWithAnnotations: stimulusHTML,
+                // Not saving canvas drawings for now.
+            };
+            try {
+                localStorage.setItem(ANNOTATION_STORAGE_KEY_PREFIX + currentSampleId, JSON.stringify(dataToSave));
+            } catch (e) {
+                console.error("Error saving annotation data:", e);
+            }
+        };
+
+        const loadAnnotationToolWithContent = (sampleId, isLoadingFromStorage = false) => {
+            const selectedSample = sampleSacMaterials.find(s => s.id === sampleId);
+            if (!selectedSample) {
+                console.error("Selected sample not found for loading:", sampleId);
+                return;
+            }
+
+            // Render the annotation component's base HTML
+            // This will effectively reset the annotation component including its internal state like deconstructionDataStore
+            annotationContainer.innerHTML = InteractiveAnnotationComponent();
+
+            return;
+            }
+
+            if (!isLoadingFromStorage) { // Only inject component HTML if not just loading from storage into existing
+                 annotationContainer.innerHTML = InteractiveAnnotationComponent();
+            }
+
+            setTimeout(() => {
+                const questionDisplayP = document.querySelector('#sac-question-display p');
+                const stimulusContainer = document.getElementById('stimulus-content-area');
+
+                if (questionDisplayP) {
+                    questionDisplayP.textContent = selectedSample.question;
+                } else {
+                    const qd = document.getElementById('sac-question-display');
+                    if(qd) qd.innerHTML = `<h4 class="text-lg font-medium text-purple-200 mb-1">Sample SAC Question:</h4><p class="text-slate-300 text-sm">${selectedSample.question}</p>`;
+                }
+
+                // Prepare stimulus display area
+                let stimulusHTMLHolder;
+                if (stimulusContainer) {
+                    let headingToPreserve = stimulusContainer.querySelector('h4');
+                    stimulusContainer.innerHTML = '';
+                    if (headingToPreserve) {
+                        stimulusContainer.appendChild(headingToPreserve);
+                    } else {
+                        const newHeading = document.createElement('h4');
+                        newHeading.className = "text-lg font-medium text-purple-200 mb-2";
+                        newHeading.textContent = "Stimulus Material:";
+                        stimulusContainer.appendChild(newHeading);
+                    }
+                    stimulusHTMLHolder = document.createElement('div'); // Create the actual holder for stimulus
+                    stimulusContainer.appendChild(stimulusHTMLHolder);
+                } else {
+                    console.error("Stimulus content area not found for sample loading.");
+                    return; // Stop if stimulus area is missing
+                }
+
+
+                // Load from localStorage or use default sample stimulus
+                const savedDataRaw = localStorage.getItem(ANNOTATION_STORAGE_KEY_PREFIX + sampleId);
+                let savedData;
+                if (savedDataRaw) {
+                    try { savedData = JSON.parse(savedDataRaw); } catch(e) { console.error("Error parsing saved annotation data:", e); }
+                }
+
+                if (savedData && savedData.stimulusHTMLWithAnnotations) {
+                    stimulusHTMLHolder.innerHTML = savedData.stimulusHTMLWithAnnotations;
+                } else {
+                    stimulusHTMLHolder.innerHTML = selectedSample.stimulus; // Default
+                }
+
+                // Repopulate deconstruction fields
+                const deconstructionInputsIds = ['decon-command-words', 'decon-key-concepts', 'decon-content-areas', 'decon-constraints'];
+                deconstructionInputsIds.forEach(id => {
+                    const input = document.getElementById(id);
+                    if (input) {
+                        input.value = (savedData && savedData.deconstruction && savedData.deconstruction[id.substring(6)]) ? savedData.deconstruction[id.substring(6)] : '';
+                        // Add event listener to save on input for these fields
+                        input.removeEventListener('input', saveCurrentAnnotationData); // Avoid duplicates
+                        input.addEventListener('input', saveCurrentAnnotationData);
+                    }
+                });
+
+                // Re-attach listeners for comments if loaded from storage
+                if (typeof window.reAttachAnnotationCommentListeners === 'function') {
+                    window.reAttachAnnotationCommentListeners();
+                }
+                 // Add listeners to annotation buttons to save data after action
+                ['highlight-btn', 'underline-btn', 'comment-btn'].forEach(btnId => {
+                    const btn = document.getElementById(btnId);
+                    if (btn) {
+                        // Remove listener before adding to prevent duplicates if this function is called multiple times
+                        // This is a temporary fix; ideally, listeners are managed more centrally.
+                        const newBtn = btn.cloneNode(true);
+                        btn.parentNode.replaceChild(newBtn, btn);
+                        newBtn.addEventListener('click', () => setTimeout(saveCurrentAnnotationData, 50)); // Delay to allow action to complete
+                    }
+                });
+
+
+                // Clear and re-initialize canvas
+                const canvas = document.getElementById('annotation-canvas');
+                if (canvas && canvas.getContext) {
+                    const ctx = canvas.getContext('2d');
+                    if(ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    const stimulusAreaForCanvas = document.getElementById('stimulus-content-area');
+                    const contentDiv = stimulusAreaForCanvas ? (stimulusAreaForCanvas.querySelector('div > div') || stimulusAreaForCanvas.querySelector('div')) : null;
+                    if (contentDiv) {
+                        canvas.width = contentDiv.scrollWidth;
+                        canvas.height = contentDiv.scrollHeight;
+                    } else if (stimulusAreaForCanvas) {
+                        canvas.width = stimulusAreaForCanvas.scrollWidth;
+                        canvas.height = stimulusAreaForCanvas.scrollHeight;
+                    }
+                }
+                 // Ensure drawing mode is off by default
+                const toggleDrawingBtn = document.getElementById('toggle-drawing-btn');
+                if (toggleDrawingBtn && toggleDrawingBtn.classList.contains('bg-green-600')) { // If drawing was ON
+                    toggleDrawingBtn.click(); // Simulate click to turn it OFF
+                }
+                 const connectNodesBtn = document.getElementById('draw-connector-btn'); // Annotation component uses 'draw-connector-btn'
+                 if (connectNodesBtn && connectNodesBtn.classList.contains('bg-green-600')) { // If connecting was ON
+                     connectNodesBtn.click();
+                 }
+
+
+            }, 50);
+        };
+
+        const newSelectElement = selectElement.cloneNode(true);
+        selectElement.parentNode.replaceChild(newSelectElement, selectElement);
+
+        newSelectElement.addEventListener('change', (event) => {
+            loadAnnotationToolWithContent(event.target.value);
+        });
+
+        clearSampleAnnotationsButton.addEventListener('click', () => {
+            const currentSampleId = newSelectElement.value;
+            if (currentSampleId && confirm(`Are you sure you want to clear your saved annotations and deconstruction for "${sampleSacMaterials.find(s=>s.id===currentSampleId)?.title}"?`)) {
+                localStorage.removeItem(ANNOTATION_STORAGE_KEY_PREFIX + currentSampleId);
+                loadAnnotationToolWithContent(currentSampleId); // Reload to show clean version
+            }
+        });
+
+        if (sampleSacMaterials.length > 0) {
+            // Check if there's a previously selected sample ID in sessionStorage or a default
+            let initialSampleId = sessionStorage.getItem('lastSelectedAnnotationSampleId') || sampleSacMaterials[0].id;
+            if (!sampleSacMaterials.find(s => s.id === initialSampleId)) { // if stored id is invalid
+                initialSampleId = sampleSacMaterials[0].id;
+            }
+            newSelectElement.value = initialSampleId;
+            loadAnnotationToolWithContent(initialSampleId, true); // true to indicate it might be loading from storage
+
+            // Save last selected sample to session storage to persist across page reloads (but not browser close)
+            newSelectElement.addEventListener('change', (event) => {
+                 sessionStorage.setItem('lastSelectedAnnotationSampleId', event.target.value);
+                 loadAnnotationToolWithContent(event.target.value);
+            });
+        }
+
+        if (mappingContainer && !mappingContainer.hasChildNodes()) {
+            mappingContainer.innerHTML = InteractiveMappingComponent();
+        }
+
+    }, 0);
+
     return `
         <section id="unit3-sac2-prep" class="content-section">
             <h2 class="text-3xl font-bold text-purple-400 mb-6 text-center">Unit 3 SAC 2 Preparation</h2>
-            <p class="text-center text-slate-400 mb-8">Detailed activities and strategies to help you excel in your Unit 3 SAC 2.</p>
+            <p class="text-center text-slate-400 mb-8">This section provides structured activities and tools to help you prepare for your Unit 3 SACs, particularly focusing on question deconstruction and stimulus annotation.</p>
 
+            <article id="interactive-activity-1" class="mb-8 p-6 bg-slate-700/50 rounded-xl shadow-xl border border-slate-700">
+                <h3 class="text-2xl font-semibold text-purple-300 mb-3">Interactive Activity: SAC Annotation Practice</h3>
+                <p class="mb-4 text-slate-300">Select a sample SAC material below, then use the annotation tools to practice deconstructing the question and annotating the stimulus. Your work for each sample is saved locally in your browser.</p>
+
+                <div id="sample-loader-controls" class="mb-4 p-3 bg-slate-800 rounded-lg flex flex-wrap gap-2 items-center">
+                    <div>
+                        <label for="sample-material-select" class="block text-sm font-medium text-slate-200 mb-1">Select Sample Material:</label>
+                        <select id="sample-material-select" class="w-full md:w-auto p-2 bg-slate-600 border border-slate-500 rounded text-slate-200 focus:border-purple-500 focus:ring-purple-500">
+                            {/* Options will be populated by JavaScript */}
+                        </select>
+                    </div>
+                    <button id="clear-sample-annotations-btn" class="self-end px-3 py-2 bg-red-700 text-white rounded hover:bg-red-600 text-sm">Clear Saved Work for this Sample</button>
+                </div>
+
+                <div id="annotation-component-container">
+                    {/* InteractiveAnnotationComponent will be rendered here */}
+                </div>
+            </article>
+
+            <article id="interactive-activity-2" class="mt-12 mb-8 p-6 bg-slate-700/50 rounded-xl shadow-xl border border-slate-700">
+                <h3 class="text-2xl font-semibold text-purple-300 mb-3">Interactive Activity 2: Relationship Mapping & TEEL Planning</h3>
+                <p class="mb-4 text-slate-300">Use the tools below to create visual maps of relationships between key concepts from the stimulus or your own knowledge, and then structure your arguments using the TEEL paragraph planner.</p>
+                <div id="mapping-component-container">
+                    {/* InteractiveMappingComponent will be rendered here */}
+                </div>
+            </article>
+
+            {/* Original static content articles are below, but could be integrated or removed if this tool replaces them */}
+            {/*
             <article class="mb-8 p-6 bg-slate-800 rounded-lg shadow">
                 <h3 class="text-2xl font-semibold text-purple-300 mb-4">Activity 1: The "Full Practice SAC Simulation &amp; Deconstruction"</h3>
                 <p class="mb-3 text-slate-300">This is the most direct practice of the SAC task.</p>
@@ -241,6 +1420,7 @@ function Unit3SAC2PrepComponent() {
                     </li>
                 </ol>
             </article>
+            */}
         </section>
     `;
 }

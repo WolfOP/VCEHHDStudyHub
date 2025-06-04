@@ -4,7 +4,8 @@
   "description": "study site for vce health unit 3 and 4",
   "main": "script.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:css": "npx tailwindcss -i ./src/input.css -o ./dist/output.css --minify"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,11 @@
   "bugs": {
     "url": "https://github.com/WolfOP/VCEHHDStudyHub/issues"
   },
-  "homepage": "https://github.com/WolfOP/VCEHHDStudyHub#readme"
+  "homepage": "https://github.com/WolfOP/VCEHHDStudyHub#readme",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.8"
+  },
+  "devDependencies": {
+    "tailwindcss": "^4.1.8"
+  }
 }

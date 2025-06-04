@@ -189,3 +189,38 @@ ul:not(.flex-col) > li > .nav-link.active {
     visibility: visible;
     opacity: 1;
 }
+
+/* Annotation Styles */
+.highlighted-text {
+    background-color: rgba(250, 204, 21, 0.5); /* Tailwind yellow-400 with 50% opacity */
+    border-radius: 2px;
+    padding: 0.1em 0; /* Small vertical padding */
+}
+
+.underlined-text {
+    text-decoration: underline;
+    text-decoration-color: #a78bfa; /* Tailwind purple-400 */
+    text-decoration-thickness: 2px;
+}
+
+.commented-text {
+    background-color: rgba(139, 92, 246, 0.3); /* Tailwind violet-500 with 30% opacity */
+    cursor: help; /* Indicate it's interactive for comments */
+    border-radius: 2px;
+    padding: 0.1em 0; /* Small vertical padding */
+}
+
+/* Simple tooltip for comments - can be enhanced later */
+.annotation-tooltip {
+    position: absolute;
+    background-color: #1e293b; /* slate-800 */
+    color: #e2e8f0; /* slate-200 */
+    border: 1px solid #334155; /* slate-700 */
+    padding: 0.5rem 0.75rem; /* p-2 px-3 */
+    border-radius: 0.375rem; /* rounded-md */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    font-size: 0.875rem; /* text-sm */
+    z-index: 100; /* Ensure it's on top */
+    max-width: 250px;
+    word-wrap: break-word;
+}

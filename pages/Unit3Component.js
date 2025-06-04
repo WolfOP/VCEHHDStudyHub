@@ -1,6 +1,6 @@
 export function Unit3Component() {
     // Integrate both Area of Study 1 and 2 into a single return
-    return `
+  const aos1Content = `
     <section class="content-section">
         <h1 class="text-3xl font-bold mb-6">Unit 3: Australia's Health in a Globalised World</h1>
         <!-- Area of Study 1 -->
@@ -697,5 +697,14 @@ export function Unit3Component() {
             </li>
         </ul>
 
+    `;
+}
+return `
+        <section class="content-section">
+            <h1>Unit 3: Australia's Health in a Globalised World</h1>
+            <p>This unit explores health and wellbeing, disease, and illness as multidimensional, dynamic, and subject to different interpretations and contexts. It examines health and wellbeing as a global concept and highlights its importance as an individual and a collective resource.</p>
+            ${aos1Content}
+            ${aos2Content}
+        </section>
     `;
 }

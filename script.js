@@ -1147,9 +1147,7 @@ function Unit3SAC2PrepComponent() {
             // This will effectively reset the annotation component including its internal state like deconstructionDataStore
             annotationContainer.innerHTML = InteractiveAnnotationComponent();
 
-            return;
-            }
-
+           
             if (!isLoadingFromStorage) { // Only inject component HTML if not just loading from storage into existing
                  annotationContainer.innerHTML = InteractiveAnnotationComponent();
             }

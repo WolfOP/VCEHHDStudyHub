@@ -1,35 +1,52 @@
+// components/InteractiveMappingComponent.js
+
 export function InteractiveMappingComponent() {
     setTimeout(() => {
-        const mappingContainer = document.getElementById('mapping-tool-container');
-        const nodesContainer = document.getElementById('mapping-nodes-container');
-        const canvas = document.getElementById('mapping-canvas');
-        const addNodeButton = document.getElementById('add-node-btn');
-        const connectNodesButton = document.getElementById('connect-nodes-btn');
-        const teelParagraphsContainer = document.getElementById('teel-paragraphs-container');
-        const addTeelParagraphButton = document.getElementById('add-teel-paragraph-btn');
-        const removeTeelParagraphButton = document.getElementById('remove-teel-paragraph-btn');
-        const mappingToolMessage = document.getElementById('mapping-tool-message');
-        const clearMappingDataButton = document.getElementById('clear-mapping-data-btn');
-
-        if (!mappingContainer || !nodesContainer || !canvas || !addNodeButton || !connectNodesButton || !teelParagraphsContainer || !addTeelParagraphButton || !removeTeelParagraphButton || !clearMappingDataButton) {
-            console.error("One or more essential mapping component elements not found in DOM after render.");
-            return; 
+        // Ensure the component's own root element is used as the base for querySelector if needed,
+        // or ensure unique IDs are used if using getElementById.
+        // The ID 'mapping-tool-wrapper' is the root element returned by this component.
+        const componentWrapper = document.getElementById('mapping-tool-wrapper');
+        if (!componentWrapper) {
+            // console.error("InteractiveMappingComponent: Root wrapper 'mapping-tool-wrapper' not found.");
+            return; // Stop if the main wrapper isn't there
         }
 
+        // Now, find elements *within* this component's wrapper
+        const mappingContainer = componentWrapper.querySelector('#mapping-tool-container'); // This is the direct child for canvas
+        const nodesContainer = componentWrapper.querySelector('#mapping-nodes-container');
+        const canvas = componentWrapper.querySelector('#mapping-canvas');
+        const addNodeButton = componentWrapper.querySelector('#add-node-btn');
+        const connectNodesButton = componentWrapper.querySelector('#connect-nodes-btn');
+        const teelParagraphsContainer = componentWrapper.querySelector('#teel-paragraphs-container');
+        const addTeelParagraphButton = componentWrapper.querySelector('#add-teel-paragraph-btn');
+        const removeTeelParagraphButton = componentWrapper.querySelector('#remove-teel-paragraph-btn');
+        const mappingToolMessageEl = componentWrapper.querySelector('#mapping-tool-message'); 
+        const clearMappingDataButton = componentWrapper.querySelector('#clear-mapping-data-btn');
+
+        if (!mappingContainer || !nodesContainer || !canvas || !addNodeButton || !connectNodesButton || !teelParagraphsContainer || !addTeelParagraphButton || !removeTeelParagraphButton || !clearMappingDataButton || !mappingToolMessageEl) {
+            console.error("InteractiveMappingComponent: One or more essential child elements not found after render.");
+            // You could display an error message within mapping-component-container if this happens
+            const parentContainer = document.getElementById('mapping-component-container');
+            if (parentContainer) parentContainer.innerHTML = '<p class="text-red-500 text-center p-4">Error: Mapping tool could not initialize. Required elements missing.</p>';
+            return; 
+        }
+        
         const showMappingMessage = (message, duration = 3000) => {
-            if(mappingToolMessage) {
-                mappingToolMessage.textContent = message;
-                if (duration > 0) {
-                    setTimeout(() => {
-                        if(mappingToolMessage && mappingToolMessage.textContent === message) mappingToolMessage.textContent = '';
-                    }, duration);
-                }
-            } else {
-                console.log("Mapping Tool Message:", message);
+            // mappingToolMessageEl is already checked above
+            mappingToolMessageEl.textContent = message;
+            if (duration > 0) {
+                setTimeout(() => {
+                    if(mappingToolMessageEl && mappingToolMessageEl.textContent === message) mappingToolMessageEl.textContent = '';
+                }, duration);
             }
         };
 
         const ctx = canvas.getContext('2d');
+        if (!ctx) {
+            console.error("InteractiveMappingComponent: Failed to get 2D context from canvas.");
+            return;
+        }
+
         let nodes = [];
         let connections = [];
         let nodeIdCounter = 0;
@@ -37,9 +54,9 @@ export function InteractiveMappingComponent() {
         let connectingModeActive = false;
         let teelPlanData = [];
 
-        const MAPPING_STORAGE_KEY = 'mappingToolData_v1';
+        const MAPPING_STORAGE_KEY = 'mappingToolData_U3SAC2_v1';
 
-        const resizeCanvas = () => {
+         const resizeCanvas = () => {
             if (!mappingContainer || !canvas) return;
             canvas.width = mappingContainer.offsetWidth;
             canvas.height = mappingContainer.offsetHeight;
@@ -318,17 +335,26 @@ export function InteractiveMappingComponent() {
             });
         }
 
-        resizeCanvas();
+
+        // Ensure initial setup calls happen correctly
+        resizeCanvas(); // Initial draw based on container size
         window.addEventListener('resize', resizeCanvas);
 
-        if (!loadMappingData()) {
-            renderTeelParagraphs();
+        if (!loadMappingData()) { // If no saved data, setup defaults
+            renderTeelParagraphs(); 
             createNodeAndSave(50, 50, "Central Idea");
             createNodeAndSave(250, 150, "Related Concept");
+        } else {
+             // If data was loaded, resizeCanvas might be needed again if node rendering affects container size
+            setTimeout(resizeCanvas, 50); // Allow DOM to settle after recreating nodes
         }
 
-    }, 50);
 
+    }, 150); // Increased timeout to ensure parent DOM is fully ready
+
+    // This is the HTML structure of the mapping tool itself.
+    // The placeholder "Loading mapping tool..." is in the PARENT component.
+    // This component's job is to return its own HTML, which will replace that placeholder.
     return `
         <div id="mapping-tool-wrapper" class="p-4 bg-slate-800 rounded-lg shadow-md my-4">
             <h2 class="text-2xl font-semibold text-purple-300 mb-4">Interactive Relationship Mapping & Planning Tool</h2>
@@ -337,19 +363,23 @@ export function InteractiveMappingComponent() {
                 <button id="connect-nodes-btn" class="px-3 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-500 text-sm">Connect Nodes</button>
                 <button id="clear-mapping-data-btn" class="px-3 py-1.5 bg-red-700 text-white rounded hover:bg-red-600 text-sm">Clear All Mapping Data</button>
             </div>
-            <p id="mapping-tool-message" class="text-sm text-purple-300 h-5 mb-2"></p>
+            <p id="mapping-tool-message" class="text-sm text-purple-300 h-5 mb-2"></p> {/* Ensure this element exists */}
+            {/* This is the container the canvas should fill, using its dimensions */}
             <div id="mapping-tool-container" class="relative w-full h-[400px] md:h-[500px] border border-slate-600 rounded-lg bg-slate-800/50 overflow-hidden mb-6 shadow-inner">
                 <canvas id="mapping-canvas" class="absolute top-0 left-0 w-full h-full z-0"></canvas>
-                <div id="mapping-nodes-container" class="absolute top-0 left-0 w-full h-full z-10"></div>
+                <div id="mapping-nodes-container" class="absolute top-0 left-0 w-full h-full z-10">
+                    {/* Nodes will be appended here */}
+                </div>
             </div>
-
             <div id="teel-planner-section" class="p-4 bg-slate-800/70 rounded-lg shadow-inner mt-6 border border-slate-700">
                 <h3 class="text-xl font-semibold text-purple-300 mb-3">TEEL Paragraph Planner</h3>
                 <div id="teel-toolbar" class="mb-3 flex space-x-2">
                     <button id="add-teel-paragraph-btn" class="px-3 py-1.5 bg-green-600 text-white rounded hover:bg-green-500 text-sm">Add Paragraph</button>
                     <button id="remove-teel-paragraph-btn" class="px-3 py-1.5 bg-red-600 text-white rounded hover:bg-red-500 text-sm">Remove Last Paragraph</button>
                 </div>
-                <div id="teel-paragraphs-container" class="space-y-4 max-h-[400px] md:max-h-[600px] overflow-y-auto pr-2"></div>
+                <div id="teel-paragraphs-container" class="space-y-4 max-h-[400px] md:max-h-[600px] overflow-y-auto pr-2">
+                    {/* TEEL paragraph blocks will be rendered here */}
+                </div>
             </div>
         </div>
     `;

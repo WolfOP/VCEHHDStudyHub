@@ -1,5 +1,5 @@
 import { InteractiveAnnotationComponent } from './InteractiveAnnotationComponent.js';
-import { getInteractiveMappingHTML, initInteractiveMappingTool } from './InteractiveMappingComponent.js';
+import { getInteractiveMappingHTML, initInteractiveMappingTool } from './InteractiveMappingComponent.js'; // CORRECTED IMPORT
 // Define sampleSacMaterials here or import from a data file
 const sampleSacMaterials = [
     {
@@ -246,10 +246,10 @@ export function Unit3SAC2PrepComponent() {
             });
         }
 
-       if (mappingContainer && !mappingContainer.hasChildNodes()) {
-            mappingContainer.innerHTML = getInteractiveMappingHTML(); // Get the HTML structure
-            initInteractiveMappingTool(); // Call the JS logic initializer
-        } else if (mappingContainer && mappingContainer.hasChildNodes()) {
+       if (mappingContainer && !mappingContainer.hasChildNodes()) { // Or however you check if it needs to be rendered
+    mappingContainer.innerHTML = getInteractiveMappingHTML(); // Use the HTML-returning function
+    initInteractiveMappingTool(); // Then call the function that sets up the JS logic
+}     else if (mappingContainer && mappingContainer.hasChildNodes()) {
             // If content is already there (e.g., from a previous navigation that didn't fully clear/re-render the SAC prep page)
             // you might still want to re-initialize it to ensure event listeners are attached.
             // Or, ensure the parent component fully clears mappingContainer before re-adding.

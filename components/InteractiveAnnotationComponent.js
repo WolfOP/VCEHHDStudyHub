@@ -1,18 +1,15 @@
-
-let annotationSpanCounter = 0;
+let annotationSpanCounter = 0; 
 
 export function InteractiveAnnotationComponent() {
-    // The setTimeout ensures that the HTML for this component has been added to the DOM
-    // by the parent component (Unit3SAC2PrepComponent) before we try to get elements by ID.
     setTimeout(() => {
         // Get DOM elements specific to *this* annotation component instance
-        // These are fetched *after* the component's HTML is rendered.
         const componentRoot = document.getElementById('annotation-interface');
         if (!componentRoot) {
             // console.error("Annotation component root 'annotation-interface' not found.");
-            return; // Exit if the main container for this component isn't in the DOM
+            return; 
         }
 
+        // CORRECTED: Declare all variables ONCE here
         const stimulusArea = componentRoot.querySelector('#stimulus-content-area');
         const highlightButton = componentRoot.querySelector('#highlight-btn');
         const underlineButton = componentRoot.querySelector('#underline-btn');
@@ -20,26 +17,26 @@ export function InteractiveAnnotationComponent() {
         const canvas = componentRoot.querySelector('#annotation-canvas');
         const stimulusWrapper = componentRoot.querySelector('#stimulus-wrapper');
         const toggleDrawingButton = componentRoot.querySelector('#toggle-drawing-btn');
-        const drawConnectorButton = componentRoot.querySelector('#draw-connector-btn');
+        const drawConnectorButton = componentRoot.querySelector('#draw-connector-btn'); // Make sure ID in HTML is 'draw-connector-btn'
         const clearDrawingButton = componentRoot.querySelector('#clear-drawing-btn');
         
-        // Deconstruction input elements (assuming they are reliably present when this component is rendered)
         const deconCommandWordsInput = document.getElementById('decon-command-words');
         const deconKeyConceptsInput = document.getElementById('decon-key-concepts');
         const deconContentAreasInput = document.getElementById('decon-content-areas');
         const deconConstraintsInput = document.getElementById('decon-constraints');
 
-
         let currentTooltip = null;
         let ctx = null;
         let drawingModeActive = false;
-        let connectorModeActive = false; // For this component's connector tool
+        let connectorModeActive = false; 
         let isDrawing = false;
         let lastX, lastY;
-        let currentConnectorPoints = []; // Specific to this component's connector
+        let currentConnectorPoints = []; 
 
         if (!stimulusArea || !canvas || !stimulusWrapper || !toggleDrawingButton || !drawConnectorButton || !clearDrawingButton) {
             console.error("One or more required elements for annotation/drawing functionality not found within 'annotation-interface'.");
+            // It's possible highlightButton, underlineButton, commentButton might also be null if the HTML isn't fully ready.
+            // Consider checking them too if issues persist with those specific buttons.
             return;
         }
 
@@ -238,7 +235,7 @@ export function InteractiveAnnotationComponent() {
             // console.warn("Could not find content holder for resize observer in annotation tool.");
         }
 
-    }, 200); // Increased main setTimeout for InteractiveAnnotationComponent
+     }, 200); // Keep the timeout
 
     return `
         <div id="annotation-interface" class="p-4 bg-slate-800 rounded-lg shadow-md my-4">
@@ -276,5 +273,5 @@ export function InteractiveAnnotationComponent() {
                 </div>
             </div>
         </div>
-    `;
+   `;
 }

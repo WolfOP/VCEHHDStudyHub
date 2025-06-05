@@ -1,98 +1,88 @@
-let annotationSpanCounter = 0; // Counter for unique annotation span IDs
+
+let annotationSpanCounter = 0;
 
 export function InteractiveAnnotationComponent() {
+    // The setTimeout ensures that the HTML for this component has been added to the DOM
+    // by the parent component (Unit3SAC2PrepComponent) before we try to get elements by ID.
     setTimeout(() => {
-let drawingModeActive = false;
-let connectorModeActive = false;
-const canvas = document.getElementById('annotation-canvas'); // Ensure this is correctly fetched after HTML is rendered
-const stimulusArea = document.getElementById('stimulus-content-area'); // Ensure this is correctly fetched
- const toggleDrawingButton = document.getElementById('toggle-drawing-btn'); // Ensure this is correctly fetched
- const drawConnectorButton = document.getElementById('draw-connector-btn'); // Ensure this is correctly fetched
-        const stimulusArea = document.getElementById('stimulus-content-area');
-        const highlightButton = document.getElementById('highlight-btn');
-        const underlineButton = document.getElementById('underline-btn');
-        const commentButton = document.getElementById('comment-btn');
-        let currentTooltip = null; // To manage the single tooltip
+        // Get DOM elements specific to *this* annotation component instance
+        // These are fetched *after* the component's HTML is rendered.
+        const componentRoot = document.getElementById('annotation-interface');
+        if (!componentRoot) {
+            // console.error("Annotation component root 'annotation-interface' not found.");
+            return; // Exit if the main container for this component isn't in the DOM
+        }
 
-        // Deconstruction data store and input elements
-        const deconstructionDataStore = {};
+        const stimulusArea = componentRoot.querySelector('#stimulus-content-area');
+        const highlightButton = componentRoot.querySelector('#highlight-btn');
+        const underlineButton = componentRoot.querySelector('#underline-btn');
+        const commentButton = componentRoot.querySelector('#comment-btn');
+        const canvas = componentRoot.querySelector('#annotation-canvas');
+        const stimulusWrapper = componentRoot.querySelector('#stimulus-wrapper');
+        const toggleDrawingButton = componentRoot.querySelector('#toggle-drawing-btn');
+        const drawConnectorButton = componentRoot.querySelector('#draw-connector-btn');
+        const clearDrawingButton = componentRoot.querySelector('#clear-drawing-btn');
+        
+        // Deconstruction input elements (assuming they are reliably present when this component is rendered)
         const deconCommandWordsInput = document.getElementById('decon-command-words');
         const deconKeyConceptsInput = document.getElementById('decon-key-concepts');
         const deconContentAreasInput = document.getElementById('decon-content-areas');
         const deconConstraintsInput = document.getElementById('decon-constraints');
 
-        const stimulusContentElement = stimulusArea.querySelector('div');
 
-        const canvas = document.getElementById('annotation-canvas');
-        const stimulusWrapper = document.getElementById('stimulus-wrapper');
-        const toggleDrawingButton = document.getElementById('toggle-drawing-btn');
-        const drawConnectorButton = document.getElementById('draw-connector-btn');
-        const clearDrawingButton = document.getElementById('clear-drawing-btn');
-
+        let currentTooltip = null;
         let ctx = null;
         let drawingModeActive = false;
-        let connectorModeActive = false;
+        let connectorModeActive = false; // For this component's connector tool
         let isDrawing = false;
         let lastX, lastY;
-        let connectorPoints = [];
+        let currentConnectorPoints = []; // Specific to this component's connector
 
-        if (!stimulusArea || !canvas || !stimulusWrapper) {
-            console.error("Required elements for annotation/drawing component not found.");
+        if (!stimulusArea || !canvas || !stimulusWrapper || !toggleDrawingButton || !drawConnectorButton || !clearDrawingButton) {
+            console.error("One or more required elements for annotation/drawing functionality not found within 'annotation-interface'.");
             return;
         }
 
         const applyAnnotation = (styleClass) => {
             const selection = window.getSelection();
             if (!selection.rangeCount || selection.isCollapsed) return;
-
             const range = selection.getRangeAt(0);
             if (!stimulusArea.contains(range.commonAncestorContainer)) {
-                 alert("Please select text within the stimulus content area only.");
-                 return;
+                alert("Please select text within the stimulus content area only.");
+                return;
             }
-
             const span = document.createElement('span');
             span.id = `annotation-${annotationSpanCounter++}`;
             span.className = styleClass;
-
-            try {
-                range.surroundContents(span);
-            } catch (e) {
+            try { range.surroundContents(span); }
+            catch (e) {
                 span.appendChild(range.extractContents());
                 range.insertNode(span);
-                console.warn("Complex selection, used extract/insert fallback for annotation.", e);
+                console.warn("Complex selection for annotation, used extract/insert fallback.", e);
             }
             selection.removeAllRanges();
         };
 
         const addCommentToSelection = () => {
             const selection = window.getSelection();
-            if (!selection.rangeCount || selection.isCollapsed) {
-                alert("Please select text to comment on.");
-                return;
-            }
-
+            if (!selection.rangeCount || selection.isCollapsed) { alert("Please select text to comment on."); return; }
             const range = selection.getRangeAt(0);
             if (!stimulusArea.contains(range.commonAncestorContainer)) {
-                 alert("Please select text within the stimulus content area only.");
-                 return;
+                alert("Please select text within the stimulus content area only.");
+                return;
             }
-
             const commentText = prompt("Enter your comment:");
-            if (commentText) {
+            if (commentText && commentText.trim() !== "") {
                 const span = document.createElement('span');
                 span.id = `annotation-${annotationSpanCounter++}`;
                 span.className = 'commented-text';
                 span.dataset.comment = commentText;
-
-                try {
-                    range.surroundContents(span);
-                } catch (e) {
+                try { range.surroundContents(span); }
+                catch (e) {
                     span.appendChild(range.extractContents());
                     range.insertNode(span);
-                    console.warn("Complex selection, used extract/insert fallback for comment.", e);
+                    console.warn("Complex selection for comment, used extract/insert fallback.", e);
                 }
-
                 selection.removeAllRanges();
                 addCommentEventListeners(span);
             }
@@ -104,20 +94,18 @@ const stimulusArea = document.getElementById('stimulus-content-area'); // Ensure
             if (!targetSpan || !targetSpan.dataset.comment) return;
             const comment = targetSpan.dataset.comment;
             const tooltip = document.createElement('div');
-            tooltip.className = 'annotation-tooltip';
+            tooltip.className = 'annotation-tooltip'; // Ensure this class is defined in style.css
             tooltip.textContent = comment;
-            document.body.appendChild(tooltip);
+            document.body.appendChild(tooltip); // Append to body to avoid clipping issues
             currentTooltip = tooltip;
             const rect = targetSpan.getBoundingClientRect();
-            tooltip.style.left = `${rect.left + window.scrollX}px`;
-            tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
+            // Position tooltip near the mouse/element more reliably
+            tooltip.style.left = `${event.pageX + 10}px`;
+            tooltip.style.top = `${event.pageY + 10}px`;
         };
 
         const hideTooltip = () => {
-            if (currentTooltip) {
-                currentTooltip.remove();
-                currentTooltip = null;
-            }
+            if (currentTooltip) { currentTooltip.remove(); currentTooltip = null; }
         };
 
         const addCommentEventListeners = (element) => {
@@ -125,213 +113,133 @@ const stimulusArea = document.getElementById('stimulus-content-area'); // Ensure
             element.addEventListener('mouseleave', hideTooltip);
         };
 
-        if (highlightButton) {
-            highlightButton.addEventListener('click', () => applyAnnotation('highlighted-text'));
-        }
-        if (underlineButton) {
-            underlineButton.addEventListener('click', () => applyAnnotation('underlined-text'));
-        }
-        if (commentButton) {
-            commentButton.addEventListener('click', addCommentToSelection);
-        }
-
+        if (highlightButton) highlightButton.addEventListener('click', () => applyAnnotation('highlighted-text'));
+        if (underlineButton) underlineButton.addEventListener('click', () => applyAnnotation('underlined-text'));
+        if (commentButton) commentButton.addEventListener('click', addCommentToSelection);
+        
+        // Attach listeners to any pre-existing comments when component loads/re-renders
         stimulusArea.querySelectorAll('.commented-text').forEach(addCommentEventListeners);
-
-        const setupDeconstructionEventListeners = () => {
-            if (deconCommandWordsInput) {
-                deconCommandWordsInput.addEventListener('input', (e) => {
-                    deconstructionDataStore.commandWords = e.target.value;
-                });
-            }
-            if (deconKeyConceptsInput) {
-                deconKeyConceptsInput.addEventListener('input', (e) => {
-                    deconstructionDataStore.keyConcepts = e.target.value;
-                });
-            }
-            if (deconContentAreasInput) {
-                deconContentAreasInput.addEventListener('input', (e) => {
-                    deconstructionDataStore.contentAreas = e.target.value;
-                });
-            }
-            if (deconConstraintsInput) {
-                deconConstraintsInput.addEventListener('input', (e) => {
-                    deconstructionDataStore.constraints = e.target.value;
-                });
-            }
-        };
-        setupDeconstructionEventListeners();
-
-        if (typeof window.reAttachAnnotationCommentListeners !== 'function') {
-            window.reAttachAnnotationCommentListeners = () => {
-                const newStimulusArea = document.getElementById('stimulus-content-area');
-                if (newStimulusArea) {
-                    newStimulusArea.querySelectorAll('.commented-text').forEach(addCommentEventListeners);
-                }
-            };
-        }
+        
+        // Deconstruction input listeners are now handled by Unit3SAC2PrepComponent which has the save logic
 
         const initializeCanvas = () => {
-            if (canvas && stimulusArea && stimulusArea.parentElement === stimulusWrapper) {
-                const contentDiv = stimulusArea.querySelector('div > div') || stimulusArea.querySelector('div');
-                if (contentDiv) {
-                    canvas.width = contentDiv.scrollWidth;
-                    canvas.height = contentDiv.scrollHeight;
-                } else {
-                    canvas.width = stimulusArea.scrollWidth;
-                    canvas.height = stimulusArea.scrollHeight;
-                }
-
+            const contentHolder = stimulusArea.querySelector('div'); // Assuming stimulus is wrapped
+            if (canvas && stimulusArea && contentHolder) {
+                canvas.width = contentHolder.scrollWidth;
+                canvas.height = contentHolder.scrollHeight;
                 ctx = canvas.getContext('2d');
                 if (ctx) {
-                    ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)';
-                    ctx.lineWidth = 2;
-                    ctx.lineJoin = 'round';
+                    ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)'; 
+                    ctx.lineWidth = 2; 
+                    ctx.lineJoin = 'round'; 
                     ctx.lineCap = 'round';
-                } else {
-                    console.error("Failed to get 2D context from canvas.");
-                }
+                } else { console.error("Failed to get 2D context for annotation canvas."); }
             } else {
-                console.error("Canvas or stimulusArea not found for initialization");
+                // console.warn("Annotation canvas or stimulus content not fully ready for initCanvas.");
+            }
+        };
+        
+        const activateAnnotationDrawingMode = (activate) => {
+            drawingModeActive = activate;
+            if (canvas) canvas.style.pointerEvents = activate ? 'auto' : 'none';
+            if (stimulusArea) stimulusArea.style.userSelect = activate ? 'none' : 'auto';
+            if (toggleDrawingButton) {
+                toggleDrawingButton.classList.toggle('bg-green-600', activate);
+                toggleDrawingButton.classList.toggle('bg-red-500', !activate); 
+                toggleDrawingButton.textContent = activate ? "Drawing ON" : "Toggle Drawing";
+            }
+            if (activate) {
+                activateAnnotationConnectorMode(false); // Deactivate THIS component's connector mode
             }
         };
 
-        const activateDrawingMode = (activate) => {
-    drawingModeActive = activate;
-    if (canvas) {
-        canvas.style.pointerEvents = activate ? 'auto' : 'none';
-    }
-    if (stimulusArea) { 
-        stimulusArea.style.userSelect = activate ? 'none' : 'auto';
-    }
-    if (toggleDrawingButton) {
-        toggleDrawingButton.classList.toggle('bg-green-600', activate);
-        toggleDrawingButton.classList.toggle('bg-red-500', !activate); 
-        toggleDrawingButton.textContent = activate ? "Drawing ON" : "Toggle Drawing";
-    }
-    if (activate && typeof activateConnectorMode === 'function') { // Check if function exists before calling
-        activateConnectorMode(false); // Deactivate its own connector mode
-    }
-};
-        const activateConnectorMode = (activate) => {
-    connectorModeActive = activate;
-    // connectorPoints = []; // This should be reset if it's part of your connector logic for this component
-    if (canvas) {
-        canvas.style.pointerEvents = activate ? 'auto' : 'none';
-    }
-    if (stimulusArea) { 
-        stimulusArea.style.userSelect = activate ? 'none' : 'auto';
-    }
-    if (drawConnectorButton) { // This is the button within InteractiveAnnotationComponent
-        drawConnectorButton.classList.toggle('bg-green-600', activate);
-        drawConnectorButton.classList.toggle('bg-blue-500', !activate); // Default color
-        drawConnectorButton.textContent = activate ? "Connecting..." : "Draw Connector";
-    }
-    if (activate && typeof activateDrawingMode === 'function') { // Check if function exists before calling
-        activateDrawingMode(false); // Deactivate its own drawing mode
-    }
-};
-
-                if (selectedNodeForConnection) {
-                    document.getElementById(selectedNodeForConnection)?.classList.remove('ring-2', 'ring-green-500');
-                    selectedNodeForConnection = null;
-                }
-            } else {
-                // if (mappingToolMessage) mappingToolMessage.textContent = "";
+        const activateAnnotationConnectorMode = (activate) => {
+            connectorModeActive = activate;
+            currentConnectorPoints = []; 
+            if (canvas) canvas.style.pointerEvents = activate ? 'auto' : 'none';
+            if (stimulusArea) stimulusArea.style.userSelect = activate ? 'none' : 'auto';
+            if (drawConnectorButton) {
+                drawConnectorButton.classList.toggle('bg-green-600', activate);
+                drawConnectorButton.classList.toggle('bg-blue-500', !activate); 
+                drawConnectorButton.textContent = activate ? "Connecting..." : "Draw Connector";
+            }
+            if (activate) {
+                activateAnnotationDrawingMode(false); // Deactivate THIS component's drawing mode
             }
         };
-
-        const draw = (e) => {
+        
+        const drawAnnotationLine = (e) => {
             if (!isDrawing || !drawingModeActive || !ctx) return;
             const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
+            const x = e.clientX - rect.left; 
             const y = e.clientY - rect.top;
-
-            ctx.lineTo(x, y);
-            ctx.stroke();
+            ctx.lineTo(x, y); ctx.stroke();
             [lastX, lastY] = [x, y];
         };
 
-        const handleCanvasClick = (e) => {
+        const handleAnnotationCanvasClickForConnector = (e) => {
             if (!connectorModeActive || !ctx) return;
             const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
+            const x = e.clientX - rect.left; 
             const y = e.clientY - rect.top;
-
-            connectorPoints.push({ x, y });
-
-            ctx.fillStyle = 'rgba(59, 130, 246, 0.9)';
-            ctx.beginPath();
-            ctx.arc(x, y, 3, 0, Math.PI * 2);
-            ctx.fill();
-
-            if (connectorPoints.length === 2) {
-                ctx.beginPath();
-                ctx.moveTo(connectorPoints[0].x, connectorPoints[0].y);
-                ctx.lineTo(connectorPoints[1].x, connectorPoints[1].y);
-                ctx.strokeStyle = 'rgba(59, 130, 246, 0.9)';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-                ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)';
-                connectorPoints = [];
+            currentConnectorPoints.push({ x, y });
+            ctx.fillStyle = 'rgba(59, 130, 246, 0.9)'; // Blue for connector points
+            ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI * 2); ctx.fill();
+            if (currentConnectorPoints.length === 2) {
+                ctx.beginPath(); 
+                ctx.moveTo(currentConnectorPoints[0].x, currentConnectorPoints[0].y);
+                ctx.lineTo(currentConnectorPoints[1].x, currentConnectorPoints[1].y);
+                ctx.strokeStyle = 'rgba(59, 130, 246, 0.9)'; // Blue for connector line
+                ctx.lineWidth = 2; ctx.stroke();
+                ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)'; // Reset to default drawing color
+                currentConnectorPoints = [];
+                // Optionally deactivate connector mode after one connection:
+                // activateAnnotationConnectorMode(false); 
             }
         };
-
-        const clearCanvas = () => {
-            if (ctx && canvas) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-            }
+        
+        const clearAnnotationCanvas = () => { 
+            if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height); 
+            currentConnectorPoints = []; // Also clear connector points array
         };
 
-        if (toggleDrawingButton) {
-            toggleDrawingButton.addEventListener('click', () => activateDrawingMode(!drawingModeActive));
-        }
-        if (drawConnectorButton) {
-            drawConnectorButton.addEventListener('click', () => activateConnectorMode(!connectorModeActive));
-        }
-        if (clearDrawingButton) {
-            clearDrawingButton.addEventListener('click', clearCanvas);
-        }
+        toggleDrawingButton.addEventListener('click', () => activateAnnotationDrawingMode(!drawingModeActive));
+        drawConnectorButton.addEventListener('click', () => activateAnnotationConnectorMode(!connectorModeActive));
+        clearDrawingButton.addEventListener('click', clearAnnotationCanvas);
 
-        if (canvas) {
-            canvas.addEventListener('mousedown', (e) => {
-                if (drawingModeActive && ctx) {
-                    isDrawing = true;
-                    const rect = canvas.getBoundingClientRect();
-                    [lastX, lastY] = [e.clientX - rect.left, e.clientY - rect.top];
-                    ctx.beginPath();
-                    ctx.moveTo(lastX, lastY);
-                } else if (connectorModeActive) {
-                    handleCanvasClick(e);
-                }
-            });
-            canvas.addEventListener('mousemove', draw);
-            canvas.addEventListener('mouseup', () => {
-                if(drawingModeActive) isDrawing = false;
-            });
-            canvas.addEventListener('mouseout', () => {
-                if(drawingModeActive) isDrawing = false;
-            });
-        }
-
-        requestAnimationFrame(initializeCanvas);
-
-        const resizeObserver = new ResizeObserver(entries => {
-            for (let entry of entries) {
-                if (entry.target === stimulusArea) {
-                    if(canvas && stimulusArea) {
-                         const oldWidth = canvas.width;
-                         const oldHeight = canvas.height;
-                         if (oldWidth !== stimulusArea.scrollWidth || oldHeight !== stimulusArea.scrollHeight) {
-                            clearCanvas();
-                            initializeCanvas();
-                         }
-                    }
-                }
+        canvas.addEventListener('mousedown', (e) => {
+            if (drawingModeActive && ctx) {
+                isDrawing = true; 
+                const rect = canvas.getBoundingClientRect();
+                [lastX, lastY] = [e.clientX - rect.left, e.clientY - rect.top];
+                ctx.beginPath(); 
+                ctx.moveTo(lastX, lastY);
+            } else if (connectorModeActive) { 
+                handleAnnotationCanvasClickForConnector(e); 
             }
         });
-        if(stimulusArea) resizeObserver.observe(stimulusArea);
+        canvas.addEventListener('mousemove', drawAnnotationLine);
+        canvas.addEventListener('mouseup', () => { if(drawingModeActive) isDrawing = false; });
+        canvas.addEventListener('mouseout', () => { if(drawingModeActive) isDrawing = false; });
+        
+        // Initialize canvas after a short delay to ensure stimulus content dimensions are stable
+        setTimeout(initializeCanvas, 50); 
 
-    }, 0);
+        // Resize observer for the stimulus content area
+        const contentHolderForResize = stimulusArea.querySelector('div'); // Assuming content is in a direct child div
+        if (contentHolderForResize) {
+            const resizeObserver = new ResizeObserver(() => {
+                // console.log("Annotation stimulus content resized, re-initializing canvas.");
+                clearAnnotationCanvas();
+                initializeCanvas();
+            });
+            resizeObserver.observe(contentHolderForResize);
+        } else {
+            // console.warn("Could not find content holder for resize observer in annotation tool.");
+        }
+
+    }, 200); // Increased main setTimeout for InteractiveAnnotationComponent
+
     return `
         <div id="annotation-interface" class="p-4 bg-slate-800 rounded-lg shadow-md my-4">
             <h2 class="text-2xl font-semibold text-purple-300 mb-4">Interactive Annotation Tool</h2>
@@ -344,43 +252,29 @@ const stimulusArea = document.getElementById('stimulus-content-area'); // Ensure
                 <button id="clear-drawing-btn" class="px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 text-sm">Clear Drawings</button>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <div id="sac-question-display" class="p-3 bg-slate-700 rounded">
-                    <h4 class="text-lg font-medium text-purple-200 mb-2">Sample SAC Question:</h4>
-                    <p class="text-slate-300 text-sm">Analyse the factors that influence the health and wellbeing of young people in Australia, using information from the provided sources and your own knowledge.</p>
+                <div id="sac-question-display" class="p-3 bg-slate-700 rounded min-h-[100px]">
+                     <h4 class="text-lg font-medium text-purple-200 mb-1">Sample SAC Question:</h4>
+                     <p class="text-slate-300 text-sm">Loading question...</p>
                 </div>
                 <div id="sac-question-deconstruction-area" class="p-3 bg-slate-700 rounded">
                     <h4 class="text-lg font-medium text-purple-200 mb-2">Deconstruct the Question:</h4>
                     <div class="space-y-3">
-                        <div>
-                            <label for="decon-command-words" class="block text-xs font-medium text-slate-300 mb-1">Command Word(s):</label>
-                            <input type="text" id="decon-command-words" name="decon-command-words" class="deconstruction-input w-full p-2 text-xs bg-slate-600 border border-slate-500 rounded focus:border-purple-500 focus:ring-purple-500 placeholder-slate-400 text-slate-200" placeholder="e.g., Analyse, Explain, Discuss...">
-                        </div>
-                        <div>
-                            <label for="decon-key-concepts" class="block text-xs font-medium text-slate-300 mb-1">Key Concepts:</label>
-                            <textarea id="decon-key-concepts" name="decon-key-concepts" rows="2" class="deconstruction-input w-full p-2 text-xs bg-slate-600 border border-slate-500 rounded focus:border-purple-500 focus:ring-purple-500 placeholder-slate-400 text-slate-200" placeholder="e.g., Health and wellbeing, Young people, Factors..."></textarea>
-                        </div>
-                        <div>
-                            <label for="decon-content-areas" class="block text-xs font-medium text-slate-300 mb-1">Required Content Areas (from Study Design):</label>
-                            <textarea id="decon-content-areas" name="decon-content-areas" rows="2" class="deconstruction-input w-full p-2 text-xs bg-slate-600 border border-slate-500 rounded focus:border-purple-500 focus:ring-purple-500 placeholder-slate-400 text-slate-200" placeholder="e.g., Factors influencing h&w, Australia's health status..."></textarea>
-                        </div>
-                        <div>
-                            <label for="decon-constraints" class="block text-xs font-medium text-slate-300 mb-1">Constraints/Specifics:</label>
-                            <textarea id="decon-constraints" name="decon-constraints" rows="2" class="deconstruction-input w-full p-2 text-xs bg-slate-600 border border-slate-500 rounded focus:border-purple-500 focus:ring-purple-500 placeholder-slate-400 text-slate-200" placeholder="e.g., Use provided sources, Own knowledge, Young people in Australia..."></textarea>
-                        </div>
+                        <div><label for="decon-command-words" class="block text-xs font-medium text-slate-300 mb-1">Command Word(s):</label><input type="text" id="decon-command-words" name="decon-command-words" class="deconstruction-input w-full p-2 text-xs bg-slate-600 border border-slate-500 rounded focus:border-purple-500 focus:ring-purple-500 placeholder-slate-400 text-slate-200" placeholder="e.g., Analyse, Explain..."></div>
+                        <div><label for="decon-key-concepts" class="block text-xs font-medium text-slate-300 mb-1">Key Concepts:</label><textarea id="decon-key-concepts" name="decon-key-concepts" rows="2" class="deconstruction-input w-full p-2 text-xs bg-slate-600 border border-slate-500 rounded focus:border-purple-500 focus:ring-purple-500 placeholder-slate-400 text-slate-200" placeholder="e.g., Health and wellbeing..."></textarea></div>
+                        <div><label for="decon-content-areas" class="block text-xs font-medium text-slate-300 mb-1">Required Content Areas (from Study Design):</label><textarea id="decon-content-areas" name="decon-content-areas" rows="2" class="deconstruction-input w-full p-2 text-xs bg-slate-600 border border-slate-500 rounded focus:border-purple-500 focus:ring-purple-500 placeholder-slate-400 text-slate-200" placeholder="e.g., Factors influencing h&w..."></textarea></div>
+                        <div><label for="decon-constraints" class="block text-xs font-medium text-slate-300 mb-1">Constraints/Specifics:</label><textarea id="decon-constraints" name="decon-constraints" rows="2" class="deconstruction-input w-full p-2 text-xs bg-slate-600 border border-slate-500 rounded focus:border-purple-500 focus:ring-purple-500 placeholder-slate-400 text-slate-200" placeholder="e.g., Use provided sources..."></textarea></div>
                     </div>
                 </div>
             </div>
-            <div id="stimulus-wrapper" class="relative border border-slate-600 rounded">
+            <div id="stimulus-wrapper" class="relative border border-slate-600 rounded min-h-[250px]"> 
                 <canvas id="annotation-canvas" class="absolute top-0 left-0 pointer-events-none z-10"></canvas>
-                <div id="stimulus-content-area" class="p-3 bg-slate-700 rounded h-64 overflow-y-auto text-slate-300 text-sm relative z-0">
-                    <h4 class="text-lg font-medium text-purple-200 mb-2">Stimulus Material:</h4>
-                    <p><strong>Source 1: Youth Mental Health Report Snippet (2023)</strong></p>
-                <p>Recent studies indicate a growing concern regarding the mental health of young Australians. Approximately one in seven young people aged 12-17 years experience a mental disorder each year. The impact of social media, academic pressure, and societal expectations are frequently cited as significant contributors. <strong class="font-bold">Early intervention and accessible support services are crucial</strong>, yet many young individuals face barriers such as stigma, lack of awareness about available help, or long waiting lists for services.</p>
-                <p>Furthermore, the transition from adolescence to adulthood presents unique challenges. Young people navigating changes in education, employment, and personal relationships may experience heightened stress and anxiety. <em class="italic">Community-based programs that foster resilience and coping skills have shown promising results</em> in mitigating some of these negative impacts.</p>
-                <p><strong>Source 2: Physical Activity Guidelines Extract</strong></p>
-                <p>National guidelines recommend that young people aged 13–17 years should accumulate at least 60 minutes of moderate to vigorous intensity physical activity every day. Regular physical activity is linked to improved physical health, better mental wellbeing, and enhanced cognitive function. However, current data suggests that <strong class="font-bold">only a small percentage of Australian youth are meeting these guidelines</strong>. Factors such as increased screen time, reliance on passive transport, and limited access to safe recreational spaces in some communities contribute to this trend. Encouraging participation in a variety of enjoyable physical activities is key.</p>
+                {/* The actual stimulus text will be loaded into a child div of stimulus-content-area by Unit3SAC2PrepComponent */}
+                <div id="stimulus-content-area" class="p-3 bg-slate-700/80 rounded h-64 md:h-80 overflow-y-auto text-slate-300 text-sm relative z-0">
+                     <h4 class="text-lg font-medium text-purple-200 mb-2">Stimulus Material:</h4>
+                     <p class="text-slate-400 italic">Loading stimulus...</p>
+                     {/* This initial p tag will be replaced by stimulus HTML */}
+                </div>
             </div>
-            <div id="comment-display-area" class="mt-4"></div>
         </div>
     `;
 }

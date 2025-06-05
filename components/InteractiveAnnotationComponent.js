@@ -2,6 +2,12 @@ let annotationSpanCounter = 0; // Counter for unique annotation span IDs
 
 export function InteractiveAnnotationComponent() {
     setTimeout(() => {
+let drawingModeActive = false;
+let connectorModeActive = false;
+const canvas = document.getElementById('annotation-canvas'); // Ensure this is correctly fetched after HTML is rendered
+const stimulusArea = document.getElementById('stimulus-content-area'); // Ensure this is correctly fetched
+ const toggleDrawingButton = document.getElementById('toggle-drawing-btn'); // Ensure this is correctly fetched
+ const drawConnectorButton = document.getElementById('draw-connector-btn'); // Ensure this is correctly fetched
         const stimulusArea = document.getElementById('stimulus-content-area');
         const highlightButton = document.getElementById('highlight-btn');
         const underlineButton = document.getElementById('underline-btn');
@@ -190,40 +196,41 @@ export function InteractiveAnnotationComponent() {
         };
 
         const activateDrawingMode = (activate) => {
-            drawingModeActive = activate;
-            if (canvas) {
-                canvas.style.pointerEvents = activate ? 'auto' : 'none';
-            }
-             if (stimulusArea) { // Check if stimulusArea exists
-                stimulusArea.style.userSelect = activate ? 'none' : 'auto';
-            }
-            if (toggleDrawingButton) {
-                toggleDrawingButton.classList.toggle('bg-green-600', activate);
-                toggleDrawingButton.classList.toggle('bg-red-500', !activate); // Default color if not active
-                toggleDrawingButton.textContent = activate ? "Drawing ON" : "Toggle Drawing";
-            }
-            if (activate) {
-                activateConnectorMode(false); // Deactivate its own connector mode
-            }
-        };
+    drawingModeActive = activate;
+    if (canvas) {
+        canvas.style.pointerEvents = activate ? 'auto' : 'none';
+    }
+    if (stimulusArea) { 
+        stimulusArea.style.userSelect = activate ? 'none' : 'auto';
+    }
+    if (toggleDrawingButton) {
+        toggleDrawingButton.classList.toggle('bg-green-600', activate);
+        toggleDrawingButton.classList.toggle('bg-red-500', !activate); 
+        toggleDrawingButton.textContent = activate ? "Drawing ON" : "Toggle Drawing";
+    }
+    if (activate && typeof activateConnectorMode === 'function') { // Check if function exists before calling
+        activateConnectorMode(false); // Deactivate its own connector mode
+    }
+};
         const activateConnectorMode = (activate) => {
-            connectorModeActive = activate;
-            connectorPoints = []; // Reset points when mode changes
-            if (canvas) {
-                canvas.style.pointerEvents = activate ? 'auto' : 'none';
-            }
-            if (stimulusArea) { // Check if stimulusArea exists
-                stimulusArea.style.userSelect = activate ? 'none' : 'auto';
-            }
-            if (drawConnectorButton) { // This is the button within InteractiveAnnotationComponent
-                drawConnectorButton.classList.toggle('bg-green-600', activate);
-                drawConnectorButton.classList.toggle('bg-blue-500', !activate); // Default color
-                drawConnectorButton.textContent = activate ? "Connecting..." : "Draw Connector";
-            }
-            if (activate) {
-                activateDrawingMode(false); // Deactivate its own drawing mode
-            }
-        };
+    connectorModeActive = activate;
+    // connectorPoints = []; // This should be reset if it's part of your connector logic for this component
+    if (canvas) {
+        canvas.style.pointerEvents = activate ? 'auto' : 'none';
+    }
+    if (stimulusArea) { 
+        stimulusArea.style.userSelect = activate ? 'none' : 'auto';
+    }
+    if (drawConnectorButton) { // This is the button within InteractiveAnnotationComponent
+        drawConnectorButton.classList.toggle('bg-green-600', activate);
+        drawConnectorButton.classList.toggle('bg-blue-500', !activate); // Default color
+        drawConnectorButton.textContent = activate ? "Connecting..." : "Draw Connector";
+    }
+    if (activate && typeof activateDrawingMode === 'function') { // Check if function exists before calling
+        activateDrawingMode(false); // Deactivate its own drawing mode
+    }
+};
+
                 if (selectedNodeForConnection) {
                     document.getElementById(selectedNodeForConnection)?.classList.remove('ring-2', 'ring-green-500');
                     selectedNodeForConnection = null;

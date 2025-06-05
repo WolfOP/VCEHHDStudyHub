@@ -1,6 +1,5 @@
 import { InteractiveAnnotationComponent } from './InteractiveAnnotationComponent.js';
-import { InteractiveMappingComponent } from './InteractiveMappingComponent.js';
-
+import { getInteractiveMappingHTML, initInteractiveMappingTool } from './InteractiveMappingComponent.js';
 // Define sampleSacMaterials here or import from a data file
 const sampleSacMaterials = [
     {
@@ -247,10 +246,19 @@ export function Unit3SAC2PrepComponent() {
             });
         }
 
-        if (mappingContainer && !mappingContainer.hasChildNodes()) {
-            mappingContainer.innerHTML = InteractiveMappingComponent();
+       if (mappingContainer && !mappingContainer.hasChildNodes()) {
+            mappingContainer.innerHTML = getInteractiveMappingHTML(); // Get the HTML structure
+            initInteractiveMappingTool(); // Call the JS logic initializer
+        } else if (mappingContainer && mappingContainer.hasChildNodes()) {
+            // If content is already there (e.g., from a previous navigation that didn't fully clear/re-render the SAC prep page)
+            // you might still want to re-initialize it to ensure event listeners are attached.
+            // Or, ensure the parent component fully clears mappingContainer before re-adding.
+            // For now, let's assume it's freshly rendered or we re-init.
+            // This might need refinement based on how your router handles re-visiting pages.
+            // A simple re-init might cause issues if the component isn't designed to be re-initialized on existing DOM.
+            // For now, the `!mappingContainer.hasChildNodes()` check should prevent re-init if already loaded.
+            // If it *is* re-rendered by the router clearing #app-content, then this flow is fine.
         }
-
         // Ottawa Charter Activity Logic
         const loadOttawaAnalysis = () => {
             const saved = localStorage.getItem(OTTAWA_ANALYSIS_STORAGE_KEY);

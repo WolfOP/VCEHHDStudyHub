@@ -193,40 +193,43 @@ export function InteractiveAnnotationComponent() {
             drawingModeActive = activate;
             if (canvas) {
                 canvas.style.pointerEvents = activate ? 'auto' : 'none';
+            }
+             if (stimulusArea) { // Check if stimulusArea exists
                 stimulusArea.style.userSelect = activate ? 'none' : 'auto';
             }
             if (toggleDrawingButton) {
                 toggleDrawingButton.classList.toggle('bg-green-600', activate);
-                toggleDrawingButton.classList.toggle('bg-red-500', !activate);
+                toggleDrawingButton.classList.toggle('bg-red-500', !activate); // Default color if not active
                 toggleDrawingButton.textContent = activate ? "Drawing ON" : "Toggle Drawing";
             }
             if (activate) {
-                activateConnectorMode(false);
+                activateConnectorMode(false); // Deactivate its own connector mode
             }
         };
-
         const activateConnectorMode = (activate) => {
             connectorModeActive = activate;
-            connectorPoints = [];
+            connectorPoints = []; // Reset points when mode changes
             if (canvas) {
                 canvas.style.pointerEvents = activate ? 'auto' : 'none';
+            }
+            if (stimulusArea) { // Check if stimulusArea exists
                 stimulusArea.style.userSelect = activate ? 'none' : 'auto';
             }
-            if (drawConnectorButton) {
+            if (drawConnectorButton) { // This is the button within InteractiveAnnotationComponent
                 drawConnectorButton.classList.toggle('bg-green-600', activate);
-                drawConnectorButton.classList.toggle('bg-blue-500', !activate);
-                const connectBtnText = document.getElementById('connect-nodes-btn-text');
-                if (connectBtnText) connectBtnText.textContent = activate ? "Connecting (Select 2 Nodes)" : "Connect Nodes";
-                if (mappingToolMessage) mappingToolMessage.textContent = activate ? "Click the first node to connect." : "";
+                drawConnectorButton.classList.toggle('bg-blue-500', !activate); // Default color
+                drawConnectorButton.textContent = activate ? "Connecting..." : "Draw Connector";
             }
             if (activate) {
-                activateDrawingMode(false);
+                activateDrawingMode(false); // Deactivate its own drawing mode
+            }
+        };
                 if (selectedNodeForConnection) {
                     document.getElementById(selectedNodeForConnection)?.classList.remove('ring-2', 'ring-green-500');
                     selectedNodeForConnection = null;
                 }
             } else {
-                 if (mappingToolMessage) mappingToolMessage.textContent = "";
+                // if (mappingToolMessage) mappingToolMessage.textContent = "";
             }
         };
 

@@ -390,15 +390,14 @@ export function Unit3SAC2PrepComponent() {
         const selectedOttawaCampaignDetailsContainer = document.getElementById('selected-ottawa-campaign-details');
         const ottawaAnalysisToolRoot = document.getElementById('ottawa-charter-analysis-tool');
         const saveOttawaAnalysisBtn = document.getElementById('save-ottawa-analysis-btn');
-console.log(finalSampleSacMaterialsString);
+        console.log(finalSampleSacMaterialsString);
         const sampleSacMaterials = JSON.parse(finalSampleSacMaterialsString);
         const ANNOTATION_STORAGE_KEY_PREFIX = 'annotationData_U3SAC2_v3_Refactored_';
         const OTTAWA_ANALYSIS_STORAGE_KEY_PREFIX = 'ottawaAnalysis_U3SAC2_';
         const LAST_SELECTED_OTTAWA_CAMPAIGN_KEY = 'lastSelectedOttawaCampaignId_U3SAC2';
 
-
         if (selectElement && selectElement.options.length <= 1) { // Populate annotation samples
-             sampleSacMaterials.forEach(sample => {
+            sampleSacMaterials.forEach(sample => {
                 const option = document.createElement('option');
                 option.value = sample.id;
                 option.textContent = sample.title;
@@ -448,8 +447,8 @@ console.log(finalSampleSacMaterialsString);
 
                         if (questionDisplayP) questionDisplayP.textContent = selectedSample.question;
                         else {
-                             const qDisplayDiv = annotationInterfaceRoot.querySelector('#sac-question-display-annot');
-                             if(qDisplayDiv) qDisplayDiv.innerHTML = `<h4 class="text-lg font-medium text-purple-200 mb-1">Sample SAC Question:</h4><p class="text-slate-300 text-sm">${selectedSample.question}</p>`;
+                            const qDisplayDiv = annotationInterfaceRoot.querySelector('#sac-question-display-annot');
+                            if(qDisplayDiv) qDisplayDiv.innerHTML = `<h4 class="text-lg font-medium text-purple-200 mb-1">Sample SAC Question:</h4><p class="text-slate-300 text-sm">${selectedSample.question}</p>`;
                         }
 
                         if (stimulusTextHolder) stimulusTextHolder.innerHTML = selectedSample.stimulus;
@@ -467,7 +466,7 @@ console.log(finalSampleSacMaterialsString);
                             contentAreas: 'decon-content-areas-annot', constraints: 'decon-constraints-annot'
                         };
                         for (const key in deconstructionInputsMap) {
-                           const inputElement = annotationInterfaceRoot.querySelector(`#${deconstructionInputsMap[key]}`);
+                            const inputElement = annotationInterfaceRoot.querySelector(`#${deconstructionInputsMap[key]}`);
                             if (inputElement) {
                                 inputElement.value = (savedData && savedData.deconstruction && savedData.deconstruction[key]) ? savedData.deconstruction[key] : '';
                                 inputElement.removeEventListener('input', saveCurrentAnnotationData); 
@@ -478,7 +477,7 @@ console.log(finalSampleSacMaterialsString);
                             window.reAttachAnnotationCommentListeners();
                         }
                         ['highlight-btn-annot', 'underline-btn-annot', 'comment-btn-annot'].forEach(btnId => {
-                            const btn = annotationInterfaceRoot.querySelector(\`#\${btnId}\`);
+                            const btn = annotationInterfaceRoot.querySelector(`#${btnId}`);
                             if (btn) { 
                                 const newBtn = btn.cloneNode(true); 
                                 btn.parentNode.replaceChild(newBtn, btn);
@@ -499,7 +498,7 @@ console.log(finalSampleSacMaterialsString);
                     sessionStorage.setItem('lastSelectedAnnotationSampleId_U3SAC2', event.target.value);
                     loadAnnotationToolWithContent(event.target.value);
                 } else {
-                     if (annotationContainer) annotationContainer.innerHTML = '<p class="text-slate-400 italic text-center py-4">Select a sample material.</p>';
+                    if (annotationContainer) annotationContainer.innerHTML = '<p class="text-slate-400 italic text-center py-4">Select a sample material.</p>';
                 }
             });
             if (sampleSacMaterials.length > 0) {
@@ -516,7 +515,7 @@ console.log(finalSampleSacMaterialsString);
         if (clearSampleAnnotationsButton) {
             clearSampleAnnotationsButton.addEventListener('click', () => {
                 const currentSampleId = selectElement ? selectElement.value : null;
-                if (currentSampleId && currentSampleId !== "" && confirm(\`Clear saved work for "\${sampleSacMaterials.find(s=>s.id===currentSampleId)?.title}"?"\`)) {
+                if (currentSampleId && currentSampleId !== "" && confirm(`Clear saved work for "${sampleSacMaterials.find(s=>s.id===currentSampleId)?.title}"?`)) {
                     localStorage.removeItem(ANNOTATION_STORAGE_KEY_PREFIX + currentSampleId);
                     loadAnnotationToolWithContent(currentSampleId); 
                 }
@@ -542,18 +541,18 @@ console.log(finalSampleSacMaterialsString);
         // --- Ottawa Charter Activity Logic ---
         const populateOttawaCampaignDetails = (campaign) => {
             if (!selectedOttawaCampaignDetailsContainer || !campaign) return;
-            selectedOttawaCampaignDetailsContainer.innerHTML = \`
-                <h4 class="text-lg font-medium text-purple-200 mb-2">\${campaign.name}</h4>
-                <p class="text-sm text-slate-300 mb-1"><strong>Primary Health Issue:</strong> \${campaign.primaryHealthIssue}</p>
-                <p class="text-sm text-slate-300 mb-1"><strong>Origin/Implementer:</strong> \${campaign.originImplementer}</p>
+            selectedOttawaCampaignDetailsContainer.innerHTML = `
+                <h4 class="text-lg font-medium text-purple-200 mb-2">${campaign.name}</h4>
+                <p class="text-sm text-slate-300 mb-1"><strong>Primary Health Issue:</strong> ${campaign.primaryHealthIssue}</p>
+                <p class="text-sm text-slate-300 mb-1"><strong>Origin/Implementer:</strong> ${campaign.originImplementer}</p>
                 <div class="text-sm text-slate-300 mb-1"><strong>Key Objectives:</strong>
                     <ul class="list-disc pl-5 space-y-1">
-                        \${campaign.keyObjectives.map(obj => \`<li>\${obj}</li>\`).join('')}
+                        ${campaign.keyObjectives.map(obj => `<li>${obj}</li>`).join('')}
                     </ul>
                 </div>
-                <div class="text-sm text-slate-300 mb-1"><strong>Main Strategies:</strong> \${campaign.mainStrategies}</div>
-                <p class="text-sm text-slate-300"><strong>Outcomes/Impacts:</strong> \${campaign.outcomesImpacts}</p>
-            \`;
+                <div class="text-sm text-slate-300 mb-1"><strong>Main Strategies:</strong> ${campaign.mainStrategies}</div>
+                <p class="text-sm text-slate-300"><strong>Outcomes/Impacts:</strong> ${campaign.outcomesImpacts}</p>
+            `;
         };
 
         const clearOttawaAnalysisForm = () => {
@@ -580,7 +579,7 @@ console.log(finalSampleSacMaterialsString);
                     ottawaAnalysisToolRoot.querySelectorAll('textarea[id^="justify-"]').forEach(ta => {
                         const areaValue = ta.id.substring(8); 
                         const originalAreaName = ['Build Healthy Public Policy', 'Create Supportive Environments', 'Strengthen Community Action', 'Develop Personal Skills', 'Reorient Health Services']
-                                                 .find(a => a.toLowerCase().replace(/\s+/g, '-') === areaValue);
+                            .find(a => a.toLowerCase().replace(/\s+/g, '-') === areaValue);
                         if(originalAreaName && data.justifications) ta.value = data.justifications[originalAreaName] || '';
                     });
                     const strengthsEl = ottawaAnalysisToolRoot.querySelector('#campaign-strengths'); if (strengthsEl && data.strengths) strengthsEl.value = data.strengths;
@@ -606,13 +605,13 @@ console.log(finalSampleSacMaterialsString);
             };
             ottawaAnalysisToolRoot.querySelectorAll('input[type="checkbox"]').forEach(cb => { data.actionAreasChecked[cb.value] = cb.checked; });
             ottawaAnalysisToolRoot.querySelectorAll('textarea[id^="justify-"]').forEach(ta => {
-                 const areaValue = ta.id.substring(8);
-                 const originalAreaName = ['Build Healthy Public Policy', 'Create Supportive Environments', 'Strengthen Community Action', 'Develop Personal Skills', 'Reorient Health Services']
-                                                 .find(a => a.toLowerCase().replace(/\s+/g, '-') === areaValue);
+                const areaValue = ta.id.substring(8);
+                const originalAreaName = ['Build Healthy Public Policy', 'Create Supportive Environments', 'Strengthen Community Action', 'Develop Personal Skills', 'Reorient Health Services']
+                    .find(a => a.toLowerCase().replace(/\s+/g, '-') === areaValue);
                 if(originalAreaName) data.justifications[originalAreaName] = ta.value;
             });
             localStorage.setItem(storageKey, JSON.stringify(data));
-            alert(\`Ottawa Charter analysis for "\${ottawaCampaigns.find(c => c.id === selectedCampaignId)?.name}" saved!\`);
+            alert(`Ottawa Charter analysis for "${ottawaCampaigns.find(c => c.id === selectedCampaignId)?.name}" saved!`);
         };
 
         if (ottawaCampaignSelect) {
@@ -648,17 +647,15 @@ console.log(finalSampleSacMaterialsString);
                 // Select the first campaign if no session history or invalid/default
                 ottawaCampaignSelect.value = ottawaCampaigns[0].id;
             }
-             // Trigger change to load details and analysis
+            // Trigger change to load details and analysis
             if(ottawaCampaignSelect.value){
                 const initialCampaign = ottawaCampaigns.find(c => c.id === ottawaCampaignSelect.value);
                 populateOttawaCampaignDetails(initialCampaign);
                 loadOttawaAnalysis();
             } else {
-                 if(selectedOttawaCampaignDetailsContainer) selectedOttawaCampaignDetailsContainer.innerHTML = '<p class="text-slate-400 italic text-center py-4">Select a campaign to view its details and analyse it.</p>';
-                 clearOttawaAnalysisForm();
+                if(selectedOttawaCampaignDetailsContainer) selectedOttawaCampaignDetailsContainer.innerHTML = '<p class="text-slate-400 italic text-center py-4">Select a campaign to view its details and analyse it.</p>';
+                clearOttawaAnalysisForm();
             }
-
-
         }
         if (saveOttawaAnalysisBtn) saveOttawaAnalysisBtn.addEventListener('click', saveOttawaAnalysis);
 

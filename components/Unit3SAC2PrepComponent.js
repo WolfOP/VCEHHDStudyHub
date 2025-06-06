@@ -246,22 +246,12 @@ export function Unit3SAC2PrepComponent() {
             });
         }
 
-       if (mappingContainer && !mappingContainer.hasChildNodes()) { // Or however you check if it needs to be rendered
-    mappingContainer.innerHTML = getInteractiveMappingHTML(); // Use the HTML-returning function
-           console.log("Unit3SAC2PrepComponent: Mapping tool HTML *should be* injected now.");
-    initInteractiveMappingTool(); // Then call the function that sets up the JS logic
-}     else if (mappingContainer && mappingContainer.hasChildNodes()) {
-            // If content is already there (e.g., from a previous navigation that didn't fully clear/re-render the SAC prep page)
-            // you might still want to re-initialize it to ensure event listeners are attached.
-           console.log("Unit3SAC2PrepComponent: Mapping tool container already has children. Assuming already initialized or error in re-init logic.");
-            // Or, ensure the parent component fully clears mappingContainer before re-adding.
-            // For now, let's assume it's freshly rendered or we re-init.
-            // This might need refinement based on how your router handles re-visiting pages.
-            // A simple re-init might cause issues if the component isn't designed to be re-initialized on existing DOM.
-            // For now, the `!mappingContainer.hasChildNodes()` check should prevent re-init if already loaded.
-            // If it *is* re-rendered by the router clearing #app-content, then this flow is fine.
+      // NEW LOGIC
+        if (mappingContainer) {
+            mappingContainer.innerHTML = getInteractiveMappingHTML(); // Set the new HTML
+            console.log("Unit3SAC2PrepComponent: Mapping tool HTML has been injected.");
+            initInteractiveMappingTool(); // Initialize the JavaScript for the mapping tool
         } else {
-            // ADD THE FOLLOWING CONSOLE.LOG:
             console.error("Unit3SAC2PrepComponent: ERROR - mapping-component-container NOT FOUND.");
         }
         // Ottawa Charter Activity Logic

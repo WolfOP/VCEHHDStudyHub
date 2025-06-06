@@ -1,15 +1,13 @@
-// --- State variables scoped to this module ---
 let nodes = [];
 let connections = [];
 let nodeIdCounter = 0;
 let selectedNodeForConnection = null;
 let connectingModeActive = false;
 let teelPlanData = [];
-const MAPPING_STORAGE_KEY = 'mappingToolData_U3SAC2_v2_Refactored'; // Changed key for fresh test
+const MAPPING_STORAGE_KEY = 'mappingToolData_U3SAC2_v3_FinalFix'; // New key for fresh data
 
-// This function returns the HTML structure for the mapping tool
 export function getInteractiveMappingHTML() {
-    // Added '-map' suffix to all IDs within this component's HTML to ensure uniqueness
+    // IDs within this HTML are suffixed with '-map' for uniqueness
     return `
         <div id="mapping-tool-wrapper" class="p-4 bg-slate-800 rounded-lg shadow-md my-4">
             <h2 class="text-2xl font-semibold text-purple-300 mb-4">Interactive Relationship Mapping & Planning Tool</h2>
@@ -39,70 +37,56 @@ export function getInteractiveMappingHTML() {
     `;
 }
 
-// This function initializes the JavaScript logic for the mapping tool.
-// It now ACCEPTS the root element of the mapping tool as an argument.
-export function initInteractiveMappingTool(componentWrapperElement) {
-    console.log("initInteractiveMappingTool: Function CALLED, wrapper received:", componentWrapperElement);
+export function initInteractiveMappingTool(componentRootElement) { // Accepts the root element
+    console.log("initInteractiveMappingTool: CALLED with root:", componentRootElement);
 
-    if (!componentWrapperElement || componentWrapperElement.id !== 'mapping-tool-wrapper') {
-        console.error("initInteractiveMappingTool: ERROR - Valid 'mapping-tool-wrapper' (root of this component's HTML) not provided. Tool cannot initialize.");
-        const parentMappingContainer = document.getElementById('mapping-component-container'); // Fallback for error display
-        if(parentMappingContainer) {
-            parentMappingContainer.innerHTML = '<p class="text-red-500 text-center p-4">Error: Mapping tool could not load (wrapper element issue).</p>';
-        }
+    if (!componentRootElement || componentRootElement.id !== 'mapping-tool-wrapper') {
+        console.error("initInteractiveMappingTool: ERROR - Valid 'mapping-tool-wrapper' not provided. Init aborted.");
+        const parentContainer = document.getElementById('mapping-component-container');
+        if (parentContainer) parentContainer.innerHTML = '<p class="text-red-500 text-center p-4">Error loading mapping tool (invalid root).</p>';
         return;
     }
     console.log("initInteractiveMappingTool: Correct 'mapping-tool-wrapper' FOUND.");
 
-    // Select elements *within* the passed componentWrapperElement using their new unique IDs
-    const mappingContainer = componentWrapperElement.querySelector('#mapping-tool-container-map');
-    const nodesContainer = componentWrapperElement.querySelector('#mapping-nodes-container-map');
-    const canvas = componentWrapperElement.querySelector('#mapping-canvas-map');
-    const addNodeButton = componentWrapperElement.querySelector('#add-node-btn-map');
-    const connectNodesButton = componentWrapperElement.querySelector('#connect-nodes-btn-map');
-    const teelParagraphsContainer = componentWrapperElement.querySelector('#teel-paragraphs-container-map');
-    const addTeelParagraphButton = componentWrapperElement.querySelector('#add-teel-paragraph-btn-map');
-    const removeTeelParagraphButton = componentWrapperElement.querySelector('#remove-teel-paragraph-btn-map');
-    const mappingToolMessageEl = componentWrapperElement.querySelector('#mapping-tool-message-map');
-    const clearMappingDataButton = componentWrapperElement.querySelector('#clear-mapping-data-btn-map');
+    const mappingContainer = componentRootElement.querySelector('#mapping-tool-container-map');
+    const nodesContainer = componentRootElement.querySelector('#mapping-nodes-container-map');
+    const canvas = componentRootElement.querySelector('#mapping-canvas-map');
+    const addNodeButton = componentRootElement.querySelector('#add-node-btn-map');
+    const connectNodesButton = componentRootElement.querySelector('#connect-nodes-btn-map');
+    const teelParagraphsContainer = componentRootElement.querySelector('#teel-paragraphs-container-map');
+    const addTeelParagraphButton = componentRootElement.querySelector('#add-teel-paragraph-btn-map');
+    const removeTeelParagraphButton = componentRootElement.querySelector('#remove-teel-paragraph-btn-map');
+    const mappingToolMessageEl = componentRootElement.querySelector('#mapping-tool-message-map');
+    const clearMappingDataButton = componentRootElement.querySelector('#clear-mapping-data-btn-map');
 
     if (!mappingContainer || !nodesContainer || !canvas || !addNodeButton || !connectNodesButton || !teelParagraphsContainer || !addTeelParagraphButton || !removeTeelParagraphButton || !clearMappingDataButton || !mappingToolMessageEl) {
-        console.error("initInteractiveMappingTool: One or more essential child elements not found within 'mapping-tool-wrapper'. Check IDs. Elements found:", 
-            {mappingContainer, nodesContainer, canvas, addNodeButton, connectNodesButton, teelParagraphsContainer, addTeelParagraphButton, removeTeelParagraphButton, clearMappingDataButton, mappingToolMessageEl });
-        componentWrapperElement.innerHTML = '<p class="text-red-500 text-center p-4">Error: Mapping tool child elements missing.</p>';
+        console.error("initInteractiveMappingTool: One or more essential child elements NOT FOUND. Check IDs in getInteractiveMappingHTML.", {
+            mappingContainer, nodesContainer, canvas, addNodeButton, connectNodesButton, teelParagraphsContainer, addTeelParagraphButton, removeTeelParagraphButton, clearMappingDataButton, mappingToolMessageEl
+        });
+        componentRootElement.innerHTML = '<p class="text-red-500 text-center p-4">Error: Mapping tool child elements missing.</p>';
         return;
     }
-    console.log("initInteractiveMappingTool: All child elements FOUND successfully.");
+    console.log("initInteractiveMappingTool: All child elements FOUND.");
 
     const showMappingMessage = (message, duration = 3000) => {
         mappingToolMessageEl.textContent = message;
-        if (duration > 0) {
-            setTimeout(() => {
-                if (mappingToolMessageEl && mappingToolMessageEl.textContent === message) mappingToolMessageEl.textContent = '';
-            }, duration);
-        }
+        if (duration > 0) { setTimeout(() => { if (mappingToolMessageEl && mappingToolMessageEl.textContent === message) mappingToolMessageEl.textContent = ''; }, duration); }
     };
 
     const ctx = canvas.getContext('2d');
-    if (!ctx) {
-        console.error("initInteractiveMappingTool: Failed to get 2D context from canvas.");
-        showMappingMessage("Error: Canvas rendering failed.", 0);
-        return;
-    }
-    console.log("initInteractiveMappingTool: Canvas context obtained.");
+    if (!ctx) { console.error("initInteractiveMappingTool: Failed to get 2D context."); showMappingMessage("Canvas error.", 0); return; }
+    console.log("initInteractiveMappingTool: Canvas context OK.");
 
-    // Reset state variables for this instance
     nodes = []; connections = []; nodeIdCounter = 0;
     selectedNodeForConnection = null; connectingModeActive = false; teelPlanData = [];
 
-    const resizeCanvas = () => {
+    const resizeCanvas = () => { /* ... */ 
         if (!mappingContainer || !canvas) return;
         canvas.width = mappingContainer.offsetWidth;
         canvas.height = mappingContainer.offsetHeight;
         drawConnections();
     };
-
-    const drawConnections = () => {
+    const drawConnections = () => { /* ... (ensure querySelector uses componentRootElement for nodes) ... */ 
         if (!ctx || !canvas) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.strokeStyle = '#a78bfa'; ctx.lineWidth = 2; ctx.lineCap = "round";
@@ -110,8 +94,8 @@ export function initInteractiveMappingTool(componentWrapperElement) {
             const fromNodeData = nodes.find(n => n.id === conn.from);
             const toNodeData = nodes.find(n => n.id === conn.to);
             if (fromNodeData && toNodeData) {
-                const fromElem = componentWrapperElement.querySelector(`#${fromNodeData.id}`);
-                const toElem = componentWrapperElement.querySelector(`#${toNodeData.id}`);
+                const fromElem = componentRootElement.querySelector(`#${fromNodeData.id}`); // Query within component
+                const toElem = componentRootElement.querySelector(`#${toNodeData.id}`);   // Query within component
                 if(fromElem && toElem){
                     const fromX = fromNodeData.x + fromElem.offsetWidth / 2; const fromY = fromNodeData.y + fromElem.offsetHeight / 2;
                     const toX = toNodeData.x + toElem.offsetWidth / 2; const toY = toNodeData.y + toElem.offsetHeight / 2;
@@ -125,14 +109,12 @@ export function initInteractiveMappingTool(componentWrapperElement) {
             }
         });
     };
-    
-    const saveMappingData = () => {
-         const dataToSave = { nodes, connections, teelPlan: teelPlanData, nodeIdCounter };
+    const saveMappingData = () => { /* ... */ 
+        const dataToSave = { nodes, connections, teelPlan: teelPlanData, nodeIdCounter };
         try { localStorage.setItem(MAPPING_STORAGE_KEY, JSON.stringify(dataToSave)); } 
         catch (error) { console.error("Error saving mapping data:", error); showMappingMessage("Error saving data.", 5000); }
     };
-
-    const renderTeelParagraphs = () => {
+    const renderTeelParagraphs = () => { /* ... (ensure textarea classes are correct) ... */ 
         if (!teelParagraphsContainer) return;
         teelParagraphsContainer.innerHTML = ''; 
         if (teelPlanData.length === 0) {
@@ -163,9 +145,23 @@ export function initInteractiveMappingTool(componentWrapperElement) {
             });
         });
     };
-    
-    const attachNodeEventListeners = (nodeElement, nodeData, textElement) => {
+    const attachNodeEventListeners = (nodeElement, nodeData, textElement) => { /* ... (ensure querySelector uses componentRootElement for #selectedNodeForConnection) ... */ 
         let isDragging = false; let dragOffsetX, dragOffsetY;
+        const docMouseMove = (e) => { 
+            if (!isDragging || !mappingContainer || !nodeElement) return;
+            let newX = e.clientX - mappingContainer.getBoundingClientRect().left - dragOffsetX;
+            let newY = e.clientY - mappingContainer.getBoundingClientRect().top - dragOffsetY;
+            newX = Math.max(0, Math.min(newX, mappingContainer.offsetWidth - nodeElement.offsetWidth));
+            newY = Math.max(0, Math.min(newY, mappingContainer.offsetHeight - nodeElement.offsetHeight));
+            nodeElement.style.left = `${newX}px`; nodeElement.style.top = `${newY}px`;
+            nodeData.x = newX; nodeData.y = newY; drawConnections();
+        };
+        const docMouseUp = () => { 
+            if (isDragging) { isDragging = false; nodeElement.classList.remove('shadow-xl', 'border-purple-300', 'z-20'); saveMappingData(); }
+            document.removeEventListener('mousemove', docMouseMove); 
+            document.removeEventListener('mouseup', docMouseUp);   
+        };
+
         nodeElement.addEventListener('mousedown', (e) => {
             if (e.target === textElement && !connectingModeActive) return;
             if (connectingModeActive) {
@@ -177,7 +173,10 @@ export function initInteractiveMappingTool(componentWrapperElement) {
                     const connExists = connections.some(c => (c.from === selectedNodeForConnection && c.to === targetNodeId) || (c.from === targetNodeId && c.to === selectedNodeForConnection));
                     if (!connExists) connections.push({ from: selectedNodeForConnection, to: targetNodeId });
                     else showMappingMessage("Connection already exists.", 2000);
-                    componentWrapperElement.querySelector(`#${selectedNodeForConnection}`)?.classList.remove('ring-2', 'ring-green-500');
+                    
+                    const prevSelectedNodeElem = componentRootElement.querySelector(`#${selectedNodeForConnection}`); // Query within root
+                    if(prevSelectedNodeElem) prevSelectedNodeElem.classList.remove('ring-2', 'ring-green-500');
+
                     selectedNodeForConnection = null; connectingModeActive = false;
                     if(connectNodesButton) { connectNodesButton.classList.remove('bg-green-600'); connectNodesButton.classList.add('bg-blue-600'); connectNodesButton.textContent = "Connect Nodes"; }
                     showMappingMessage(connExists ? "Connection already exists." : "Connection created. Connector mode off.", 2000);
@@ -186,42 +185,20 @@ export function initInteractiveMappingTool(componentWrapperElement) {
             }
             isDragging = true; dragOffsetX = e.clientX - nodeElement.getBoundingClientRect().left; dragOffsetY = e.clientY - nodeElement.getBoundingClientRect().top;
             nodeElement.classList.add('shadow-xl', 'border-purple-300', 'z-20'); e.preventDefault();
+            document.addEventListener('mousemove', docMouseMove); // Add global listeners for drag
+            document.addEventListener('mouseup', docMouseUp);
         });
-        // Mousemove and Mouseup listeners should be on 'document' or 'componentWrapperElement' to handle dragging outside the node.
-        // Sticking to document for simplicity for now, but be mindful of event listener cleanup if component is removed.
-        const onMouseMove = (e) => { 
-            if (!isDragging || !mappingContainer || !nodeElement) return;
-            let newX = e.clientX - mappingContainer.getBoundingClientRect().left - dragOffsetX;
-            let newY = e.clientY - mappingContainer.getBoundingClientRect().top - dragOffsetY;
-            newX = Math.max(0, Math.min(newX, mappingContainer.offsetWidth - nodeElement.offsetWidth));
-            newY = Math.max(0, Math.min(newY, mappingContainer.offsetHeight - nodeElement.offsetHeight));
-            nodeElement.style.left = `${newX}px`; nodeElement.style.top = `${newY}px`;
-            nodeData.x = newX; nodeData.y = newY; drawConnections();
-        };
-        const onMouseUp = () => { 
-            if (isDragging) { isDragging = false; nodeElement.classList.remove('shadow-xl', 'border-purple-300', 'z-20'); saveMappingData(); }
-            document.removeEventListener('mousemove', onMouseMove); // Clean up
-            document.removeEventListener('mouseup', onMouseUp);   // Clean up
-        };
-        if(isDragging) { // Add these only when dragging starts
-             document.addEventListener('mousemove', onMouseMove);
-             document.addEventListener('mouseup', onMouseUp);
-        }
-
-
         textElement.addEventListener('blur', () => { nodeData.content = textElement.textContent; saveMappingData(); });
         textElement.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); textElement.blur(); }});
     };
-
-    const internalCreateNodeSetup = (x = 50, y = 50, content = 'New Node', existingId = null) => {
+    const internalCreateNodeSetup = (x = 50, y = 50, content = 'New Node', existingId = null) => { /* ... as before, ensuring unique node IDs within mapping component */ 
         const newIdSuffix = ++nodeIdCounter; 
         const nodeId = existingId || `map-node-map-${newIdSuffix}`; 
         if (!existingId) {
             const numericIdFromSuffix = newIdSuffix;
             if (numericIdFromSuffix > nodeIdCounter) nodeIdCounter = numericIdFromSuffix;
         } else { 
-            const parts = existingId.split('-');
-            const num = parseInt(parts[parts.length - 1]);
+            const parts = existingId.split('-'); const num = parseInt(parts[parts.length - 1]);
             if (!isNaN(num) && num > nodeIdCounter) nodeIdCounter = num;
         }
         const nodeElement = document.createElement('div'); nodeElement.id = nodeId;
@@ -235,20 +212,12 @@ export function initInteractiveMappingTool(componentWrapperElement) {
         const existingNodeIndex = nodes.findIndex(n => n.id === nodeId);
         if (existingNodeIndex === -1) { nodes.push(newNodeData); } 
         else { nodes[existingNodeIndex] = newNodeData; }
-        attachNodeEventListeners(nodeElement, newNodeData, textElement); // Pass textElement
+        attachNodeEventListeners(nodeElement, newNodeData, textElement);
         return newNodeData;
     };
-    
-    const recreateNodeElement = (nodeData) => { 
-        internalCreateNodeSetup(nodeData.x, nodeData.y, nodeData.content, nodeData.id);
-    };
-
-    const createNodeAndSave = (x = 50, y = 50, content = 'New Node') => {
-        internalCreateNodeSetup(x,y,content);
-        saveMappingData();
-    };
-
-    const loadMappingData = () => { 
+    const recreateNodeElement = (nodeData) => { internalCreateNodeSetup(nodeData.x, nodeData.y, nodeData.content, nodeData.id); };
+    const createNodeAndSave = (x = 50, y = 50, content = 'New Node') => { internalCreateNodeSetup(x,y,content); saveMappingData(); };
+    const loadMappingData = () => { /* ... as before ... */ 
         const savedData = localStorage.getItem(MAPPING_STORAGE_KEY);
         if (savedData) {
             try {
@@ -262,8 +231,7 @@ export function initInteractiveMappingTool(componentWrapperElement) {
             } catch (e) { console.error("Error parsing saved mapping data:", e); localStorage.removeItem(MAPPING_STORAGE_KEY); return false; }
         } return false;
     };
-
-    const clearAllMappingData = () => { 
+    const clearAllMappingData = () => { /* ... as before ... */ 
         if (confirm("Are you sure you want to clear all your saved mapping data?")) {
             localStorage.removeItem(MAPPING_STORAGE_KEY);
             nodes = []; connections = []; teelPlanData = []; nodeIdCounter = 0;
@@ -285,7 +253,7 @@ export function initInteractiveMappingTool(componentWrapperElement) {
             connectNodesButton.textContent = connectingModeActive ? "Connecting (Select Nodes)" : "Connect Nodes";
             showMappingMessage(connectingModeActive ? "Connector mode ON. Click first node." : "Connector mode OFF.", connectingModeActive ? 0 : 2000);
             if (!connectingModeActive && selectedNodeForConnection) { 
-                componentWrapperElement.querySelector(`#${selectedNodeForConnection}`)?.classList.remove('ring-2', 'ring-green-500');
+                componentRootElement.querySelector(`#${selectedNodeForConnection}`)?.classList.remove('ring-2', 'ring-green-500');
                 selectedNodeForConnection = null;
             }
         });
@@ -298,6 +266,6 @@ export function initInteractiveMappingTool(componentWrapperElement) {
     resizeCanvas(); 
     window.addEventListener('resize', resizeCanvas);
     if (!loadMappingData()) { renderTeelParagraphs(); createNodeAndSave(50, 50, "Central Idea"); createNodeAndSave(250, 150, "Related Concept");} 
-    else { requestAnimationFrame(resizeCanvas); } // Ensure canvas resizes after loaded nodes are placed
+    else { requestAnimationFrame(resizeCanvas); }
     console.log("initInteractiveMappingTool: Setup COMPLETE.");
 }

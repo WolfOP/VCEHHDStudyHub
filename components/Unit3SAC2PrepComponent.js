@@ -390,7 +390,7 @@ export function Unit3SAC2PrepComponent() {
         const selectedOttawaCampaignDetailsContainer = document.getElementById('selected-ottawa-campaign-details');
         const ottawaAnalysisToolRoot = document.getElementById('ottawa-charter-analysis-tool');
         const saveOttawaAnalysisBtn = document.getElementById('save-ottawa-analysis-btn');
-
+console.log(finalSampleSacMaterialsString);
         const sampleSacMaterials = JSON.parse(finalSampleSacMaterialsString);
         const ANNOTATION_STORAGE_KEY_PREFIX = 'annotationData_U3SAC2_v3_Refactored_';
         const OTTAWA_ANALYSIS_STORAGE_KEY_PREFIX = 'ottawaAnalysis_U3SAC2_';

@@ -11,6 +11,28 @@ const MAPPING_STORAGE_KEY = 'mappingToolData_U3SAC2_v1'; // Ensure this is uniqu
 
 // This function will now ONLY return the HTML structure
 export function getInteractiveMappingHTML() {
+    console.log("initInteractiveMappingTool: Function CALLED.");
+    const componentWrapper = document.getElementById('mapping-tool-wrapper');
+    if (!componentWrapper) {
+        console.error("initInteractiveMappingTool: ERROR - Root wrapper 'mapping-tool-wrapper' NOT FOUND. Tool cannot initialize.");
+        return; 
+    }
+    console.log("initInteractiveMappingTool: Root wrapper 'mapping-tool-wrapper' FOUND.");
+
+    const mappingContainer = componentWrapper.querySelector('#mapping-tool-container');
+    if (!mappingContainer) {
+        console.error("initInteractiveMappingTool: ERROR - Child '#mapping-tool-container' NOT FOUND within wrapper.");
+    } else {
+        console.log("initInteractiveMappingTool: Child '#mapping-tool-container' FOUND.");
+    }
+
+    const canvas = componentWrapper.querySelector('#mapping-canvas');
+    if (!canvas) {
+        console.error("initInteractiveMappingTool: ERROR - Child '#mapping-canvas' NOT FOUND within wrapper.");
+    } else {
+        console.log("initInteractiveMappingTool: Child '#mapping-canvas' FOUND.");
+    }
+
     return `
         <div id="mapping-tool-wrapper" class="p-4 bg-slate-800 rounded-lg shadow-md my-4">
             <h2 class="text-2xl font-semibold text-purple-300 mb-4">Interactive Relationship Mapping & Planning Tool</h2>

@@ -449,7 +449,7 @@ console.log(finalSampleSacMaterialsString);
                         if (questionDisplayP) questionDisplayP.textContent = selectedSample.question;
                         else {
                              const qDisplayDiv = annotationInterfaceRoot.querySelector('#sac-question-display-annot');
-                             if(qDisplayDiv) qDisplayDiv.innerHTML = \`<h4 class="text-lg font-medium text-purple-200 mb-1">Sample SAC Question:</h4><p class="text-slate-300 text-sm">\${selectedSample.question}</p>\`;
+                             if(qDisplayDiv) qDisplayDiv.innerHTML = `<h4 class="text-lg font-medium text-purple-200 mb-1">Sample SAC Question:</h4><p class="text-slate-300 text-sm">${selectedSample.question}</p>`;
                         }
 
                         if (stimulusTextHolder) stimulusTextHolder.innerHTML = selectedSample.stimulus;

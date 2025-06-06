@@ -1,7 +1,7 @@
 import { getInteractiveAnnotationHTML, initInteractiveAnnotationTool } from './InteractiveAnnotationComponent.js'; 
 import { getInteractiveMappingHTML, initInteractiveMappingTool } from './InteractiveMappingComponent.js';
 
-const sampleSacMaterials = [ /* ... your sample materials array ... */ 
+const sampleSacMaterials = [ /* ... your sample materials array, ensure stimulus is wrapped in a div if not already ... */ 
     {
         id: 'sample1',
         title: 'Sample 1: Youth Mental Health',
@@ -40,7 +40,6 @@ export function Unit3SAC2PrepComponent() {
                     </div>
                     <button id="clear-sample-annotations-btn" class="self-end px-3 py-2 bg-red-700 text-white rounded hover:bg-red-600 text-sm">Clear Saved Work for this Sample</button>
                 </div>
-                {/* Container for the annotation tool's HTML */}
                 <div id="annotation-component-container">
                     <p class="text-slate-400 italic text-center py-4">Select a sample material to load the annotation tool.</p>
                 </div>
@@ -49,7 +48,6 @@ export function Unit3SAC2PrepComponent() {
             <article id="interactive-activity-2-wrapper" class="mt-12 mb-12 p-6 bg-slate-700/50 rounded-xl shadow-xl border border-slate-700">
                 <h3 class="text-2xl font-semibold text-purple-300 mb-3">Activity 2: Relationship Mapping & TEEL Planning</h3>
                 <p class="mb-4 text-slate-300">Use the tools below to create visual maps of relationships between key concepts from the stimulus or your own knowledge, and then structure your arguments using the TEEL paragraph planner. Your work is saved locally.</p>
-                {/* Container for the mapping tool's HTML */}
                 <div id="mapping-component-container"> 
                      <p class="text-slate-400 italic text-center py-4">Loading mapping tool...</p>
                 </div>
@@ -57,7 +55,8 @@ export function Unit3SAC2PrepComponent() {
 
             <article id="interactive-activity-3-ottawa" class="mt-12 p-6 bg-slate-700/50 rounded-xl shadow-xl border border-slate-700">
                 <h3 class="text-2xl font-semibold text-purple-300 mb-3">Activity 3: Ottawa Charter in Action - Campaign Analysis</h3>
-                <p class="mb-4 text-slate-300">Analyse the following health promotion campaign. Identify the Ottawa Charter action areas used and justify your choices. Consider its potential strengths, limitations, and promotion of social justice. Your analysis is saved locally.</p>
+                {/* ... HTML for Ottawa Charter Activity ... */}
+                 <p class="mb-4 text-slate-300">Analyse the following health promotion campaign. Identify the Ottawa Charter action areas used and justify your choices. Consider its potential strengths, limitations, and promotion of social justice. Your analysis is saved locally.</p>
                 <div id="ottawa-activity-container">
                     <div class="mb-4 p-3 bg-slate-800 rounded-lg">
                         <h4 class="text-lg font-medium text-purple-200 mb-2">Campaign Scenario: "Active Youth, Healthy Future"</h4>
@@ -104,9 +103,9 @@ export function Unit3SAC2PrepComponent() {
         </section>
     `;
 
-    // This function is called by the router AFTER the HTML above is in the DOM.
-    // We use requestAnimationFrame to ensure the DOM is truly ready for manipulation.
+    // Logic to run after the HTML is injected into the main app-content
     requestAnimationFrame(() => {
+        console.log("Unit3SAC2PrepComponent: Main setup logic starting via requestAnimationFrame.");
         const selectElement = document.getElementById('sample-material-select');
         const annotationContainer = document.getElementById('annotation-component-container');
         const mappingContainer = document.getElementById('mapping-component-container');
@@ -117,7 +116,6 @@ export function Unit3SAC2PrepComponent() {
         const ANNOTATION_STORAGE_KEY_PREFIX = 'annotationData_U3SAC2_v3_Refactored'; 
         const OTTAWA_ANALYSIS_STORAGE_KEY = 'ottawaAnalysisData_U3SAC2_v3_Refactored';
 
-        // Populate dropdown for Annotation Tool
         if (selectElement && selectElement.options.length <= 1) {
              sampleSacMaterials.forEach(sample => {
                 const option = document.createElement('option');
@@ -131,7 +129,6 @@ export function Unit3SAC2PrepComponent() {
             const currentSampleId = selectElement ? selectElement.value : null;
             if (!currentSampleId || currentSampleId === "") return;
             const deconstructionData = {};
-            // IDs used here MUST match those in the HTML returned by getInteractiveAnnotationHTML()
             const deconInputsMap = {
                 commandWords: 'decon-command-words-annot', 
                 keyConcepts: 'decon-key-concepts-annot',
@@ -139,15 +136,15 @@ export function Unit3SAC2PrepComponent() {
                 constraints: 'decon-constraints-annot'
             };
             for (const key in deconInputsMap) {
-                const inputElement = document.getElementById(deconInputsMap[key]); // Global get is fine if IDs are unique
+                const inputElement = document.getElementById(deconInputsMap[key]);
                 if (inputElement) deconstructionData[key] = inputElement.value;
             }
-            const stimulusContentArea = document.getElementById('stimulus-content-area-annot'); // Use annot-suffixed ID
-            const stimulusHTMLHolder = stimulusContentArea ? stimulusContentArea.querySelector('#stimulus-text-holder-annot') : null; 
+            const stimulusContentAreaAnnot = document.getElementById('stimulus-content-area-annot'); 
+            const stimulusHTMLHolder = stimulusContentAreaAnnot ? stimulusContentAreaAnnot.querySelector('#stimulus-text-holder-annot') : null; 
             const stimulusHTML = stimulusHTMLHolder ? stimulusHTMLHolder.innerHTML : "";
             const dataToSave = { deconstruction: deconstructionData, stimulusHTMLWithAnnotations: stimulusHTML };
             try { localStorage.setItem(ANNOTATION_STORAGE_KEY_PREFIX + currentSampleId, JSON.stringify(dataToSave)); } 
-            catch (e) { console.error("Error saving annotation data:", e); }
+            catch (e) { console.error("Error saving annotation data for " + currentSampleId + ":", e); }
         };
 
         const loadAnnotationToolWithContent = (sampleId) => {
@@ -156,73 +153,61 @@ export function Unit3SAC2PrepComponent() {
                 return;
             }
             const selectedSample = sampleSacMaterials.find(s => s.id === sampleId);
-            if (!selectedSample) return;
+            if (!selectedSample) { console.error("Sample ID not found:", sampleId); return;}
             
             if (annotationContainer) {
                 annotationContainer.innerHTML = getInteractiveAnnotationHTML(); 
-                requestAnimationFrame(() => { // Defer init call
-                    initInteractiveAnnotationTool(); // Initialize its JS
+                requestAnimationFrame(() => { 
+                    const annotationInterfaceRoot = document.getElementById('annotation-interface-annot');
+                    if(annotationInterfaceRoot) {
+                        initInteractiveAnnotationTool(annotationInterfaceRoot); 
 
-                    const annotInterface = document.getElementById('annotation-interface');
-                    if (!annotInterface) {console.error("loadAnnotation: 'annotation-interface' not found AFTER init."); return;}
+                        const questionDisplayP = annotationInterfaceRoot.querySelector('#sac-question-display-annot p'); 
+                        const stimulusTextHolder = annotationInterfaceRoot.querySelector('#stimulus-text-holder-annot');
 
-                    const questionDisplayP = annotInterface.querySelector('#sac-question-display-annot p'); 
-                    const stimulusTextHolder = annotInterface.querySelector('#stimulus-text-holder-annot');
-
-                    if (questionDisplayP) questionDisplayP.textContent = selectedSample.question;
-                    else { // Fallback if p tag isn't there, set HTML of parent
-                        const qDisplayDiv = annotInterface.querySelector('#sac-question-display-annot');
-                        if(qDisplayDiv) qDisplayDiv.innerHTML = `<h4 class="text-lg font-medium text-purple-200 mb-1">Sample SAC Question:</h4><p class="text-slate-300 text-sm">${selectedSample.question}</p>`;
-                    }
-
-                    if (stimulusTextHolder) stimulusTextHolder.innerHTML = selectedSample.stimulus;
-                    else {
-                        const stimulusContentArea = annotInterface.querySelector('#stimulus-content-area-annot');
-                        if(stimulusContentArea) { // If holder div wasn't found, put into main area
-                           const heading = stimulusContentArea.querySelector('h4'); // Preserve heading
-                           stimulusContentArea.innerHTML = ''; // Clear
-                           if(heading) stimulusContentArea.appendChild(heading);
-                           const newHolder = document.createElement('div');
-                           newHolder.id = 'stimulus-text-holder-annot';
-                           newHolder.innerHTML = selectedSample.stimulus;
-                           stimulusContentArea.appendChild(newHolder);
+                        if (questionDisplayP) questionDisplayP.textContent = selectedSample.question;
+                        else {
+                             const qDisplayDiv = annotationInterfaceRoot.querySelector('#sac-question-display-annot');
+                             if(qDisplayDiv) qDisplayDiv.innerHTML = `<h4 class="text-lg font-medium text-purple-200 mb-1">Sample SAC Question:</h4><p class="text-slate-300 text-sm">${selectedSample.question}</p>`;
                         }
-                    }
-                    
-                    const savedDataRaw = localStorage.getItem(ANNOTATION_STORAGE_KEY_PREFIX + sampleId);
-                    let savedData;
-                    if (savedDataRaw) { try { savedData = JSON.parse(savedDataRaw); } catch(e) { console.error("Error parsing saved annotation data for " + sampleId + ":", e); } }
 
-                    if (savedData && savedData.stimulusHTMLWithAnnotations && stimulusTextHolder) {
-                        stimulusTextHolder.innerHTML = savedData.stimulusHTMLWithAnnotations;
-                    }
-                    
-                    const deconstructionInputsMap = {
-                        commandWords: 'decon-command-words-annot', keyConcepts: 'decon-key-concepts-annot',
-                        contentAreas: 'decon-content-areas-annot', constraints: 'decon-constraints-annot'
-                    };
-                    for (const key in deconstructionInputsMap) {
-                        const inputElement = annotInterface.querySelector(`#${deconstructionInputsMap[key]}`);
-                        if (inputElement) {
-                            inputElement.value = (savedData && savedData.deconstruction && savedData.deconstruction[key]) ? savedData.deconstruction[key] : '';
-                            // Re-attach save listeners specifically to these inputs after content load
-                            inputElement.removeEventListener('input', saveCurrentAnnotationData); 
-                            inputElement.addEventListener('input', saveCurrentAnnotationData);
+                        if (stimulusTextHolder) stimulusTextHolder.innerHTML = selectedSample.stimulus;
+                        
+                        const savedDataRaw = localStorage.getItem(ANNOTATION_STORAGE_KEY_PREFIX + sampleId);
+                        let savedData;
+                        if (savedDataRaw) { try { savedData = JSON.parse(savedDataRaw); } catch(e) { console.error("Error parsing saved annotation for " + sampleId + ":", e); } }
+
+                        if (savedData && savedData.stimulusHTMLWithAnnotations && stimulusTextHolder) {
+                            stimulusTextHolder.innerHTML = savedData.stimulusHTMLWithAnnotations;
                         }
-                    }
-                    if (typeof window.reAttachAnnotationCommentListeners === 'function') {
-                        window.reAttachAnnotationCommentListeners();
-                    }
-                    ['highlight-btn', 'underline-btn', 'comment-btn'].forEach(btnId => {
-                        const btn = annotInterface.querySelector(`#${btnId}`);
-                        if (btn) { // Attach to newly created buttons
-                            const newBtn = btn.cloneNode(true); 
-                            btn.parentNode.replaceChild(newBtn, btn);
-                            newBtn.addEventListener('click', () => setTimeout(saveCurrentAnnotationData, 150));
+                        
+                        const deconstructionInputsMap = {
+                            commandWords: 'decon-command-words-annot', keyConcepts: 'decon-key-concepts-annot',
+                            contentAreas: 'decon-content-areas-annot', constraints: 'decon-constraints-annot'
+                        };
+                        for (const key in deconstructionInputsMap) {
+                            const inputElement = annotationInterfaceRoot.querySelector(`#${deconstructionInputsMap[key]}`);
+                            if (inputElement) {
+                                inputElement.value = (savedData && savedData.deconstruction && savedData.deconstruction[key]) ? savedData.deconstruction[key] : '';
+                                inputElement.removeEventListener('input', saveCurrentAnnotationData); 
+                                inputElement.addEventListener('input', saveCurrentAnnotationData);
+                            }
                         }
-                    });
-                    const event = new Event('annotationToolContentLoaded'); // Custom event if needed
-                    document.dispatchEvent(event);
+                        if (typeof window.reAttachAnnotationCommentListeners === 'function') {
+                            window.reAttachAnnotationCommentListeners();
+                        }
+                        ['highlight-btn-annot', 'underline-btn-annot', 'comment-btn-annot'].forEach(btnId => {
+                            const btn = annotationInterfaceRoot.querySelector(`#${btnId}`);
+                            if (btn) { 
+                                const newBtn = btn.cloneNode(true); 
+                                btn.parentNode.replaceChild(newBtn, btn);
+                                newBtn.addEventListener('click', () => setTimeout(saveCurrentAnnotationData, 150));
+                            }
+                        });
+                        document.dispatchEvent(new Event('annotationToolContentLoaded'));
+                    } else {
+                        console.error("loadAnnotationToolWithContent: 'annotation-interface-annot' not found after rendering its HTML.");
+                    }
                 });
             }
         };
@@ -242,11 +227,8 @@ export function Unit3SAC2PrepComponent() {
                     initialSampleId = ""; 
                 }
                 selectElement.value = initialSampleId;
-                if (initialSampleId) { 
-                    loadAnnotationToolWithContent(initialSampleId);
-                } else {
-                    if (annotationContainer) annotationContainer.innerHTML = '<p class="text-slate-400 italic text-center py-4">Select a sample material to load the annotation tool.</p>';
-                }
+                if (initialSampleId) { loadAnnotationToolWithContent(initialSampleId); }
+                else if(annotationContainer) { annotationContainer.innerHTML = '<p class="text-slate-400 italic text-center py-4">Select a sample material.</p>';}
             }
         }
         
@@ -262,60 +244,51 @@ export function Unit3SAC2PrepComponent() {
 
         // Initialize Mapping Tool
         if (mappingContainer) {
-            console.log("Unit3SAC2PrepComponent: Injecting Mapping Tool HTML into:", mappingContainer);
-            mappingContainer.innerHTML = getInteractiveMappingHTML();
+            mappingContainer.innerHTML = getInteractiveMappingHTML(); // Inject HTML first
             requestAnimationFrame(() => { // Defer init call
                 const actualMappingToolWrapper = document.getElementById('mapping-tool-wrapper');
                 if (actualMappingToolWrapper) {
-                    console.log("Unit3SAC2PrepComponent: 'mapping-tool-wrapper' found, calling initInteractiveMappingTool.");
                     initInteractiveMappingTool(actualMappingToolWrapper); // Pass the root element
                 } else {
-                    console.error("Unit3SAC2PrepComponent: CRITICAL - 'mapping-tool-wrapper' NOT found for mapping tool after injection. Init aborted.");
-                    mappingContainer.innerHTML = '<p class="text-red-500 text-center p-4">Error: Failed to load mapping tool wrapper.</p>';
+                    console.error("Unit3SAC2PrepComponent: CRITICAL - 'mapping-tool-wrapper' NOT found for mapping. Init aborted.");
+                    if (mappingContainer) mappingContainer.innerHTML = '<p class="text-red-500 text-center p-4">Error: Failed to load mapping tool (root wrapper not found).</p>';
                 }
             });
         } else {
-            console.error("Unit3SAC2PrepComponent: ERROR - mapping-component-container NOT FOUND.");
+            console.error("Unit3SAC2PrepComponent: ERROR - #mapping-component-container for mapping tool NOT FOUND.");
         }
         
         // Ottawa Charter Activity Logic
-        const loadOttawaAnalysis = () => { /* ... as before ... */ 
-             const saved = localStorage.getItem(OTTAWA_ANALYSIS_STORAGE_KEY);
+        const loadOttawaAnalysis = () => { /* ... */ 
+            const saved = localStorage.getItem(OTTAWA_ANALYSIS_STORAGE_KEY);
             if (saved) {
                 try {
                     const data = JSON.parse(saved);
-                    document.querySelectorAll('#ottawa-charter-analysis-tool input[type="checkbox"]').forEach(cb => {
-                        cb.checked = data.actionAreasChecked?.[cb.value] || false;
-                    });
-                    const justificationTextareas = document.querySelectorAll('#ottawa-charter-analysis-tool textarea[id^="justify-"]');
-                    justificationTextareas.forEach(ta => {
+                    const toolRoot = document.getElementById('ottawa-charter-analysis-tool');
+                    if(!toolRoot) return;
+                    toolRoot.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.checked = data.actionAreasChecked?.[cb.value] || false; });
+                    toolRoot.querySelectorAll('textarea[id^="justify-"]').forEach(ta => {
                         const areaValue = ta.id.substring(8); 
                         const originalAreaName = ['Build Healthy Public Policy', 'Create Supportive Environments', 'Strengthen Community Action', 'Develop Personal Skills', 'Reorient Health Services']
                                                  .find(a => a.toLowerCase().replace(/\s+/g, '-') === areaValue);
-                        if(originalAreaName && data.justifications) {
-                             ta.value = data.justifications[originalAreaName] || '';
-                        }
+                        if(originalAreaName && data.justifications) ta.value = data.justifications[originalAreaName] || '';
                     });
-                    const campaignStrengthsEl = document.getElementById('campaign-strengths');
-                    if (campaignStrengthsEl && data.strengths) campaignStrengthsEl.value = data.strengths;
-                    const campaignLimitationsEl = document.getElementById('campaign-limitations');
-                    if (campaignLimitationsEl && data.limitations) campaignLimitationsEl.value = data.limitations;
-                    const campaignSocialJusticeEl = document.getElementById('campaign-social-justice');
-                    if (campaignSocialJusticeEl && data.socialJustice) campaignSocialJusticeEl.value = data.socialJustice;
+                    const strengthsEl = toolRoot.querySelector('#campaign-strengths'); if (strengthsEl && data.strengths) strengthsEl.value = data.strengths;
+                    const limitationsEl = toolRoot.querySelector('#campaign-limitations'); if (limitationsEl && data.limitations) limitationsEl.value = data.limitations;
+                    const socialJusticeEl = toolRoot.querySelector('#campaign-social-justice'); if (socialJusticeEl && data.socialJustice) socialJusticeEl.value = data.socialJustice;
                 } catch (e) { console.error("Error loading Ottawa analysis:", e); }
             }
         };
-        const saveOttawaAnalysis = () => { /* ... as before ... */ 
-             const data = {
+        const saveOttawaAnalysis = () => { /* ... */ 
+            const toolRoot = document.getElementById('ottawa-charter-analysis-tool'); if(!toolRoot) return;
+            const data = {
                 actionAreasChecked: {}, justifications: {},
-                strengths: document.getElementById('campaign-strengths')?.value || '',
-                limitations: document.getElementById('campaign-limitations')?.value || '',
-                socialJustice: document.getElementById('campaign-social-justice')?.value || ''
+                strengths: toolRoot.querySelector('#campaign-strengths')?.value || '',
+                limitations: toolRoot.querySelector('#campaign-limitations')?.value || '',
+                socialJustice: toolRoot.querySelector('#campaign-social-justice')?.value || ''
             };
-            document.querySelectorAll('#ottawa-charter-analysis-tool input[type="checkbox"]').forEach(cb => {
-                data.actionAreasChecked[cb.value] = cb.checked;
-            });
-            document.querySelectorAll('#ottawa-charter-analysis-tool textarea[id^="justify-"]').forEach(ta => {
+            toolRoot.querySelectorAll('input[type="checkbox"]').forEach(cb => { data.actionAreasChecked[cb.value] = cb.checked; });
+            toolRoot.querySelectorAll('textarea[id^="justify-"]').forEach(ta => {
                  const areaValue = ta.id.substring(8);
                  const originalAreaName = ['Build Healthy Public Policy', 'Create Supportive Environments', 'Strengthen Community Action', 'Develop Personal Skills', 'Reorient Health Services']
                                                  .find(a => a.toLowerCase().replace(/\s+/g, '-') === areaValue);
@@ -325,14 +298,11 @@ export function Unit3SAC2PrepComponent() {
             alert("Ottawa Charter analysis saved!");
         };
 
-        if (saveOttawaAnalysisBtn) {
-            saveOttawaAnalysisBtn.addEventListener('click', saveOttawaAnalysis);
-        }
-        if (ottawaActivityContainer) { 
-             loadOttawaAnalysis();
-        }
+        if (saveOttawaAnalysisBtn) saveOttawaAnalysisBtn.addEventListener('click', saveOttawaAnalysis);
+        if (ottawaActivityContainer) loadOttawaAnalysis(); // Load data if container exists
 
-    }); // End of main requestAnimationFrame for Unit3SAC2PrepComponent setup
+        console.log("Unit3SAC2PrepComponent: Main setup logic within requestAnimationFrame COMPLETE.");
+    }); 
 
-    return html; // Return the main HTML structure of the page
+    return html; 
 }

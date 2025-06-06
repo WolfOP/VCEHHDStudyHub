@@ -467,7 +467,7 @@ console.log(finalSampleSacMaterialsString);
                             contentAreas: 'decon-content-areas-annot', constraints: 'decon-constraints-annot'
                         };
                         for (const key in deconstructionInputsMap) {
-                            const inputElement = annotationInterfaceRoot.querySelector(\`#\${deconstructionInputsMap[key]}\`);
+                           const inputElement = annotationInterfaceRoot.querySelector(`#${deconstructionInputsMap[key]}`);
                             if (inputElement) {
                                 inputElement.value = (savedData && savedData.deconstruction && savedData.deconstruction[key]) ? savedData.deconstruction[key] : '';
                                 inputElement.removeEventListener('input', saveCurrentAnnotationData); 

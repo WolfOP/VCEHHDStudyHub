@@ -95,13 +95,56 @@ export default function KeySkillsHub() {
         )}
       </section>
 
+      {/* Key Skill 2 */}
+      <section className="bg-gray-800 rounded-xl p-6 shadow-md mb-8">
+        <h2 className="text-xl font-semibold mb-4">🏛️ Explain initiatives from 'Old' Public Health, Social Model, and Ottawa Charter</h2>
+
+        <p className="text-gray-300 mb-4">
+          Match the initiative to its category and explore how it improves health outcomes. Then reflect using the response box.
+        </p>
+
+        <ul className="list-disc pl-6 text-gray-300 mb-4">
+          <li><strong>Provision of Clean Drinking Water</strong> – Old Public Health</li>
+          <li><strong>Mass Immunisation Programs</strong> – Old Public Health / Ottawa Charter</li>
+          <li><strong>Quitline</strong> – Social Model / Ottawa Charter</li>
+          <li><strong>Australian Dietary Guidelines & Healthy Eating Pyramid</strong> – Social Model / Ottawa Charter</li>
+          <li><strong>Aboriginal Road to Good Health</strong> – Social Model / Ottawa Charter / Indigenous Health Initiative</li>
+        </ul>
+
+        <div className="mb-4">
+          <label htmlFor="response2" className="block mb-2 font-medium">
+            Choose one initiative above and explain how it leads to improved health outcomes. Identify the model and action area.
+          </label>
+          <textarea
+            id="response2"
+            className="w-full p-3 rounded bg-gray-700 border border-gray-600 text-white"
+            rows={4}
+            placeholder="e.g. Quitline supports individuals to quit smoking, aligning with the social model and 'Create Supportive Environments'. This improves respiratory health and reduces preventable deaths."
+          ></textarea>
+
+          <button
+            onClick={() => setSubmitted(true)}
+            className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded mt-2"
+          >
+            Show Sample Answer
+          </button>
+
+          {submitted && (
+            <div className="mt-4 text-green-400">
+              ✅ Sample: Quitline aligns with the social model of health and Ottawa Charter action area 'Create Supportive Environments'.
+              It provides assistance for smoking cessation, reducing risk of lung cancer and CVD, improving physical health outcomes.
+            </div>
+          )}
+        </div>
+      </section>
+
       {/* Placeholder Key Skills */}
-      {[...Array(8)].map((_, i) => (
+      {[...Array(7)].map((_, i) => (
         <section
           key={i}
           className="bg-gray-800 rounded-xl p-6 shadow-md mb-6 opacity-60 border border-dashed border-gray-500"
         >
-          <h2 className="text-lg font-medium mb-2">🔧 Key Skill Placeholder #{i + 2}</h2>
+          <h2 className="text-lg font-medium mb-2">🔧 Key Skill Placeholder #{i + 3}</h2>
           <p className="text-gray-400">Coming soon...</p>
         </section>
       ))}

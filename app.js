@@ -11,9 +11,8 @@ import { NotFoundComponent } from './pages/NotFoundComponent.js';
 // Import SAC Prep component
 import { Unit3SAC2PrepComponent } from './components/Unit3SAC2PrepComponent.js';
 // Import Key Skills Hub component
-import KeySkillsHubFull from "./components/KeySkillsHubFull";
+import KeySkillsHubFull from "./components/KeySkillsHub";
 import ReactDOM from 'react-dom/client';
-import KeySkillsHubFull from "./components/KeySkillsHubFull";
 import Unit3 from
     // The key change is how Unit3SAC2PrepComponent handles its children's initialization.
     // Import page components

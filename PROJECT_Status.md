@@ -26,9 +26,9 @@ Area of Study 2: Promoting Health in Australia
 [X] Start development of unit 3 aos2 sac preperations.
 Phase 3: Interactivity & Refinement (Unit 3) (4-6 Weeks)
 Develop Initial Interactive Elements (Unit 3):
-[ ] Self-check quizzes for key Unit 3 concepts.
-[ ] Interactive flashcards for Unit 3 glossary terms.
-[ ] Develop Practice Questions (Unit 3): Add sample practice questions for Unit 3 SACs.
+[X] Self-check quizzes for key Unit 3 concepts.
+[X] Interactive flashcards for Unit 3 glossary terms.
+[X] Develop Practice Questions (Unit 3): Add sample practice questions for Unit 3 SACs.
 [ ] Internal Testing & Review (Unit 3): Accuracy, functionality, links, cross-browser/device.
 [ ] Gather Initial User Feedback (Small Group): (Optional, but recommended).
 [ ] Iterate based on Feedback.

@@ -674,6 +674,11 @@ export function Unit3Component() {
             <p>This unit explores health and wellbeing, disease, and illness as multidimensional, dynamic, and subject to different interpretations and contexts. It examines health and wellbeing as a global concept and highlights its importance as an individual and a collective resource.</p>
             ${aos1Content}
             ${aos2Content}
+            <div class="mt-6 flex flex-wrap gap-4">
+                <a href="#unit3-quiz" class="button-style">Take Quiz</a>
+                <a href="#unit3-flashcards" class="button-style">Flashcards</a>
+                <a href="#unit3-practice" class="button-style">Practice Questions</a>
+            </div>
         </section>
     `;
 }

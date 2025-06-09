@@ -7,6 +7,9 @@ import { AssessmentPrepComponent } from './pages/AssessmentPrepComponent.js';
 import { GlossaryComponent } from './pages/GlossaryComponent.js';
 import { NotFoundComponent } from './pages/NotFoundComponent.js';
 import { Unit3SAC2PrepComponent } from './components/Unit3SAC2PrepComponent.js';
+import { Unit3QuizComponent } from './pages/Unit3QuizComponent.js';
+import { Unit3FlashcardsComponent } from './pages/Unit3FlashcardsComponent.js';
+import { Unit3PracticeQuestionsComponent } from './pages/Unit3PracticeQuestionsComponent.js';
 import KeySkillsHub from "./components/KeySkillsHub";
 import ReactDOM from 'react-dom/client';
 
@@ -96,6 +99,21 @@ document.addEventListener('DOMContentLoaded', () => {
       title: 'Unit 3 SAC 2 Prep | VCE HHD Hub',
       description: 'Interactive tools and activities for Unit 3 SAC 2 preparation, focusing on Outcome 2.',
       component: Unit3SAC2PrepComponent
+    },
+    'unit3-quiz': {
+      title: 'Unit 3 Quiz | VCE HHD Hub',
+      description: 'Self-check quiz for key Unit 3 concepts.',
+      component: Unit3QuizComponent
+    },
+    'unit3-flashcards': {
+      title: 'Unit 3 Flashcards | VCE HHD Hub',
+      description: 'Interactive flashcards for Unit 3 glossary terms.',
+      component: Unit3FlashcardsComponent
+    },
+    'unit3-practice': {
+      title: 'Unit 3 Practice Questions | VCE HHD Hub',
+      description: 'Sample practice questions for Unit 3 SACs.',
+      component: Unit3PracticeQuestionsComponent
     },
     '404': {
       title: 'Page Not Found | VCE HHD Hub',

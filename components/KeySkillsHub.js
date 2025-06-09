@@ -66,16 +66,27 @@ export default function KeySkillsHub() {
     { id: 2, text: 'Road to Good Health – Create Supportive Environments' },
     { id: 3, text: 'Care for Kids’ Ears – Strengthen Community Action' },
   ];
-const initiatives = [
+ const initiatives = [
     { id: 1, text: 'Quit Campaign', category: 'Develop Personal Skills' },
-    { id: 2, text: 'Pillow Program', category: 'Create Supportive Environments' },
-    { id: 3, text: 'Aboriginal Road to Good Health', category: 'Strengthen Community Action' },
+    { id: 2, text: 'Community Cooking Classes', category: 'Create Supportive Environments' },
+    { id: 3, text: 'Road to Zero Program', category: 'Build Healthy Public Policy' },
+    { id: 4, text: 'The Aboriginal Road to Good Health', category: 'Strengthen Community Action' },
+    { id: 5, text: 'Australian Dietary Guidelines', category: 'Reorient Health Services' },
   ];
-  const DropZone = ({ children, onDrop }) => {
+
+  const DropZone = ({ target }) => {
     const [{ isOver }, drop] = useDrop({
       accept: 'ITEM',
-      drop: (item) => onDrop(item),
+      drop: (item) => {
+        setKey4Matches((prev) => ({ ...prev, [item.id]: target }));
+      },
       collect: (monitor) => ({ isOver: monitor.isOver() }),
+    });
+
+    const matched = Object.entries(key4Matches).filter(([, zone]) => zone === target);
+    const items = matched.map(([id]) => {
+      const initiative = initiatives.find((i) => i.id.toString() === id);
+      return <div key={id} className="p-2 mb-2 bg-gray-700 rounded">{initiative?.text}</div>;
     });
 
     return (
@@ -83,7 +94,8 @@ const initiatives = [
         ref={drop}
         className={`p-4 mb-4 border-2 border-dashed rounded-xl min-h-[80px] ${isOver ? 'border-green-400' : 'border-gray-600'}`}
       >
-        {children}
+        <div className="font-semibold mb-2">{target}</div>
+        {items}
       </div>
     );
   };
@@ -91,7 +103,7 @@ const initiatives = [
   const DraggableItem = ({ item }) => {
     const [{ isDragging }, drag] = useDrag({
       type: 'ITEM',
-      item: { id: item.id, text: item.text },
+      item: { id: item.id.toString(), text: item.text },
       collect: (monitor) => ({ isDragging: monitor.isDragging() }),
     });
 
@@ -103,6 +115,24 @@ const initiatives = [
         {item.text}
       </div>
     );
+  };
+
+  const handleKey4Submit = () => {
+    const correct = initiatives.every((item) => key4Matches[item.id] === item.category);
+    setKey4Success(correct);
+  };
+
+  const handleKey4Reset = () => {
+    setKey4Matches({});
+    setKey4Success(false);
+  };
+
+  const handleKey4Hint = () => {
+    const hint = initiatives.reduce((acc, curr) => {
+      acc[curr.id] = curr.category;
+      return acc;
+    }, {});
+    setKey4Matches(hint);
   };
 
   return (
@@ -217,10 +247,10 @@ const initiatives = [
           )}
         </section>
 
-         {/* Key Skill 4 */}
+        {/* Key Skill 4 */}
         <section className="bg-gray-800 rounded-xl p-6 shadow-md mb-8">
-          <h2 className="text-xl font-semibold mb-4">🧩 Match Health Promotion Initiatives with Ottawa Charter Action Areas</h2>
-          <p className="text-gray-300 mb-4">Drag each initiative to the correct Ottawa Charter action area.</p>
+          <h2 className="text-xl font-semibold mb-4">🧩 Match Initiatives to Ottawa Charter Action Areas</h2>
+          <p className="text-gray-300 mb-4">Drag each initiative into the matching action area of the Ottawa Charter.</p>
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div>
               <h3 className="text-md font-bold mb-2 text-purple-300">Initiatives</h3>
@@ -230,44 +260,73 @@ const initiatives = [
             </div>
             <div>
               <h3 className="text-md font-bold mb-2 text-purple-300">Drop Zones</h3>
-              <DropZone onDrop={() => setKey4Success(true)}>Develop Personal Skills</DropZone>
-              <DropZone onDrop={() => setKey4Success(true)}>Create Supportive Environments</DropZone>
-              <DropZone onDrop={() => setKey4Success(true)}>Strengthen Community Action</DropZone>
+              {['Develop Personal Skills', 'Create Supportive Environments', 'Build Healthy Public Policy', 'Strengthen Community Action', 'Reorient Health Services'].map((area) => (
+                <DropZone key={area} target={area} />
+              ))}
             </div>
+          </div>
+          <div className="flex gap-4">
+            <button onClick={handleKey4Submit} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
+              Submit
+            </button>
+            <button onClick={handleKey4Reset} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
+              Reset
+            </button>
+            <button onClick={handleKey4Hint} className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded">
+              Hint
+            </button>
           </div>
           {key4Success && (
             <div className="mt-4 text-green-400">
-              ✅ Well done! You've linked initiatives correctly with Ottawa Charter action areas.
+              ✅ Well done! You've matched all initiatives to the correct action areas.
             </div>
           )}
         </section>
 
         {/* Key Skill 5 */}
         <section className="bg-gray-800 rounded-xl p-6 shadow-md mb-8">
-          <h2 className="text-xl font-semibold mb-4">🌏 Analyse Indigenous Health Initiatives</h2>
-          <p className="text-gray-300 mb-4">Select the Ottawa Charter action area each initiative reflects and explain how it promotes social justice.</p>
+          <h2 className="text-xl font-semibold mb-4">🌏 Indigenous Health Initiative Analysis</h2>
+          <p className="text-gray-300 mb-4">Select an initiative, then identify its Ottawa Charter action area(s) and explain how it promotes social justice.</p>
+
           <div className="mb-4">
-            <label className="block mb-2">Which Ottawa Charter action area does "Care for Kids' Ears" primarily reflect?</label>
+            <label className="block mb-2">Choose an initiative:</label>
             <select className="w-full p-2 bg-gray-700 text-white rounded">
               <option>Choose one...</option>
-              <option>Develop Personal Skills</option>
-              <option>Create Supportive Environments</option>
-              <option>Reorient Health Services</option>
+              <option>Care for Kids’ Ears</option>
+              <option>Move It Mob Style</option>
+              <option>The Aboriginal Road to Good Health</option>
+              <option>Close the Gap Initiative</option>
+              <option>NACCHO / ACCHS</option>
+              <option>Central Australian Aboriginal Congress</option>
             </select>
           </div>
+
           <div className="mb-4">
-            <label className="block mb-2">Explain how this initiative promotes social justice:</label>
+            <label className="block mb-2">Select Ottawa Charter action areas:</label>
+            <div className="space-y-2">
+              {['Develop Personal Skills', 'Create Supportive Environments', 'Strengthen Community Action', 'Reorient Health Services', 'Build Healthy Public Policy'].map((label) => (
+                <label key={label} className="block">
+                  <input type="checkbox" className="mr-2" /> {label}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <label className="block mb-2">Explain how it promotes social justice:</label>
             <textarea className="w-full p-3 rounded bg-gray-700 border border-gray-600 text-white" rows={3}></textarea>
           </div>
+
           <button
             onClick={() => setKey5Success(true)}
             className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded"
           >
             Submit
           </button>
+
           {key5Success && (
             <div className="mt-4 text-green-400">
-              ✅ Great job! You've identified both the Ottawa Charter area and the social justice principle.
+              ✅ Great analysis! You're connecting key health concepts accurately.
             </div>
           )}
         </section>

@@ -25,6 +25,49 @@ const components = [
 
 const criteria = ['Funding', 'Sustainability', 'Access', 'Equity'];
 
+const sampleData = {
+  medicare: {
+    Funding:
+      'Financed through general taxation and the Medicare levy, allowing services without direct payment.',
+    Sustainability:
+      'Schedule fees and bulk billing help control costs so services remain affordable long term.',
+    Access:
+      'Provides universal coverage for Australian residents to receive treatment in public hospitals.',
+    Equity:
+      'Medicare Safety Nets reduce out-of-pocket expenses for low‑income and frequent service users.'
+  },
+  pbs: {
+    Funding:
+      'Federal government subsidises medicines so patients pay only a co‑payment.',
+    Sustainability:
+      'Bulk purchasing of medicines keeps prices low into the future.',
+    Access:
+      'Essential medications are available at local pharmacies at an affordable price.',
+    Equity:
+      'Concession card holders pay a reduced co‑payment, supporting those with greater need.'
+  },
+  ndis: {
+    Funding:
+      'Jointly funded by federal and state governments, including the Medicare levy surcharge.',
+    Sustainability:
+      'Invests in early intervention to reduce long‑term care costs.',
+    Access:
+      'Provides people with permanent disability access to supports and services.',
+    Equity:
+      'Packages are tailored to individual needs, promoting equal opportunity.'
+  },
+  phi: {
+    Funding:
+      'Funded by member premiums and supported by government rebates.',
+    Sustainability:
+      'Helps relieve pressure on the public system by encouraging private treatment.',
+    Access:
+      'Allows choice of doctor and hospital with typically shorter waiting times.',
+    Equity:
+      'Income‑tested rebates and Lifetime Health Cover loading encourage broad membership.'
+  }
+};
+
 export default function KeySkill10() {
   const [responses, setResponses] = useState({});
   const [submitted, setSubmitted] = useState(false);
@@ -65,10 +108,9 @@ export default function KeySkill10() {
                 value={responses[id]?.[criterion] || ''}
                 onChange={(e) => handleChange(id, criterion, e.target.value)}
               />
-              {submitted && (
+              {submitted && sampleData[id]?.[criterion] && (
                 <p className="text-green-300 text-sm bg-gray-700 p-2 rounded">
-                  <strong>Sample:</strong> {/* Real-world examples would go here in a real scenario */}
-                  {' '}The {name} promotes {criterion.toLowerCase()} by ... (add actual sample response)
+                  <strong>Sample:</strong> {sampleData[id][criterion]}
                 </p>
               )}
             </div>

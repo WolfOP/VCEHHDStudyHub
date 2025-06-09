@@ -28,7 +28,7 @@ export function AssessmentPrepComponent() {
                 <a href="#unit3-sac2-prep" class="button-style">Go to Unit 3 SAC 2 Prep</a>
                 <a
   href="/key-skills-hub"
-  className="mt-4 inline-block px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl shadow-md transition"
+  class="mt-4 inline-block px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl shadow-md transition"
 >
   🛠️ Go to Key Skills Hub
 </a>

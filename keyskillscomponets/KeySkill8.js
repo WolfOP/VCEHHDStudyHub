@@ -58,7 +58,7 @@ export default function KeySkill8() {
 
   return (
     <section className="bg-gray-800 rounded-xl p-6 shadow-md mb-8">
-      <h2 className="text-xl font-semibold mb-4">🥗 Key Skill 7: Evaluate Healthy Eating Initiatives</h2>
+      <h2 className="text-xl font-semibold mb-4">🥗 Key Skill 8: Evaluate Healthy Eating Initiatives</h2>
       <p className="text-gray-300 mb-4">
         Write your evaluation of each healthy eating initiative. Then click to view the sample evaluation for comparison.
       </p>

@@ -11,6 +11,16 @@
     <link rel="stylesheet" href="style.css"> 
     <link rel="icon" href="https://placehold.co/32x32/7c3aed/ffffff?text=HHD" type="image/png">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://cdn.jsdelivr.net/npm/react@18.2.0/+esm",
+          "react-dom/client": "https://cdn.jsdelivr.net/npm/react-dom@18.2.0/client/+esm",
+          "react-chartjs-2": "https://cdn.jsdelivr.net/npm/react-chartjs-2@5.3.1/+esm",
+          "chart.js": "https://cdn.jsdelivr.net/npm/chart.js@4.4.1/+esm"
+        }
+      }
+    </script>
 </head>
 <body class="bg-slate-900 text-slate-200 font-sans antialiased">
 
@@ -46,6 +56,7 @@
     </header>
 
     <main id="app-content" class="container mx-auto px-6 py-8 min-h-[calc(100vh-160px)]">
+        <div id="root"></div>
         <p class="text-center py-10">Loading content...</p>
     </main>
 

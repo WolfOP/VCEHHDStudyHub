@@ -11,12 +11,9 @@ import { NotFoundComponent } from './pages/NotFoundComponent.js';
 // Import SAC Prep component
 import { Unit3SAC2PrepComponent } from './components/Unit3SAC2PrepComponent.js';
 // Import Key Skills Hub component
-import KeySkillsHubFull from "./components/KeySkillsHub";
+import KeySkillsHub from "./components/KeySkillsHub";
 import ReactDOM from 'react-dom/client';
-import Unit3 from
-    // The key change is how Unit3SAC2PrepComponent handles its children's initialization.
-    // Import page components
-    "./components/Unit3";
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const appContent = document.getElementById('app-content');
@@ -32,9 +29,7 @@ const hash = window.location.hash;
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 if (hash === "#keyskills") {
-  root.render(<KeySkillsHubFull />);
-} else {
-  root.render(<Unit3 />);
+  root.render(<KeySkillsHub />);
 }
     if (currentYearSpan) {
         currentYearSpan.textContent = new Date().getFullYear();

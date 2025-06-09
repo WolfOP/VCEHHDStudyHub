@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import InitiativeDragDrop from './helpers/InitiativeDragDrop';
+import InitiativeDragDrop from './helpers/InitiativeDragDrop.js';
 
 const initiatives = [
   {

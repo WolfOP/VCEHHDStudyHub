@@ -2,16 +2,16 @@
 import { useState } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import KeySkill1 from './KeySkill1';
-import KeySkill2 from './KeySkill2';
-import KeySkill3 from './KeySkill3';
-import KeySkill4 from './KeySkill4';
-import KeySkill5 from './KeySkill5';
-import KeySkill6 from './KeySkill6';
-import KeySkill7 from './KeySkill7';
-import KeySkill8 from './KeySkill8';
-import KeySkill9 from './KeySkill9';
-import KeySkill10 from './KeySkill10';
+import KeySkill1 from '../keyskillscomponets/KeySkill1.js';
+import KeySkill2 from '../keyskillscomponets/KeySkill2.js';
+import KeySkill3 from '../keyskillscomponets/KeySkill3.js';
+import KeySkill4 from '../keyskillscomponets/KeySkill4.js';
+import KeySkill5 from '../keyskillscomponets/KeySkill5.js';
+import KeySkill6 from '../keyskillscomponets/KeySkill6.js';
+import KeySkill7 from '../keyskillscomponets/KeySkill7.js';
+import KeySkill8 from '../keyskillscomponets/KeySkill8.js';
+import KeySkill9 from '../keyskillscomponets/KeySkill9.js';
+import KeySkill10 from '../keyskillscomponets/KeySkill10.js';
 
 export default function KeySkillsHubFull() {
   return (

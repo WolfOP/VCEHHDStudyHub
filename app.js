@@ -10,6 +10,14 @@ import { GlossaryComponent } from './pages/GlossaryComponent.js';
 import { NotFoundComponent } from './pages/NotFoundComponent.js';
 // Import SAC Prep component
 import { Unit3SAC2PrepComponent } from './components/Unit3SAC2PrepComponent.js';
+// Import Key Skills Hub component
+import KeySkillsHubFull from "./components/KeySkillsHubFull";
+import ReactDOM from 'react-dom/client';
+import KeySkillsHubFull from "./components/KeySkillsHubFull";
+import Unit3 from
+    // The key change is how Unit3SAC2PrepComponent handles its children's initialization.
+    // Import page components
+    "./components/Unit3";
 
 document.addEventListener('DOMContentLoaded', () => {
     const appContent = document.getElementById('app-content');
@@ -21,7 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const metaDescriptionTag = document.querySelector('meta[name="description"]');
     const defaultDescription = "A comprehensive study resource for VCE Health and Human Development students, covering Unit 3 and Unit 4, including key knowledge, assessment preparation, and a glossary of terms.";
     const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+const hash = window.location.hash;
 
+const root = ReactDOM.createRoot(document.getElementById("root"));
+if (hash === "#keyskills") {
+  root.render(<KeySkillsHubFull />);
+} else {
+  root.render(<Unit3 />);
+}
     if (currentYearSpan) {
         currentYearSpan.textContent = new Date().getFullYear();
     }

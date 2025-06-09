@@ -14,23 +14,17 @@ import { Unit3SAC2PrepComponent } from './components/Unit3SAC2PrepComponent.js';
 import KeySkillsHub from "./components/KeySkillsHub";
 import ReactDOM from 'react-dom/client';
 
-
 document.addEventListener('DOMContentLoaded', () => {
-    const appContent = document.getElementById('app-content');
-    const navLinks = document.querySelectorAll('.nav-link'); 
-    const mobileMenuButton = document.getElementById('mobile-menu-button');
-    const mobileMenu = document.getElementById('mobile-menu');
-    const mobileNavLinks = document.querySelectorAll('#mobile-menu .nav-link'); 
-    const currentYearSpan = document.getElementById('currentYear');
-    const metaDescriptionTag = document.querySelector('meta[name="description"]');
-    const defaultDescription = "A comprehensive study resource for VCE Health and Human Development students, covering Unit 3 and Unit 4, including key knowledge, assessment preparation, and a glossary of terms.";
-    const scrollToTopBtn = document.getElementById('scrollToTopBtn');
-const hash = window.location.hash;
+  const appContent = document.getElementById('app-content');
+  const navLinks = document.querySelectorAll('.nav-link');
+  const mobileMenuButton = document.getElementById('mobile-menu-button');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const mobileNavLinks = document.querySelectorAll('#mobile-menu .nav-link');
+  const currentYearSpan = document.getElementById('currentYear');
+  const metaDescriptionTag = document.querySelector('meta[name="description"]');
+  const defaultDescription = "A comprehensive study resource for VCE Health and Human Development students, covering Unit 3 and Unit 4, including key knowledge, assessment preparation, and a glossary of terms.";
+  const scrollToTopBtn = document.getElementById('scrollToTopBtn');
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-if (hash === "#keyskills") {
-  root.render(<KeySkillsHub />);
-}
     if (currentYearSpan) {
         currentYearSpan.textContent = new Date().getFullYear();
     }
@@ -92,6 +86,14 @@ if (hash === "#keyskills") {
             description: 'A comprehensive glossary of key terms and definitions for VCE Health and Human Development Units 3 and 4.',
             component: GlossaryComponent 
         },
+        
+        },
+        'keyskillshub': { 
+            title: 'Key Skills Hub | Activities ', 
+            description: ' Comprehensive activiss for unit 3 aos 2 key skills.',
+            component: keyskillshub 
+        },
+        
         'unit3-sac2-prep': {
             title: 'Unit 3 SAC 2 Prep | VCE HHD Hub',
             description: 'Interactive tools and activities for Unit 3 SAC 2 preparation, focusing on Outcome 2.',
@@ -107,6 +109,14 @@ if (hash === "#keyskills") {
     function navigateTo(hash) {
         const routeName = hash.startsWith('#') ? hash.substring(1) : (hash || 'home');
         const route = routes[routeName] || routes['404'];
+
+if (hash === "#keyskills") {
+    root.render(<KeySkillsHub />);
+  } else {
+    // Fallback to default routing if not using React for other routes
+    // You can optionally render NotFoundComponent or handle other hashes
+    console.log("React page not loaded. Using static route or default content.");
+  }
 
         if (appContent) {
             appContent.innerHTML = route.component(); // This calls the main component function which returns HTML

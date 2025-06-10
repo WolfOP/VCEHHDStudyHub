@@ -13,7 +13,7 @@ import { Unit3SAC2PrepComponent } from './components/Unit3SAC2PrepComponent.js';
 import { Unit3QuizComponent } from './pages/Unit3QuizComponent.js';
 import { Unit3FlashcardsComponent } from './pages/Unit3FlashcardsComponent.js';
 import { Unit3PracticeQuestionsComponent } from './pages/Unit3PracticeQuestionsComponent.js';
-import { KeySkillsHub } from "./pages/key-skills-hub.js"; // default export
+import  KeySkillsHub  from "./pages/key-skills-hub.js"; // default export
 
 document.addEventListener('DOMContentLoaded', () => {
   const navLinks = document.querySelectorAll('.nav-link');

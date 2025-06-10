@@ -63,6 +63,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // React root (ensure <div id="root"></div> exists in your HTML)
   const root = ReactDOM.createRoot(document.getElementById("root"));
 
+  // Wrapper to handle components that return either a React element or raw HTML
+  function RouteWrapper({ component }) {
+    const result = component();
+    if (React.isValidElement(result)) {
+      return result;
+    }
+    return React.createElement('div', { dangerouslySetInnerHTML: { __html: result } });
+  }
+
   // Route definitions
   const routes = {
     home: {
@@ -130,8 +139,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (metaDescriptionTag) {
       metaDescriptionTag.setAttribute('content', route.description || defaultDescription);
     }
-    // Render the React component
-    root.render(React.createElement(route.component));
+    // Render the React component or raw HTML via RouteWrapper
+    root.render(React.createElement(RouteWrapper, { component: route.component }));
 
     navLinks.forEach(link => {
       const linkHref = link.getAttribute('href');

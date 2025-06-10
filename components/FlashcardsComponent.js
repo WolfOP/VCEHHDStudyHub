@@ -1,4 +1,5 @@
 const flashcards = [
+
   {
     term: 'Health and Wellbeing',
     definition:
@@ -59,6 +60,7 @@ const flashcards = [
     definition:
       'The total number or proportion of cases of a disease or condition in a population at a given time.'
   }
+
 ];
 
 export function getFlashcardsHTML() {

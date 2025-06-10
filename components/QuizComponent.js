@@ -13,6 +13,7 @@ const quizQuestions = [
     question: 'Which action area is part of the Ottawa Charter?',
     options: ['Improve Medicare', 'Create Supportive Environments', 'Increase Taxation', 'Subsidise Medicines'],
     answer: 1
+
   },
   {
     question: 'Which level of government primarily funds Medicare?',
@@ -48,6 +49,7 @@ const quizQuestions = [
     question: 'Which Ottawa Charter action area relates to education and skill building?',
     options: ['Create Supportive Environments', 'Develop Personal Skills', 'Strengthen Community Action', 'Reorient Health Services'],
     answer: 1
+
   }
 ];
 

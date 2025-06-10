@@ -64,66 +64,62 @@ document.addEventListener('DOMContentLoaded', () => {
   const root = ReactDOM.createRoot(document.getElementById("root"));
 
   const routes = {
-    'home': {
-      title: 'VCE HHD Study Hub | Home',
-      description: 'Welcome to the HHD Study Hub, your central resource for VCE Health and Human Development. Explore Units 3 & 4, assessment prep, and key terms.',
-      component: HomeComponent
-    },
-    'unit3': {
-      title: 'Unit 3: Australia\'s Health | VCE HHD Hub',
-      description: 'Explore VCE HHD Unit 3: Australia\'s Health in a Globalised World. Covers health concepts, status indicators, influencing factors, and health promotion in Australia.',
-      component: Unit3Component
-    },
-    'unit4': {
-      title: 'Unit 4: Global Health & Development | VCE HHD Hub',
-      description: 'VCE HHD Unit 4 placeholder: Health and Human Development in a Global Context. Content coming soon.',
-      component: Unit4Component
-    },
-    'assessment-prep': {
-      title: 'Assessment Prep | VCE HHD Hub',
-      description: 'Prepare for VCE HHD SACs and exams. Understand assessment structure, task types, command words, and study strategies.',
-      component: AssessmentPrepComponent
-    },
-    'glossary': {
-      title: 'VCE HHD Glossary | Key Terms & Definitions',
-      description: 'A comprehensive glossary of key terms and definitions for VCE Health and Human Development Units 3 and 4.',
-      component: GlossaryComponent
-    },
-    'keyskillshub': {
-      title: 'Key Skills Hub | Activities',
-      description: 'Comprehensive activities for Unit 3 AoS 2 key skills.',
-      component: () => {
-        root.render(<KeySkillsHub />);
-        return '<div id="root"></div>';
-      }
-    },
-    'unit3-sac2-prep': {
-      title: 'Unit 3 SAC 2 Prep | VCE HHD Hub',
-      description: 'Interactive tools and activities for Unit 3 SAC 2 preparation, focusing on Outcome 2.',
-      component: Unit3SAC2PrepComponent
-    },
-    'unit3-quiz': {
-      title: 'Unit 3 Quiz | VCE HHD Hub',
-      description: 'Self-check quiz for key Unit 3 concepts.',
-      component: Unit3QuizComponent
-    },
-    'unit3-flashcards': {
-      title: 'Unit 3 Flashcards | VCE HHD Hub',
-      description: 'Interactive flashcards for Unit 3 glossary terms.',
-      component: Unit3FlashcardsComponent
-    },
-    'unit3-practice': {
-      title: 'Unit 3 Practice Questions | VCE HHD Hub',
-      description: 'Sample practice questions for Unit 3 SACs.',
-      component: Unit3PracticeQuestionsComponent
-    },
-    '404': {
-      title: 'Page Not Found | VCE HHD Hub',
-      description: 'The page you were looking for could not be found on the VCE HHD Study Hub.',
-      component: NotFoundComponent
-    }
-  };
-
+  home: {
+    title: 'VCE HHD Study Hub | Home',
+    description: 'Welcome to the HHD Study Hub, your central resource for VCE Health and Human Development. Explore Units 3 & 4, assessment prep, and key terms.',
+    component: HomeComponent
+  },
+  unit3: {
+    title: "Unit 3: Australia's Health | VCE HHD Hub",
+    description: "Explore VCE HHD Unit 3: Australia's Health in a Globalised World. Covers health concepts, status indicators, influencing factors, and health promotion in Australia.",
+    component: Unit3Component
+  },
+  unit4: {
+    title: "Unit 4: Global Health & Development | VCE HHD Hub",
+    description: "VCE HHD Unit 4 placeholder: Health and Human Development in a Global Context. Content coming soon.",
+    component: Unit4Component
+  },
+  'assessment-prep': {
+    title: 'Assessment Prep | VCE HHD Hub',
+    description: 'Prepare for VCE HHD SACs and exams. Understand assessment structure, task types, command words, and study strategies.',
+    component: AssessmentPrepComponent
+  },
+  glossary: {
+    title: 'VCE HHD Glossary | Key Terms & Definitions',
+    description: 'A comprehensive glossary of key terms and definitions for VCE Health and Human Development Units 3 and 4.',
+    component: GlossaryComponent
+  },
+  keyskillshub: {
+    title: 'Key Skills Hub | Activities',
+    description: 'Comprehensive activities for Unit 3 AoS 2 key skills.',
+    component: KeySkillsHub
+  },
+  'unit3-sac2-prep': {
+    title: 'Unit 3 SAC 2 Prep | VCE HHD Hub',
+    description: 'Interactive tools and activities for Unit 3 SAC 2 preparation, focusing on Outcome 2.',
+    component: Unit3SAC2PrepComponent
+  },
+  'unit3-quiz': {
+    title: 'Unit 3 Quiz | VCE HHD Hub',
+    description: 'Self-check quiz for key Unit 3 concepts.',
+    component: Unit3QuizComponent
+  },
+  'unit3-flashcards': {
+    title: 'Unit 3 Flashcards | VCE HHD Hub',
+    description: 'Interactive flashcards for Unit 3 glossary terms.',
+    component: Unit3FlashcardsComponent
+  },
+  'unit3-practice': {
+    title: 'Unit 3 Practice Questions | VCE HHD Hub',
+    description: 'Sample practice questions for Unit 3 SACs.',
+    component: Unit3PracticeQuestionsComponent
+  },
+  '404': {
+    title: 'Page Not Found | VCE HHD Hub',
+    description: 'The page you were looking for could not be found on the VCE HHD Study Hub.',
+    component: NotFoundComponent
+  }
+};
   function navigateTo(hash) {
     const routeName = hash.startsWith('#') ? hash.substring(1) : (hash || 'home');
     const route = routes[routeName] || routes['404'];

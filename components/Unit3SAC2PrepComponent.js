@@ -92,6 +92,7 @@ newQuestions.forEach((question, index) => {
         question: question,
         stimulus: `<div>${stimuliHTML}</div>`
     });
+});
 // Function to safely stringify the sampleSacMaterials array for injection into the script
 function stringifySampleSacMaterials(materials) {
     return JSON.stringify(materials, null, 4)

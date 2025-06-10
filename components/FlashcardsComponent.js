@@ -1,7 +1,66 @@
 const flashcards = [
-  { term: 'Health and Wellbeing', definition: 'The overall state of a person\'s physical, social, emotional, mental and spiritual existence.' },
-  { term: 'DALY', definition: 'Disability Adjusted Life Year - a measure of burden of disease.' },
-  { term: 'Ottawa Charter', definition: 'A framework for health promotion outlining five action areas.' }
+
+  {
+    term: 'Health and Wellbeing',
+    definition:
+      "The overall state of a person's physical, social, emotional, mental and spiritual existence."
+  },
+  {
+    term: 'Biomedical Approach',
+    definition:
+      'Focuses on the physical or biological aspects of disease and illness, emphasising diagnosis and treatment.'
+  },
+  {
+    term: 'Social Model of Health',
+    definition:
+      'Framework that addresses broader social, cultural and environmental determinants of health to reduce inequities.'
+  },
+  {
+    term: 'Ottawa Charter',
+    definition:
+      'A World Health Organization framework for health promotion outlining five action areas.'
+  },
+  {
+    term: 'Medicare',
+    definition:
+      "Australia's universal health insurance scheme providing affordable healthcare."
+  },
+  {
+    term: 'Private Health Insurance',
+    definition:
+      'Optional insurance for healthcare costs not fully covered by Medicare or for private hospital care.'
+  },
+  {
+    term: 'National Disability Insurance Scheme (NDIS)',
+    definition:
+      'Provides support to Australians under 65 with a permanent and significant disability.'
+  },
+  {
+    term: 'Burden of Disease',
+    definition:
+      'A measure of the impact of disease and injury, expressed as the gap between current health status and ideal health.'
+  },
+  {
+    term: 'DALY',
+    definition:
+      'Disability Adjusted Life Year – one year of healthy life lost due to illness, injury or premature death.'
+  },
+  {
+    term: 'Health-Adjusted Life Expectancy (HALE)',
+    definition:
+      'The average number of healthy years a person can expect to live, free from serious disease or disability.'
+  },
+  {
+    term: 'Incidence',
+    definition:
+      'The number or rate of new cases of a disease or condition during a specified period.'
+  },
+  {
+    term: 'Prevalence',
+    definition:
+      'The total number or proportion of cases of a disease or condition in a population at a given time.'
+  }
+
 ];
 
 export function getFlashcardsHTML() {

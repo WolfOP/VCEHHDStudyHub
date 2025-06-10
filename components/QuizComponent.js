@@ -13,6 +13,43 @@ const quizQuestions = [
     question: 'Which action area is part of the Ottawa Charter?',
     options: ['Improve Medicare', 'Create Supportive Environments', 'Increase Taxation', 'Subsidise Medicines'],
     answer: 1
+
+  },
+  {
+    question: 'Which level of government primarily funds Medicare?',
+    options: ['Local', 'Federal', 'State', 'Private'],
+    answer: 1
+  },
+  {
+    question: 'Which indicator measures years of life lost due to premature death?',
+    options: ['YLL', 'YLD', 'HALE', 'BoD'],
+    answer: 0
+  },
+  {
+    question: 'What is the main focus of the biomedical model of health?',
+    options: ['Prevention of illness', 'Social determinants', 'Diagnosis and treatment', 'Spiritual wellbeing'],
+    answer: 2
+  },
+  {
+    question: 'NDIS stands for?',
+    options: ['National Disability Insurance Scheme', 'National Disease Intervention System', 'Northern District Health Scheme', 'National Drugs Information Service'],
+    answer: 0
+  },
+  {
+    question: 'Which of the following is a sociocultural factor influencing health?',
+    options: ['Age', 'Income', 'Blood pressure', 'Genetics'],
+    answer: 1
+  },
+  {
+    question: 'Which statement best reflects equity in health?',
+    options: ['Treating everyone exactly the same', 'Providing extra support to those with greater need', 'Only focusing on individual responsibility', 'Charging all patients the same fee'],
+    answer: 1
+  },
+  {
+    question: 'Which Ottawa Charter action area relates to education and skill building?',
+    options: ['Create Supportive Environments', 'Develop Personal Skills', 'Strengthen Community Action', 'Reorient Health Services'],
+    answer: 1
+
   }
 ];
 

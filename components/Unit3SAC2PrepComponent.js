@@ -690,5 +690,5 @@ export function Unit3SAC2PrepComponent() {
         console.log("Unit3SAC2PrepComponent: Main setup logic within requestAnimationFrame COMPLETE.");
     }); 
 
-    return html; 
+     return html;
 }

@@ -1,13 +1,13 @@
-import KeySkill1 from "./keyskillscomponets/KeySkill1.js";
-import KeySkill2 from "./keyskillscomponets/KeySkill2.js";
-import KeySkill3 from "./keyskillscomponets/KeySkill3.js";
-import KeySkill4 from "./keyskillscomponets/KeySkill4.js";
-import KeySkill5 from "./keyskillscomponets/KeySkill5.js";
-import KeySkill6 from "./keyskillscomponets/KeySkill6.js";
-import KeySkill7 from "./keyskillscomponets/KeySkill7.js";
-import KeySkill8 from "./keyskillscomponets/KeySkill8.js";
-import KeySkill9 from "./keyskillscomponets/KeySkill9.js";
-import KeySkill10 from "./keyskillscomponets/KeySkill10.js";
+import KeySkill1 from "./keyskillscomponents/KeySkill1.js";
+import KeySkill2 from "./keyskillscomponents/KeySkill2.js";
+import KeySkill3 from "./keyskillscomponents/KeySkill3.js";
+import KeySkill4 from "./keyskillscomponents/KeySkill4.js";
+import KeySkill5 from "./keyskillscomponents/KeySkill5.js";
+import KeySkill6 from "./keyskillscomponents/KeySkill6.js";
+import KeySkill7 from "./keyskillscomponents/KeySkill7.js";
+import KeySkill8 from "./keyskillscomponents/KeySkill8.js";
+import KeySkill9 from "./keyskillscomponents/KeySkill9.js";
+import KeySkill10 from "./keyskillscomponents/KeySkill10.js";
 
 export default function KeySkillsHub() {
   return `

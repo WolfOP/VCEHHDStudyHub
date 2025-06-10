@@ -27,7 +27,7 @@ export function AssessmentPrepComponent() {
                 <p class="text-slate-300 mb-3">Access interactive tools for deconstructing questions, annotating stimuli, mapping relationships, and planning your extended responses for the Unit 3 Outcome 2 SAC.</p>
                 <a href="#unit3-sac2-prep" class="button-style">Go to Unit 3 SAC 2 Prep</a>
                 <a
-  href="/key-skills-hub"
+  href="#keyskillshub"
   class="mt-4 inline-block px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl shadow-md transition"
 >
   🛠️ Go to Key Skills Hub

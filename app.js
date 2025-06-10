@@ -9,7 +9,7 @@ import { Unit4Component } from './pages/Unit4Component.js';
 import { AssessmentPrepComponent } from './pages/AssessmentPrepComponent.js';
 import { GlossaryComponent } from './pages/GlossaryComponent.js';
 import { NotFoundComponent } from './pages/NotFoundComponent.js';
-import Unit3SAC2PrepComponent from './components/Unit3SAC2PrepComponent.js'; // default export
+import { Unit3SAC2PrepComponent } from './components/Unit3SAC2PrepComponent.js';
 import { Unit3QuizComponent } from './pages/Unit3QuizComponent.js';
 import { Unit3FlashcardsComponent } from './pages/Unit3FlashcardsComponent.js';
 import { Unit3PracticeQuestionsComponent } from './pages/Unit3PracticeQuestionsComponent.js';
